@@ -73,7 +73,7 @@ export function AnalyzeTiles() {
 
         <div className="bg-white rounded-2xl p-8 shadow-sm">
           <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-3">
-            <Settings className="text-primary text-xl" /> Root Causes (AI)
+            <Settings className="text-primary text-xl" /> Root Causes
           </h3>
           <div className="space-y-4">
             {[
