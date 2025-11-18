@@ -9,26 +9,26 @@ const impactTiles = [
 
 export function FinancialImpactTiles() {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-4 gap-4">
+    <div className="space-y-8">
+      <div className="grid grid-cols-4 gap-6">
         {impactTiles.map((tile) => (
           <div
             key={tile.label}
-            className="bg-card border border-border rounded-xl p-6 hover:border-primary/30 transition-all hover:shadow-lg shadow-sm"
+            className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md hover:border hover:border-primary/20 transition-all duration-200"
           >
-            <div className="flex items-start justify-between mb-4">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <div className="flex items-start justify-between mb-5">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 {tile.label}
               </p>
-              <tile.Icon className="text-2xl text-primary/70" />
+              <tile.Icon className="text-lg text-primary/60" />
             </div>
-            <p className="text-3xl font-semibold text-primary mb-1">
+            <p className="text-3xl font-bold text-foreground mb-2">
               {tile.value}
             </p>
-            <p className="text-xs text-muted-foreground mb-3">
+            <p className="text-sm text-muted-foreground mb-3">
               {tile.detail}
             </p>
-            <p className="text-xs font-medium text-primary/70">
+            <p className="text-sm font-medium text-primary">
               {tile.metric}
             </p>
           </div>
@@ -36,15 +36,15 @@ export function FinancialImpactTiles() {
       </div>
 
       {/* Total Impact Summary */}
-      <div className="bg-linear-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-8 text-center shadow-sm">
-        <p className="text-xs font-medium text-primary uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
-          <Zap className="text-sm" />
+      <div className="bg-primary/5 border border-primary/10 rounded-2xl p-8 text-center">
+        <p className="text-sm font-medium text-primary uppercase tracking-wider mb-3 flex items-center justify-center gap-2">
+          <Zap className="text-base" />
           Verified 3-Year Impact
         </p>
-        <p className="text-4xl font-bold text-primary">
+        <p className="text-5xl font-bold text-primary mb-3">
           $60,000,000
         </p>
-        <p className="text-sm text-muted-foreground mt-2">
+        <p className="text-base text-muted-foreground">
           Cumulative operational savings and efficiency gains
         </p>
       </div>

@@ -40,32 +40,32 @@ const tiles = [
 
 export function DigitizationTiles() {
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="grid grid-cols-5 gap-6">
       {tiles.map((tile) => (
         <div
           key={tile.label}
-          className="bg-card border border-border rounded-xl p-6 hover:border-primary/30 hover:shadow-lg shadow-sm transition-all cursor-pointer group"
+          className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md hover:border hover:border-primary/20 transition-all duration-200 cursor-pointer group"
         >
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {tile.label}
                 </p>
               </div>
-              <tile.Icon className="text-xl text-primary/70" />
+              <tile.Icon className="text-lg text-primary/60" />
             </div>
             
             <div>
-              <p className="text-3xl font-semibold text-primary">
+              <p className="text-3xl font-bold text-foreground mb-1">
                 {tile.value}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-sm text-muted-foreground">
                 {tile.secondary}
               </p>
             </div>
             
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground font-medium">
               {tile.description}
             </p>
           </div>
