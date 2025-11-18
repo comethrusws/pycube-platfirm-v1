@@ -1,17 +1,17 @@
-import { FaChartLine, FaExclamationTriangle, FaCircle, FaCheck, FaBell, FaCheckCircle, FaClipboardList, FaCog } from 'react-icons/fa'
+import { TrendingUp, AlertTriangle, Circle, Check, Bell, CheckCircle, Clipboard, Settings } from 'lucide-react'
 
 const rowAKpis = [
-  { label: 'Utilization', value: '50%', Icon: FaChartLine },
-  { label: 'Underutilized Assets', value: '1694', Icon: FaExclamationTriangle },
-  { label: 'Idle Critical (>30d)', value: '251', Icon: FaCircle },
-  { label: 'Specimen Violations', value: '0', secondary: 'Today', Icon: FaCheck },
+  { label: 'Utilization', value: '50%', Icon: TrendingUp },
+  { label: 'Underutilized Assets', value: '1694', Icon: AlertTriangle },
+  { label: 'Idle Critical (>30d)', value: '251', Icon: Circle },
+  { label: 'Specimen Violations', value: '0', secondary: 'Today', Icon: Check },
 ]
 
 const rowBKpis = [
-  { label: 'Movement Alerts', value: '8', Icon: FaBell },
-  { label: 'Inventory Accuracy', value: '95%', Icon: FaCheckCircle },
-  { label: 'High-Risk Assets', value: '400', Icon: FaExclamationTriangle },
-  { label: 'Compliance Score', value: '55%', Icon: FaClipboardList },
+  { label: 'Movement Alerts', value: '8', Icon: Bell },
+  { label: 'Inventory Accuracy', value: '95%', Icon: CheckCircle },
+  { label: 'High-Risk Assets', value: '400', Icon: AlertTriangle },
+  { label: 'Compliance Score', value: '55%', Icon: Clipboard },
 ]
 
 export function AnalyzeTiles() {
@@ -64,7 +64,7 @@ export function AnalyzeTiles() {
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2 bg-card border border-border rounded-xl p-6 shadow-sm">
           <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-            <FaChartLine className="text-primary" /> Operational Hotspots Map
+            <TrendingUp className="text-primary" /> Operational Hotspots Map
           </h3>
           <div className="bg-muted rounded-xl h-64 flex items-center justify-center border border-border/50">
             <p className="text-sm text-muted-foreground">Hospital Floorplan - Interactive Heat Map</p>
@@ -73,7 +73,7 @@ export function AnalyzeTiles() {
 
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
           <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-            <FaCog className="text-primary" /> Root Causes (AI)
+            <Settings className="text-primary" /> Root Causes (AI)
           </h3>
           <div className="space-y-3 text-sm">
             {[

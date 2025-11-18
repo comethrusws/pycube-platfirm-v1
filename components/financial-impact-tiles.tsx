@@ -1,10 +1,10 @@
-import { FaDollarSign, FaClock, FaBolt, FaChartLine } from 'react-icons/fa'
+import { DollarSign, Clock, Zap, TrendingDown } from 'lucide-react'
 
 const impactTiles = [
-  { label: 'Rental Avoidance', value: '$1.21M', detail: 'saved YTD', metric: '35% ↓ rentals', Icon: FaDollarSign },
-  { label: 'Capital Efficiency', value: '$2.8M', detail: 'deferred', metric: 'purchases', Icon: FaChartLine },
-  { label: 'Expiration Avoidance', value: '$540k', detail: 'saved', metric: 'waste reduced', Icon: FaClock },
-  { label: 'Operational Efficiency', value: '4,120', detail: 'hrs saved', metric: 'staff time', Icon: FaBolt },
+  { label: 'Rental Avoidance', value: '$1.21M', detail: 'saved YTD', metric: '35% ↓ rentals', Icon: DollarSign },
+  { label: 'Capital Efficiency', value: '$2.8M', detail: 'deferred', metric: 'purchases', Icon: TrendingDown },
+  { label: 'Expiration Avoidance', value: '$540k', detail: 'saved', metric: 'waste reduced', Icon: Clock },
+  { label: 'Operational Efficiency', value: '4,120', detail: 'hrs saved', metric: 'staff time', Icon: Zap },
 ]
 
 export function FinancialImpactTiles() {
@@ -38,7 +38,7 @@ export function FinancialImpactTiles() {
       {/* Total Impact Summary */}
       <div className="bg-linear-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-8 text-center shadow-sm">
         <p className="text-xs font-medium text-primary uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
-          <FaBolt className="text-sm" />
+          <Zap className="text-sm" />
           Verified 3-Year Impact
         </p>
         <p className="text-4xl font-bold text-primary">

@@ -1,4 +1,4 @@
-import { FaBox, FaFlask, FaChartBar, FaCog, FaLink } from 'react-icons/fa'
+import { Package, TestTube, BarChart3, Settings, Link } from 'lucide-react'
 
 const tiles = [
   {
@@ -6,35 +6,35 @@ const tiles = [
     value: '74%',
     secondary: '5005/6734',
     description: 'Coverage',
-    Icon: FaBox,
+    Icon: Package,
   },
   {
     label: 'Specimen Traceability',
     value: '92%',
     secondary: 'last 7 days',
     description: 'Tracked samples',
-    Icon: FaFlask,
+    Icon: TestTube,
   },
   {
     label: 'Supply Chain',
     value: '81%',
     secondary: 'tracked items',
     description: 'Visibility',
-    Icon: FaChartBar,
+    Icon: BarChart3,
   },
   {
     label: 'Infra Health',
     value: '96% Online',
     secondary: '98% tag health',
     description: 'Gateway Status',
-    Icon: FaCog,
+    Icon: Settings,
   },
   {
     label: 'Integrations',
     value: 'All Green',
     secondary: 'Epic • SAP • HL7',
     description: 'System Status',
-    Icon: FaLink,
+    Icon: Link,
   },
 ]
 

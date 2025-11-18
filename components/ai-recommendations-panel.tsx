@@ -1,25 +1,25 @@
-import { FaArrowRight, FaWrench } from 'react-icons/fa'
+import { ArrowRight, Wrench } from 'lucide-react'
 
 const recommendations = [
   {
     action: 'Redeploy 123 underutilized assets',
     benefit: 'Avoid $1.4M purchase request',
-    Icon: FaArrowRight,
+    Icon: ArrowRight,
   },
   {
     action: 'Consolidate PAR levels, North Tower',
     benefit: 'Save $480k',
-    Icon: FaArrowRight,
+    Icon: ArrowRight,
   },
   {
     action: 'Repair 28 high-risk OR/Lab equipment',
     benefit: 'Prevent downtime',
-    Icon: FaWrench,
+    Icon: Wrench,
   },
   {
     action: 'Re-route specimens via Tunnel B',
     benefit: 'Improve TAT by 14%',
-    Icon: FaArrowRight,
+    Icon: ArrowRight,
   },
 ]
 
