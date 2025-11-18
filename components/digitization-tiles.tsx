@@ -1,38 +1,40 @@
+import { FaBox, FaFlask, FaChartBar, FaCog, FaLink } from 'react-icons/fa'
+
 const tiles = [
   {
     label: 'Asset Digitization',
     value: '74%',
     secondary: '5005/6734',
     description: 'Coverage',
-    icon: '📦',
+    Icon: FaBox,
   },
   {
     label: 'Specimen Traceability',
     value: '92%',
     secondary: 'last 7 days',
     description: 'Tracked samples',
-    icon: '🧬',
+    Icon: FaFlask,
   },
   {
     label: 'Supply Chain',
     value: '81%',
     secondary: 'tracked items',
     description: 'Visibility',
-    icon: '📊',
+    Icon: FaChartBar,
   },
   {
     label: 'Infra Health',
     value: '96% Online',
     secondary: '98% tag health',
     description: 'Gateway Status',
-    icon: '🔧',
+    Icon: FaCog,
   },
   {
     label: 'Integrations',
     value: 'All Green',
     secondary: 'Epic • SAP • HL7',
     description: 'System Status',
-    icon: '🔗',
+    Icon: FaLink,
   },
 ]
 
@@ -42,7 +44,7 @@ export function DigitizationTiles() {
       {tiles.map((tile) => (
         <div
           key={tile.label}
-          className="bg-card border border-border rounded-lg p-5 hover:border-primary/30 hover:shadow-sm transition-all cursor-pointer group"
+          className="bg-card border border-border rounded-xl p-6 hover:border-primary/30 hover:shadow-lg shadow-sm transition-all cursor-pointer group"
         >
           <div className="space-y-4">
             <div className="flex items-start justify-between">
@@ -51,7 +53,7 @@ export function DigitizationTiles() {
                   {tile.label}
                 </p>
               </div>
-              <span className="text-2xl">{tile.icon}</span>
+              <tile.Icon className="text-xl text-primary/70" />
             </div>
             
             <div>

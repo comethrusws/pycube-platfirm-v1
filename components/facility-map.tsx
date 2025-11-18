@@ -1,6 +1,6 @@
 export function FacilityMap() {
   return (
-    <div className="bg-card border border-border rounded-lg p-8">
+    <div className="bg-card border border-border rounded-xl p-8 shadow-sm">
       <h2 className="text-lg font-semibold text-foreground mb-2">
         Digital Hospital Map
       </h2>
@@ -8,7 +8,7 @@ export function FacilityMap() {
         Interactive floorplan with real-time asset tracking and alerts
       </p>
       
-      <div className="bg-muted rounded-lg h-96 flex items-center justify-center border border-border">
+      <div className="bg-muted rounded-xl h-96 flex items-center justify-center border border-border/50">
         <div className="text-center">
           <p className="text-sm font-medium text-muted-foreground mb-2">
             Facility Digital Twin Visualization
