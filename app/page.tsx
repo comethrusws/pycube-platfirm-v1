@@ -18,7 +18,7 @@ export default function Dashboard() {
         {/* Tier 1: Digitization KPIs */}
         <section className="px-8 py-12">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-2xl font-semibold text-foreground mb-8 tracking-tight">Digitize</h2>
+            <h2 className="text-2xl font-semibold text-foreground mb-8 tracking-tight">Digized workflows</h2>
             <DigitizationTiles />
           </div>
         </section>

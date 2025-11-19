@@ -1,76 +1,143 @@
-import { Package, TestTube, BarChart3, Settings, Link } from 'lucide-react'
+import { Package, TestTube, Droplet, Truck, Settings } from 'lucide-react'
 
 const tiles = [
   {
-    label: 'Asset Digitization',
-    value: '74%',
-    secondary: '5005/6734',
+    label: 'Biomedical assets',
+    value: 99,
+    secondary: '5005/5050',
     description: 'Coverage',
     Icon: Package,
   },
   {
-    label: 'Specimen Traceability',
-    value: '92%',
+    label: 'Lab medicines',
+    value: 96,
     secondary: 'last 7 days',
     description: 'Tracked samples',
     Icon: TestTube,
   },
   {
-    label: 'Supply Chain',
-    value: '81%',
-    secondary: 'tracked items',
+    label: 'Transfusion medicines',
+    value: 92,
+    secondary: 'Blood bank',
+    description: 'Availability',
+    Icon: Droplet,
+  },
+  {
+    label: 'Supply chain',
+    value: 98.5,
+    secondary: 'Tracked items',
     description: 'Visibility',
-    Icon: BarChart3,
+    Icon: Truck,
   },
   {
     label: 'Infra Health',
-    value: '96% Online',
+    value: 96,
     secondary: '98% tag health',
     description: 'Gateway Status',
     Icon: Settings,
   },
-  {
-    label: 'Integrations',
-    value: 'All Green',
-    secondary: 'Epic • SAP • HL7',
-    description: 'System Status',
-    Icon: Link,
-  },
 ]
 
+function getStatusColor(value: number) {
+  if (value > 98) return 'text-emerald-500'
+  if (value >= 95) return 'text-orange-500'
+  return 'text-red-500'
+}
+
+function getStatusBg(value: number) {
+  if (value > 98) return 'bg-emerald-500/10'
+  if (value >= 95) return 'bg-orange-500/10'
+  return 'bg-red-500/10'
+}
+
+function getStatusCategory(value: number) {
+  if (value > 98) return 'green'
+  if (value >= 95) return 'orange'
+  return 'red'
+}
+
+function getCardBg(value: number) {
+  if (value > 98) return 'bg-emerald-50/80'
+  if (value >= 95) return 'bg-orange-50/80'
+  return 'bg-red-50/80'
+}
+
 export function DigitizationTiles() {
-  return (
-    <div className="grid grid-cols-5 gap-6">
-      {tiles.map((tile) => (
-        <div
-          key={tile.label}
-          className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md hover:border hover:border-primary/20 transition-all duration-200 cursor-pointer group"
-        >
-          <div className="space-y-5">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  {tile.label}
-                </p>
-              </div>
-              <tile.Icon className="text-lg text-primary/60" />
+  const categories = {
+    red: tiles.filter(t => getStatusCategory(t.value) === 'red'),
+    orange: tiles.filter(t => getStatusCategory(t.value) === 'orange'),
+    green: tiles.filter(t => getStatusCategory(t.value) === 'green'),
+  }
+
+  const renderTile = (tile: typeof tiles[0]) => {
+    const statusColor = getStatusColor(tile.value)
+    const statusBg = getStatusBg(tile.value)
+    const cardBg = getCardBg(tile.value)
+
+    return (
+      <div
+        key={tile.label}
+        className={`${cardBg} rounded-3xl p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 cursor-default border border-gray-100 mb-6 last:mb-0`}
+      >
+        <div className="flex flex-col h-full justify-between space-y-6">
+          <div className="flex items-start justify-between">
+            <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              {tile.label}
+            </p>
+            <div className={`p-2 rounded-full ${statusBg}`}>
+              <tile.Icon className={`w-5 h-5 ${statusColor}`} />
             </div>
-            
-            <div>
-              <p className="text-3xl font-bold text-foreground mb-1">
-                {tile.value}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {tile.secondary}
-              </p>
+          </div>
+
+          <div>
+            <div className="flex items-baseline gap-1">
+              <span className={`text-5xl font-medium tracking-tight ${statusColor}`}>
+                {tile.value}%
+              </span>
             </div>
-            
-            <p className="text-sm text-muted-foreground font-medium">
+            <p className="text-sm text-gray-400 mt-2 font-medium">
+              {tile.secondary}
+            </p>
+          </div>
+
+          <div className="pt-4 border-t border-gray-50">
+            <p className="text-sm text-gray-600 font-medium">
               {tile.description}
             </p>
           </div>
         </div>
-      ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-3 gap-8">
+      {/* Green Column */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4 px-2">
+          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Healthy</span>
+        </div>
+        {categories.green.map(renderTile)}
+      </div>
+
+      {/* Orange Column */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4 px-2">
+          <div className="w-2 h-2 rounded-full bg-orange-500" />
+          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Warnings</span>
+        </div>
+        {categories.orange.map(renderTile)}
+      </div>
+
+      {/* Red Column */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4 px-2">
+          <div className="w-2 h-2 rounded-full bg-red-500" />
+          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Attention Needed</span>
+        </div>
+        {categories.red.map(renderTile)}
+      </div>
     </div>
   )
 }
