@@ -89,9 +89,10 @@ export function AISummaryBanner() {
                   />
                 ))}
               </div>
-              <div className="ml-auto text-sm font-medium text-gray-400">
+              {/* <div className="ml-auto text-sm font-medium text-gray-400">
                 {currentAlertIndex + 1} / {alerts.length}
-              </div>
+              </div> */}
+              
             </div>
             <p className="text-base text-gray-600 leading-relaxed">
               {currentAlert.message}
