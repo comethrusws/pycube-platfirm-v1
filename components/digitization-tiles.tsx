@@ -62,7 +62,11 @@ function getCardBg(value: number) {
   return 'bg-red-50/80'
 }
 
-export function DigitizationTiles() {
+interface DigitizationTilesProps {
+  onCardClick?: (label: string) => void
+}
+
+export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
   const categories = {
     red: tiles.filter(t => getStatusCategory(t.value) === 'red'),
     orange: tiles.filter(t => getStatusCategory(t.value) === 'orange'),
@@ -77,7 +81,8 @@ export function DigitizationTiles() {
     return (
       <div
         key={tile.label}
-        className={`${cardBg} rounded-3xl p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 cursor-default border border-gray-100 mb-6 last:mb-0`}
+        onClick={() => onCardClick?.(tile.label)}
+        className={`${cardBg} rounded-3xl p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 cursor-pointer border border-gray-100 mb-6 last:mb-0 hover:scale-[1.02]`}
       >
         <div className="flex flex-col h-full justify-between space-y-6">
           <div className="flex items-start justify-between">
