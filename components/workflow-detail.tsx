@@ -9,7 +9,8 @@ interface WorkflowDetailProps {
 }
 
 export function WorkflowDetail({ workflowName, isOpen, onClose }: WorkflowDetailProps) {
-    if (!isOpen) return null
+    // Only show for Biomedical assets
+    if (!isOpen || workflowName !== 'Biomedical assets') return null
 
     return (
         <div className="bg-gray-50 border-t border-b border-gray-200 py-8 animate-in slide-in-from-top duration-300">
@@ -32,17 +33,17 @@ export function WorkflowDetail({ workflowName, isOpen, onClose }: WorkflowDetail
                         <h3 className="text-sm font-semibold text-gray-900 mb-6">Today's Overview</h3>
                         <div className="flex items-center justify-center mb-6">
                             <div className="relative w-48 h-48">
-                                {/* Donut Chart - Using conic gradient */}
+                                {/* Donut Chart - 5005 digitized (green) + 45 pending (orange) = 5050 total */}
                                 <div className="w-full h-full rounded-full" style={{
                                     background: `conic-gradient(
-                    #10b981 0deg 220deg,
-                    #f59e0b 220deg 360deg
+                    #10b981 0deg 356deg,
+                    #f59e0b 356deg 360deg
                   )`
                                 }}>
                                     <div className="absolute inset-0 flex items-center justify-center">
                                         <div className="bg-white rounded-full w-32 h-32 flex flex-col items-center justify-center">
-                                            <div className="text-4xl font-semibold text-gray-900">16,500</div>
-                                            <div className="text-sm text-gray-500">samples</div>
+                                            <div className="text-4xl font-semibold text-gray-900">5,050</div>
+                                            <div className="text-sm text-gray-500">assets</div>
                                         </div>
                                     </div>
                                 </div>
@@ -50,32 +51,32 @@ export function WorkflowDetail({ workflowName, isOpen, onClose }: WorkflowDetail
                         </div>
                         <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                                <span className="text-sm text-gray-600">Samples Delivered</span>
-                                <span className="text-lg font-semibold text-gray-900">10,230</span>
+                                <span className="text-sm text-gray-600">Assets Digitized</span>
+                                <span className="text-lg font-semibold text-gray-900">5,005</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-sm text-gray-600">Samples Expected</span>
-                                <span className="text-lg font-semibold text-gray-900">6,270</span>
+                                <span className="text-sm text-gray-600">Pending Digitization</span>
+                                <span className="text-lg font-semibold text-gray-900">45</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Status of Samples Expected Today */}
+                    {/* Status of Assets Expected Today */}
                     <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                        <h3 className="text-sm font-semibold text-gray-900 mb-6">Status of Samples Expected Today</h3>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-6">Status of Assets Expected Today</h3>
                         <div className="space-y-4">
                             {[
-                                { label: 'Collected', value: 1980, total: 2000, color: 'bg-blue-500' },
-                                { label: 'Ready for Pick-up', value: 1495, total: 1500, color: 'bg-blue-400' },
-                                { label: 'Picked-up', value: 1650, total: 1700, color: 'bg-blue-500' },
-                                { label: 'In Transit', value: 990, total: 1000, color: 'bg-blue-500' },
-                                { label: 'Reached Dest', value: 10230, total: 10500, color: 'bg-blue-500' },
-                                { label: 'Unknown', value: 165, total: 200, color: 'bg-gray-400' },
+                                { label: 'Collected', value: 1250, total: 1250, color: 'bg-blue-500' },
+                                { label: 'Ready for Pick-up', value: 980, total: 1000, color: 'bg-blue-400' },
+                                { label: 'Picked-up', value: 1120, total: 1150, color: 'bg-blue-500' },
+                                { label: 'In Transit', value: 850, total: 900, color: 'bg-blue-500' },
+                                { label: 'Reached Dest', value: 5005, total: 5050, color: 'bg-blue-500' },
+                                { label: 'Unknown', value: 45, total: 100, color: 'bg-gray-400' },
                             ].map((item) => (
                                 <div key={item.label} className="space-y-1">
                                     <div className="flex items-center justify-between text-sm">
                                         <span className="text-gray-700">{item.label}</span>
-                                        <span className="font-semibold text-gray-900">{item.value} samples</span>
+                                        <span className="font-semibold text-gray-900">{item.value} assets</span>
                                     </div>
                                     <div className="w-full bg-gray-100 rounded-full h-2">
                                         <div
@@ -88,9 +89,9 @@ export function WorkflowDetail({ workflowName, isOpen, onClose }: WorkflowDetail
                         </div>
                     </div>
 
-                    {/* Yesterday's Pending Samples */}
+                    {/* Yesterday's Pending Assets */}
                     <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                        <h3 className="text-sm font-semibold text-gray-900 mb-6">Yesterday's Pending Samples</h3>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-6">Yesterday's Pending Assets</h3>
                         <div className="text-center mb-6">
                             <div className="text-6xl font-semibold text-gray-900">75</div>
                         </div>
@@ -128,11 +129,11 @@ export function WorkflowDetail({ workflowName, isOpen, onClose }: WorkflowDetail
                 {/* Bottom Metrics Row */}
                 <div className="grid grid-cols-5 gap-4">
                     {[
-                        { label: 'Overall Collected', value: '1,980', icon: null },
-                        { label: 'Samples Delivered', value: '10,230', icon: null },
-                        { label: 'Samples Unknown', value: '165', icon: AlertCircle, color: 'text-yellow-600' },
-                        { label: 'Samples Missing', value: '6270', icon: AlertTriangle, color: 'text-red-600' },
-                        { label: 'Samples Damaged', value: '16', icon: XCircle, color: 'text-red-600' },
+                        { label: 'Overall Collected', value: '1,250', icon: null },
+                        { label: 'Assets Digitized', value: '5,005', icon: CheckCircle2, color: 'text-emerald-600' },
+                        { label: 'Assets Unknown', value: '45', icon: AlertCircle, color: 'text-yellow-600' },
+                        { label: 'Assets Missing', value: '28', icon: AlertTriangle, color: 'text-red-600' },
+                        { label: 'Assets Damaged', value: '12', icon: XCircle, color: 'text-red-600' },
                     ].map((metric) => (
                         <div key={metric.label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                             <div className="flex items-start justify-between mb-2">
