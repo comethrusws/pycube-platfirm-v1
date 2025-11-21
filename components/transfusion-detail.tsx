@@ -1,26 +1,34 @@
 'use client'
 
-import { ChevronDown, Building2, LayoutGrid, Droplet, AlertTriangle, Search, Barcode, Plus, FileText, Bell } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronDown, Building2, Droplet, AlertTriangle, MapPin, Thermometer, Activity } from 'lucide-react'
 
 interface TransfusionDetailProps {
     isOpen: boolean
     onClose: () => void
 }
 
+const hospitals = [
+    { id: 1, name: 'St. John Hospital', x: 45, y: 40, bags: 120, alerts: 2, temp: '3.4°C' },
+    { id: 2, name: 'Providence Southfield', x: 55, y: 35, bags: 85, alerts: 0, temp: '4.1°C' },
+    { id: 3, name: 'Genesys Hospital', x: 30, y: 25, bags: 210, alerts: 5, temp: '2.8°C' },
+    { id: 4, name: 'Warren Hospital', x: 65, y: 55, bags: 64, alerts: 1, temp: '3.9°C' },
+    { id: 5, name: 'Rochester Hospital', x: 70, y: 30, bags: 92, alerts: 0, temp: '3.5°C' },
+]
+
 export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
+    const [selectedHospitalId, setSelectedHospitalId] = useState<number | null>(null)
+
     if (!isOpen) return null
+
+    const selectedHospital = hospitals.find(h => h.id === selectedHospitalId) || hospitals[0]
 
     return (
         <div className="bg-gray-50 border-t border-b border-gray-200 py-8 animate-in slide-in-from-top duration-300">
             <div className="max-w-7xl mx-auto px-8">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-red-100 rounded-lg">
-                            <Droplet className="w-6 h-6 text-red-600" />
-                        </div>
-                        <h2 className="text-2xl font-semibold text-gray-900">Blood Tracking System</h2>
-                    </div>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-semibold text-gray-900">Transfusion Medicine - Network Analytics</h2>
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
@@ -29,138 +37,169 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                     </button>
                 </div>
 
-                {/* Overview Cards */}
-                <div className="grid grid-cols-4 gap-6 mb-8">
-                    {[
-                        { label: 'Hospitals', value: '15', icon: Building2, color: 'text-blue-600', bg: 'bg-blue-50' },
-                        { label: 'Departments', value: '82', icon: LayoutGrid, color: 'text-purple-600', bg: 'bg-purple-50' },
-                        { label: 'Blood Bags', value: '73', icon: Droplet, color: 'text-red-600', bg: 'bg-red-50' },
-                        { label: 'Active Alerts', value: '24', icon: AlertTriangle, color: 'text-orange-600', bg: 'bg-orange-50' },
-                    ].map((card) => (
-                        <div key={card.label} className={`${card.bg} rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-sm border border-white/50`}>
-                            <card.icon className={`w-8 h-8 ${card.color} mb-3`} />
-                            <div className={`text-sm font-medium ${card.color} opacity-80 mb-1`}>{card.label}</div>
-                            <div className={`text-3xl font-bold ${card.color}`}>{card.value}</div>
+                {/* Top Stats Row */}
+                <div className="grid grid-cols-3 gap-6 mb-6">
+                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                        <div className="flex items-start justify-between mb-4">
+                            <div>
+                                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Hospitals</p>
+                                <h3 className="text-3xl font-semibold text-gray-900 mt-2">15</h3>
+                            </div>
+                            <div className="p-3 bg-blue-50 rounded-2xl">
+                                <Building2 className="w-6 h-6 text-blue-600" />
+                            </div>
                         </div>
-                    ))}
-                </div>
-
-                {/* Map Section */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-2">
-                            <Building2 className="w-5 h-5 text-gray-500" />
-                            <h3 className="text-lg font-semibold text-gray-900">Hospital Health System - Hospital Network</h3>
-                        </div>
-                        <div className="flex gap-4">
-                            <select className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 p-2.5">
-                                <option>All Hospitals</option>
-                                <option>St. John Hospital</option>
-                                <option>Providence Southfield Hospital</option>
-                            </select>
-                            <button className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 transition-colors">
-                                Refresh Data
-                            </button>
+                        <div className="text-sm text-gray-600">
+                            <span className="text-emerald-600 font-medium">100%</span> reporting
                         </div>
                     </div>
 
-                    <div className="aspect-[21/9] bg-gray-100 rounded-xl relative overflow-hidden group">
-                        {/* Mock Map Background */}
-                        <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/-83.1,42.4,9,0/1200x600?access_token=pk.mock')] bg-cover opacity-50" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <p className="text-gray-400 font-medium">Interactive Hospital Network Map</p>
+                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                        <div className="flex items-start justify-between mb-4">
+                            <div>
+                                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Blood Bags</p>
+                                <h3 className="text-3xl font-semibold text-gray-900 mt-2">1,248</h3>
+                            </div>
+                            <div className="p-3 bg-red-50 rounded-2xl">
+                                <Droplet className="w-6 h-6 text-red-600" />
+                            </div>
                         </div>
-
-                        {/* Mock Map Pins */}
-                        <div className="absolute top-1/3 left-1/2 w-3 h-3 bg-red-500 rounded-full ring-4 ring-red-500/20 animate-pulse" />
-                        <div className="absolute top-1/2 left-1/3 w-3 h-3 bg-blue-500 rounded-full" />
-                        <div className="absolute bottom-1/3 right-1/3 w-3 h-3 bg-green-500 rounded-full" />
+                        <div className="text-sm text-gray-600">
+                            <span className="text-emerald-600 font-medium">+12%</span> vs last week
+                        </div>
                     </div>
 
-                    <div className="mt-4 text-center text-sm text-gray-500">
-                        Showing all 15 Hospital locations across Michigan
+                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                        <div className="flex items-start justify-between mb-4">
+                            <div>
+                                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Critical Alerts</p>
+                                <h3 className="text-3xl font-semibold text-gray-900 mt-2">3</h3>
+                            </div>
+                            <div className="p-3 bg-orange-50 rounded-2xl">
+                                <AlertTriangle className="w-6 h-6 text-orange-600" />
+                            </div>
+                        </div>
+                        <div className="text-sm text-gray-600">
+                            Requires immediate attention
+                        </div>
                     </div>
                 </div>
 
-                {/* Bottom Section: Alerts & Activity */}
-                <div className="grid grid-cols-2 gap-8 mb-8">
-                    {/* Recent Alerts */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
-                            <AlertTriangle className="w-4 h-4 text-gray-500" />
-                            <h3 className="font-semibold text-gray-900">Recent Alerts</h3>
+                {/* Main Content: Map & List */}
+                <div className="grid grid-cols-12 gap-6 mb-6">
+                    {/* Hospital List */}
+                    <div className="col-span-4 bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px]">
+                        <div className="p-6 border-b border-gray-100">
+                            <h3 className="font-semibold text-gray-900">Hospital Network</h3>
                         </div>
-                        <div className="divide-y divide-gray-100">
-                            {[
-                                { text: "Last violation at Main Blood Bank Freezer by Staff 3. Missing scan detected.", time: "10m ago", type: "critical" },
-                                { text: "Contamination inspection required for Batch #48202.", time: "45m ago", type: "warning" },
-                                { text: "Temperature deviation in ICU ColdStorage #1.", time: "2h ago", type: "warning" },
-                            ].map((alert, i) => (
-                                <div key={i} className="p-4 hover:bg-gray-50 transition-colors flex gap-3">
-                                    <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${alert.type === 'critical' ? 'bg-red-500' : 'bg-orange-500'}`} />
+                        <div className="overflow-y-auto flex-1 p-4 space-y-2">
+                            {hospitals.map((hospital) => (
+                                <button
+                                    key={hospital.id}
+                                    onClick={() => setSelectedHospitalId(hospital.id)}
+                                    className={`w-full text-left p-4 rounded-2xl transition-all duration-200 flex items-center justify-between ${selectedHospitalId === hospital.id
+                                            ? 'bg-blue-50 border-blue-200 ring-1 ring-blue-200'
+                                            : 'hover:bg-gray-50 border border-transparent'
+                                        }`}
+                                >
                                     <div>
-                                        <p className="text-sm text-gray-600 leading-relaxed">{alert.text}</p>
-                                        <p className="text-xs text-gray-400 mt-1">{alert.time}</p>
+                                        <p className={`font-medium ${selectedHospitalId === hospital.id ? 'text-blue-900' : 'text-gray-900'}`}>
+                                            {hospital.name}
+                                        </p>
+                                        <p className="text-xs text-gray-500 mt-1">{hospital.bags} units available</p>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Recent Activity */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-gray-500" />
-                            <h3 className="font-semibold text-gray-900">Recent Activity</h3>
-                        </div>
-                        <div className="divide-y divide-gray-100">
-                            {[
-                                { id: "HF-HOS-Cryoprecipitate-07310642-004", action: "out", time: "2025-07-31 11:31", loc: "Main Blood Bank ColdStorage" },
-                                { id: "HF-HOS-RBC-07310642-008", action: "in", time: "2025-07-31 03:09", loc: "ICU ColdStorage #1" },
-                                { id: "HF-DET-RBC-002", action: "out", time: "2025-07-31 00:38", loc: "Blood Bank Storage ColdStorage" },
-                            ].map((activity, i) => (
-                                <div key={i} className="p-4 hover:bg-gray-50 transition-colors flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm font-medium text-blue-600">{activity.id}</p>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${activity.action === 'in' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                                                {activity.action.toUpperCase()}
-                                            </span>
-                                            <span className="text-xs text-gray-400">{activity.time}</span>
+                                    {hospital.alerts > 0 && (
+                                        <div className="flex items-center gap-1 px-2 py-1 bg-red-100 rounded-full">
+                                            <AlertTriangle className="w-3 h-3 text-red-600" />
+                                            <span className="text-xs font-medium text-red-700">{hospital.alerts}</span>
                                         </div>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Interactive Map */}
+                    <div className="col-span-8 bg-white rounded-3xl shadow-sm border border-gray-100 p-4 h-[500px] relative overflow-hidden">
+                        <div className="absolute inset-0 m-4 rounded-2xl overflow-hidden bg-gray-100">
+                            {/* Map Image */}
+                            <img
+                                src="/map.png"
+                                alt="Hospital Network Map"
+                                className="w-full h-full object-cover opacity-80"
+                            />
+
+                            {/* Map Pins */}
+                            {hospitals.map((hospital) => (
+                                <button
+                                    key={hospital.id}
+                                    onClick={() => setSelectedHospitalId(hospital.id)}
+                                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group ${selectedHospitalId === hospital.id ? 'z-10 scale-110' : 'z-0 hover:scale-110'
+                                        }`}
+                                    style={{ left: `${hospital.x}%`, top: `${hospital.y}%` }}
+                                >
+                                    <div className={`relative flex items-center justify-center w-12 h-12 rounded-full shadow-lg border-4 border-white ${hospital.alerts > 0 ? 'bg-red-500' : 'bg-blue-500'
+                                        }`}>
+                                        <Building2 className="w-5 h-5 text-white" />
+                                        {selectedHospitalId === hospital.id && (
+                                            <div className="absolute -bottom-2 w-3 h-3 bg-white transform rotate-45" />
+                                        )}
                                     </div>
-                                    <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                                        {activity.loc}
+                                    {/* Tooltip */}
+                                    <div className={`absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2 bg-white px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-200 ${selectedHospitalId === hospital.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                                        }`}>
+                                        <p className="text-sm font-bold text-gray-900">{hospital.name}</p>
+                                        <p className="text-xs text-gray-500">{hospital.bags} units</p>
                                     </div>
-                                </div>
+                                </button>
                             ))}
                         </div>
                     </div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                        <div className="w-1 h-4 bg-blue-600 rounded-full" />
-                        <h3 className="font-semibold text-gray-900">Quick Actions</h3>
+                {/* Bottom Detail Section */}
+                <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 className="text-xl font-semibold text-gray-900">{selectedHospital.name}</h3>
+                            <p className="text-sm text-gray-500">Real-time facility status</p>
+                        </div>
+                        <div className="flex gap-3">
+                            <span className="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium flex items-center gap-2">
+                                <Activity className="w-4 h-4" />
+                                Operational
+                            </span>
+                        </div>
                     </div>
-                    <div className="grid grid-cols-4 gap-4">
-                        <button className="flex items-center justify-center gap-2 bg-indigo-900 hover:bg-indigo-800 text-white py-3 px-4 rounded-lg transition-colors font-medium text-sm">
-                            <Barcode className="w-4 h-4" />
-                            Scan Barcode
-                        </button>
-                        <button className="flex items-center justify-center gap-2 bg-indigo-900 hover:bg-indigo-800 text-white py-3 px-4 rounded-lg transition-colors font-medium text-sm">
-                            <Plus className="w-4 h-4" />
-                            Add Blood Bag
-                        </button>
-                        <button className="flex items-center justify-center gap-2 bg-indigo-900 hover:bg-indigo-800 text-white py-3 px-4 rounded-lg transition-colors font-medium text-sm">
-                            <FileText className="w-4 h-4" />
-                            Create Order
-                        </button>
-                        <button className="flex items-center justify-center gap-2 bg-indigo-900 hover:bg-indigo-800 text-white py-3 px-4 rounded-lg transition-colors font-medium text-sm">
-                            <Bell className="w-4 h-4" />
-                            View Alerts
-                        </button>
+
+                    <div className="grid grid-cols-4 gap-8">
+                        <div className="space-y-1">
+                            <p className="text-sm text-gray-500">Blood Units</p>
+                            <p className="text-2xl font-semibold text-gray-900">{selectedHospital.bags}</p>
+                            <div className="w-full bg-gray-100 rounded-full h-1.5 mt-2">
+                                <div className="bg-red-500 h-1.5 rounded-full" style={{ width: '75%' }} />
+                            </div>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-sm text-gray-500">Avg Temperature</p>
+                            <div className="flex items-center gap-2">
+                                <Thermometer className="w-5 h-5 text-blue-500" />
+                                <p className="text-2xl font-semibold text-gray-900">{selectedHospital.temp}</p>
+                            </div>
+                            <p className="text-xs text-emerald-600">Optimal range</p>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-sm text-gray-500">Active Alerts</p>
+                            <p className={`text-2xl font-semibold ${selectedHospital.alerts > 0 ? 'text-red-600' : 'text-gray-900'}`}>
+                                {selectedHospital.alerts}
+                            </p>
+                            <p className="text-xs text-gray-400">Last 24 hours</p>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-sm text-gray-500">Last Sync</p>
+                            <p className="text-2xl font-semibold text-gray-900">2m ago</p>
+                            <p className="text-xs text-gray-400">Auto-refresh on</p>
+                        </div>
                     </div>
                 </div>
             </div>
