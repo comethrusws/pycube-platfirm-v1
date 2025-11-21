@@ -13,7 +13,6 @@ export function TopBar() {
             height={32}
             className="h-8 w-auto"
           />
-          <span className="text-xl font-semibold text-foreground tracking-tight">PyCube</span>
         </div>
         
         {/* Navigation */}
