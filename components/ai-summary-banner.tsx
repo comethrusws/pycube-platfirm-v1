@@ -34,7 +34,7 @@ const alerts = [
   {
     id: 5,
     status: 'warning',
-    title: 'Inventory alert',
+    title: 'Warning: Inventory alert',
     message: '24 RBC units approaching expiration within 48 hours. $540K waste prevention protocols activated.',
     statusColor: 'bg-yellow-500'
   }
