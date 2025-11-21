@@ -8,14 +8,14 @@ const alerts = [
     status: 'normal',
     title: 'Hospital operating normally',
     message: '$4.8M annualized savings identified. 23 high-risk items require attention across OR, Lab & Supply Chain.',
-    statusColor: 'bg-blue-500'
+    statusColor: 'bg-emerald-500'
   },
   {
     id: 2,
-    status: 'warning',
-    title: 'Alert: Equipment maintenance required',
+    status: 'critical',
+    title: 'Critical: Equipment maintenance required',
     message: '28 high-risk OR/Lab devices need immediate attention. Preventive action recommended to avoid downtime.',
-    statusColor: 'bg-orange-500'
+    statusColor: 'bg-red-500'
   },
   {
     id: 3,
@@ -29,14 +29,14 @@ const alerts = [
     status: 'info',
     title: 'Specimen tracking update',
     message: '92% traceability achieved across all departments. Zero custody breaks recorded in the past 24 hours.',
-    statusColor: 'bg-blue-500'
+    statusColor: 'bg-emerald-500'
   },
   {
     id: 5,
     status: 'warning',
     title: 'Inventory alert',
     message: '24 RBC units approaching expiration within 48 hours. $540K waste prevention protocols activated.',
-    statusColor: 'bg-orange-500'
+    statusColor: 'bg-yellow-500'
   }
 ]
 
