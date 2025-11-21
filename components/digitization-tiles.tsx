@@ -63,7 +63,7 @@ function getCardBg(value: number) {
 }
 
 interface DigitizationTilesProps {
-  onCardClick?: (label: string) => void
+  onCardClick?: (label: string, secondary?: string) => void
 }
 
 export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
@@ -80,8 +80,8 @@ export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
 
     return (
       <div
-        key={tile.label + tile.value} // Added value to key to ensure uniqueness since labels are duplicated
-        onClick={() => onCardClick?.(tile.label)}
+        key={tile.label + tile.value}
+        onClick={() => onCardClick?.(tile.label, tile.secondary)}
         className={`${cardBg} rounded-3xl p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 cursor-pointer border border-gray-100 mb-6 last:mb-0 hover:scale-[1.02]`}
       >
         <div className="flex flex-col h-full justify-between space-y-6">
