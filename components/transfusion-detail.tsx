@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown, Building2, Droplet, AlertTriangle, Snowflake, Thermometer, Activity, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { ChevronDown, Building2, Droplet, AlertTriangle, Snowflake, Thermometer, Activity, ArrowUpRight, ArrowDownRight, Link, Package, DollarSign, Clock, RotateCcw, AlertCircle, TrendingUp } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from 'recharts'
 import { TransfusionTier3 } from './transfusion-tier-3'
 
@@ -177,6 +177,216 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-2 h-2 rounded-full bg-orange-500"></div>
                                     <span>Expiring</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* New KPI Cards Grid */}
+                    <div className="grid grid-cols-4 gap-6 mb-8">
+                        {/* Row 1 */}
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <AlertTriangle className="w-8 h-8 text-orange-400 mb-2" />
+                                <h3 className="text-sm font-semibold text-orange-400">Contamination Prevention</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-orange-400">24</span>
+                                    <span className="text-xs text-gray-500">Alerts</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-orange-400">55</span>
+                                    <span className="text-xs text-gray-500">Expired</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <Link className="w-8 h-8 text-gray-600 mb-2" />
+                                <h3 className="text-sm font-semibold text-gray-600">Chain of Custody</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-gray-700">84.9%</span>
+                                    <span className="text-xs text-gray-500">Compliance</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-gray-400">52.1%</span>
+                                    <span className="text-xs text-gray-500">Traceability</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <Package className="w-8 h-8 text-emerald-400 mb-2" />
+                                <h3 className="text-sm font-semibold text-emerald-400">Inventory Management</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-emerald-500">41</span>
+                                    <span className="text-xs text-gray-500">Available</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-emerald-300">95.2%</span>
+                                    <span className="text-xs text-gray-500">Accuracy</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <DollarSign className="w-8 h-8 text-purple-400 mb-2" />
+                                <h3 className="text-sm font-semibold text-purple-400">Cost Savings</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-purple-500">$-1500</span>
+                                    <span className="text-xs text-gray-500">Saved</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-purple-300">106.8%</span>
+                                    <span className="text-xs text-gray-500">Wastage</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Row 2 */}
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <Clock className="w-8 h-8 text-gray-600 mb-2" />
+                                <h3 className="text-sm font-semibold text-gray-600">Response Time</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-gray-700">0</span>
+                                    <span className="text-xs text-gray-500">Avg Mins</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-gray-400">0</span>
+                                    <span className="text-xs text-gray-500">Emergency</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <RotateCcw className="w-8 h-8 text-emerald-400 mb-2" />
+                                <h3 className="text-sm font-semibold text-emerald-400">Return Rate</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-emerald-500">56.2%</span>
+                                    <span className="text-xs text-gray-500">Unused Units</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-emerald-300">59</span>
+                                    <span className="text-xs text-gray-500">Missed Scans</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <AlertCircle className="w-8 h-8 text-orange-400 mb-2" />
+                                <h3 className="text-sm font-semibold text-orange-400">Expiration Alert</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-orange-400">0</span>
+                                    <span className="text-xs text-gray-500">Nearing Expiry</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-orange-300">24</span>
+                                    <span className="text-xs text-gray-500">Alerts</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <Building2 className="w-8 h-8 text-gray-600 mb-2" />
+                                <h3 className="text-sm font-semibold text-gray-600">Department Usage</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-gray-700">2</span>
+                                    <span className="text-xs text-gray-500">Total Used</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-gray-400">15</span>
+                                    <span className="text-xs text-gray-500">Departments</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Row 3 */}
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <Droplet className="w-8 h-8 text-purple-400 mb-2" />
+                                <h3 className="text-sm font-semibold text-purple-400">Blood Components</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-purple-500">2</span>
+                                    <span className="text-xs text-gray-500">Total Used</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-purple-300">5</span>
+                                    <span className="text-xs text-gray-500">Types</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <TrendingUp className="w-8 h-8 text-emerald-400 mb-2" />
+                                <h3 className="text-sm font-semibold text-emerald-400">Most Used</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-emerald-500">2</span>
+                                    <span className="text-xs text-gray-500">Units</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-emerald-300">RBC</span>
+                                    <span className="text-xs text-gray-500">Component</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <AlertTriangle className="w-8 h-8 text-orange-400 mb-2" />
+                                <h3 className="text-sm font-semibold text-orange-400">Most Expiring</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-orange-400">0</span>
+                                    <span className="text-xs text-gray-500">Units</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-orange-300">RBC</span>
+                                    <span className="text-xs text-gray-500">Component</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
+                            <div className="flex flex-col items-center mb-4">
+                                <Clock className="w-8 h-8 text-gray-600 mb-2" />
+                                <h3 className="text-sm font-semibold text-gray-600">Storage Time</h3>
+                            </div>
+                            <div className="flex justify-between items-end w-full mt-auto px-4">
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-gray-700">0</span>
+                                    <span className="text-xs text-gray-500">Expiring</span>
+                                </div>
+                                <div className="text-center">
+                                    <span className="block text-2xl font-bold text-gray-400">2</span>
+                                    <span className="text-xs text-gray-500">Available</span>
                                 </div>
                             </div>
                         </div>
