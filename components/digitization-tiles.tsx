@@ -9,14 +9,14 @@ const tiles = [
     Icon: Package,
   },
   {
-    label: 'Lab medicines',
+    label: 'Lab Medicine',
     value: 96,
     secondary: 'last 7 days',
     description: 'Tracked samples',
     Icon: TestTube,
   },
   {
-    label: 'Transfusion medicines',
+    label: 'Transfusion Medicine',
     value: 92,
     secondary: 'Blood bank',
     description: 'Availability',
@@ -80,7 +80,7 @@ export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
 
     return (
       <div
-        key={tile.label}
+        key={tile.label + tile.value} // Added value to key to ensure uniqueness since labels are duplicated
         onClick={() => onCardClick?.(tile.label)}
         className={`${cardBg} rounded-3xl p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 cursor-pointer border border-gray-100 mb-6 last:mb-0 hover:scale-[1.02]`}
       >
@@ -121,7 +121,7 @@ export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4 px-2">
           <div className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Healthy</span>
+          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">{categories.green.length}</span>
         </div>
         {categories.green.map(renderTile)}
       </div>
@@ -130,7 +130,7 @@ export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4 px-2">
           <div className="w-2 h-2 rounded-full bg-orange-500" />
-          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Warnings</span>
+          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">{categories.orange.length}</span>
         </div>
         {categories.orange.map(renderTile)}
       </div>
@@ -139,7 +139,7 @@ export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4 px-2">
           <div className="w-2 h-2 rounded-full bg-red-500" />
-          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Attention Needed</span>
+          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">{categories.red.length}</span>
         </div>
         {categories.red.map(renderTile)}
       </div>
