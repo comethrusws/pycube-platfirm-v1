@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown, Building2, Droplet, AlertTriangle, MapPin, Thermometer, Activity } from 'lucide-react'
+import { ChevronDown, Building2, Droplet, AlertTriangle, Snowflake, LayoutGrid } from 'lucide-react'
 
 interface TransfusionDetailProps {
     isOpen: boolean
@@ -9,11 +9,21 @@ interface TransfusionDetailProps {
 }
 
 const hospitals = [
-    { id: 1, name: 'St. John Hospital', x: 45, y: 40, bags: 120, alerts: 2, temp: '3.4°C' },
-    { id: 2, name: 'Providence Southfield', x: 55, y: 35, bags: 85, alerts: 0, temp: '4.1°C' },
-    { id: 3, name: 'Genesys Hospital', x: 30, y: 25, bags: 210, alerts: 5, temp: '2.8°C' },
-    { id: 4, name: 'Warren Hospital', x: 65, y: 55, bags: 64, alerts: 1, temp: '3.9°C' },
-    { id: 5, name: 'Rochester Hospital', x: 70, y: 30, bags: 92, alerts: 0, temp: '3.5°C' },
+    { id: 1, name: 'St. John Hospital', x: 45, y: 40, bags: 37, depts: 6, coldStorage: 10, alerts: 2 },
+    { id: 2, name: 'Providence Southfield', x: 55, y: 35, bags: 42, depts: 9, coldStorage: 12, alerts: 0 },
+    { id: 3, name: 'Genesys Hospital', x: 30, y: 25, bags: 28, depts: 5, coldStorage: 8, alerts: 1 },
+    { id: 4, name: 'Warren Hospital', x: 65, y: 55, bags: 31, depts: 4, coldStorage: 6, alerts: 0 },
+    { id: 5, name: 'Rochester Hospital', x: 70, y: 30, bags: 45, depts: 7, coldStorage: 11, alerts: 0 },
+    { id: 6, name: 'Beaumont Troy', x: 60, y: 28, bags: 55, depts: 8, coldStorage: 14, alerts: 0 },
+    { id: 7, name: 'Henry Ford West', x: 48, y: 45, bags: 62, depts: 10, coldStorage: 15, alerts: 1 },
+    { id: 8, name: 'Sinai-Grace', x: 52, y: 50, bags: 33, depts: 5, coldStorage: 7, alerts: 0 },
+    { id: 9, name: 'Harper University', x: 50, y: 52, bags: 40, depts: 6, coldStorage: 9, alerts: 0 },
+    { id: 10, name: 'Detroit Receiving', x: 51, y: 53, bags: 38, depts: 6, coldStorage: 8, alerts: 0 },
+    { id: 11, name: 'Hutzel Women\'s', x: 49, y: 51, bags: 25, depts: 4, coldStorage: 5, alerts: 0 },
+    { id: 12, name: 'Karmanos Cancer Ctr', x: 50, y: 54, bags: 30, depts: 5, coldStorage: 6, alerts: 0 },
+    { id: 13, name: 'Children\'s Hospital', x: 51, y: 55, bags: 22, depts: 4, coldStorage: 5, alerts: 0 },
+    { id: 14, name: 'Ascension Macomb', x: 62, y: 32, bags: 48, depts: 7, coldStorage: 10, alerts: 0 },
+    { id: 15, name: 'McLaren Macomb', x: 68, y: 25, bags: 35, depts: 5, coldStorage: 8, alerts: 0 },
 ]
 
 export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
@@ -21,14 +31,28 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
 
     if (!isOpen) return null
 
-    const selectedHospital = hospitals.find(h => h.id === selectedHospitalId) || hospitals[0]
+    // Calculate aggregated stats
+    const totalBags = hospitals.reduce((acc, h) => acc + h.bags, 0)
+    const totalAlerts = hospitals.reduce((acc, h) => acc + h.alerts, 0)
+    const totalDepts = hospitals.reduce((acc, h) => acc + h.depts, 0)
+    const totalColdStorage = hospitals.reduce((acc, h) => acc + h.coldStorage, 0)
+
+    const selectedHospital = selectedHospitalId
+        ? hospitals.find(h => h.id === selectedHospitalId)!
+        : {
+            name: 'All Hospitals',
+            bags: totalBags,
+            depts: totalDepts,
+            coldStorage: totalColdStorage,
+            alerts: totalAlerts
+        }
 
     return (
         <div className="bg-gray-50 border-t border-b border-gray-200 py-8 animate-in slide-in-from-top duration-300">
             <div className="max-w-7xl mx-auto px-8">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-semibold text-gray-900">Transfusion Medicine - Network Analytics</h2>
+                    <h2 className="text-2xl font-semibold text-gray-900">Transfusion Medicine Analytics</h2>
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
@@ -37,82 +61,72 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                     </button>
                 </div>
 
-                {/* Top Stats Row */}
+                {/* Top Stats Row - Cleaner, consistent look */}
                 <div className="grid grid-cols-3 gap-6 mb-6">
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                        <div className="flex items-start justify-between mb-4">
-                            <div>
-                                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Hospitals</p>
-                                <h3 className="text-3xl font-semibold text-gray-900 mt-2">15</h3>
-                            </div>
-                            <div className="p-3 bg-blue-50 rounded-2xl">
-                                <Building2 className="w-6 h-6 text-blue-600" />
-                            </div>
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-500">Total Hospitals</p>
+                            <h3 className="text-3xl font-bold text-gray-900 mt-1">{hospitals.length}</h3>
                         </div>
-                        <div className="text-sm text-gray-600">
-                            <span className="text-emerald-600 font-medium">100%</span> reporting
+                        <div className="p-3 bg-gray-50 rounded-xl">
+                            <Building2 className="w-6 h-6 text-gray-600" />
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                        <div className="flex items-start justify-between mb-4">
-                            <div>
-                                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Blood Bags</p>
-                                <h3 className="text-3xl font-semibold text-gray-900 mt-2">1,248</h3>
-                            </div>
-                            <div className="p-3 bg-red-50 rounded-2xl">
-                                <Droplet className="w-6 h-6 text-red-600" />
-                            </div>
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-500">Total Blood Bags</p>
+                            <h3 className="text-3xl font-bold text-gray-900 mt-1">{totalBags.toLocaleString()}</h3>
                         </div>
-                        <div className="text-sm text-gray-600">
-                            <span className="text-emerald-600 font-medium">+12%</span> vs last week
+                        <div className="p-3 bg-gray-50 rounded-xl">
+                            <Droplet className="w-6 h-6 text-gray-600" />
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                        <div className="flex items-start justify-between mb-4">
-                            <div>
-                                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Critical Alerts</p>
-                                <h3 className="text-3xl font-semibold text-gray-900 mt-2">3</h3>
-                            </div>
-                            <div className="p-3 bg-orange-50 rounded-2xl">
-                                <AlertTriangle className="w-6 h-6 text-orange-600" />
-                            </div>
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-500">Critical Alerts</p>
+                            <h3 className="text-3xl font-bold text-gray-900 mt-1">{totalAlerts}</h3>
                         </div>
-                        <div className="text-sm text-gray-600">
-                            Requires immediate attention
+                        <div className="p-3 bg-gray-50 rounded-xl">
+                            <AlertTriangle className="w-6 h-6 text-gray-600" />
                         </div>
                     </div>
                 </div>
 
                 {/* Main Content: Map & List */}
-                <div className="grid grid-cols-12 gap-6 mb-6">
+                <div className="grid grid-cols-12 gap-6 mb-8">
                     {/* Hospital List */}
-                    <div className="col-span-4 bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px]">
-                        <div className="p-6 border-b border-gray-100">
+                    <div className="col-span-4 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px]">
+                        <div className="p-5 border-b border-gray-100 bg-gray-50/50">
                             <h3 className="font-semibold text-gray-900">Hospital Network</h3>
                         </div>
-                        <div className="overflow-y-auto flex-1 p-4 space-y-2">
+                        <div className="overflow-y-auto flex-1 p-3 space-y-1">
+                            <button
+                                onClick={() => setSelectedHospitalId(null)}
+                                className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center justify-between ${selectedHospitalId === null
+                                        ? 'bg-blue-50 border-blue-100 ring-1 ring-blue-100'
+                                        : 'hover:bg-gray-50 border border-transparent'
+                                    }`}
+                            >
+                                <span className={`font-medium text-sm ${selectedHospitalId === null ? 'text-blue-900' : 'text-gray-700'}`}>
+                                    All Hospitals
+                                </span>
+                            </button>
                             {hospitals.map((hospital) => (
                                 <button
                                     key={hospital.id}
                                     onClick={() => setSelectedHospitalId(hospital.id)}
-                                    className={`w-full text-left p-4 rounded-2xl transition-all duration-200 flex items-center justify-between ${selectedHospitalId === hospital.id
-                                            ? 'bg-blue-50 border-blue-200 ring-1 ring-blue-200'
-                                            : 'hover:bg-gray-50 border border-transparent'
+                                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center justify-between ${selectedHospitalId === hospital.id
+                                        ? 'bg-blue-50 border-blue-100 ring-1 ring-blue-100'
+                                        : 'hover:bg-gray-50 border border-transparent'
                                         }`}
                                 >
-                                    <div>
-                                        <p className={`font-medium ${selectedHospitalId === hospital.id ? 'text-blue-900' : 'text-gray-900'}`}>
-                                            {hospital.name}
-                                        </p>
-                                        <p className="text-xs text-gray-500 mt-1">{hospital.bags} units available</p>
-                                    </div>
+                                    <span className={`font-medium text-sm ${selectedHospitalId === hospital.id ? 'text-blue-900' : 'text-gray-700'}`}>
+                                        {hospital.name}
+                                    </span>
                                     {hospital.alerts > 0 && (
-                                        <div className="flex items-center gap-1 px-2 py-1 bg-red-100 rounded-full">
-                                            <AlertTriangle className="w-3 h-3 text-red-600" />
-                                            <span className="text-xs font-medium text-red-700">{hospital.alerts}</span>
-                                        </div>
+                                        <div className="w-2 h-2 bg-red-500 rounded-full" />
                                     )}
                                 </button>
                             ))}
@@ -120,36 +134,30 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                     </div>
 
                     {/* Interactive Map */}
-                    <div className="col-span-8 bg-white rounded-3xl shadow-sm border border-gray-100 p-4 h-[500px] relative overflow-hidden">
-                        <div className="absolute inset-0 m-4 rounded-2xl overflow-hidden bg-gray-100">
-                            {/* Map Image */}
+                    <div className="col-span-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 h-[500px] relative overflow-hidden">
+                        <div className="absolute inset-0 m-4 rounded-xl overflow-hidden bg-gray-100 border border-gray-100">
                             <img
                                 src="/map.png"
                                 alt="Hospital Network Map"
-                                className="w-full h-full object-cover opacity-80"
+                                className="w-full h-full object-cover opacity-90"
                             />
 
-                            {/* Map Pins */}
                             {hospitals.map((hospital) => (
                                 <button
                                     key={hospital.id}
                                     onClick={() => setSelectedHospitalId(hospital.id)}
-                                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group ${selectedHospitalId === hospital.id ? 'z-10 scale-110' : 'z-0 hover:scale-110'
+                                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group ${selectedHospitalId === hospital.id ? 'z-20 scale-125' : 'z-10 hover:scale-110'
                                         }`}
                                     style={{ left: `${hospital.x}%`, top: `${hospital.y}%` }}
                                 >
-                                    <div className={`relative flex items-center justify-center w-12 h-12 rounded-full shadow-lg border-4 border-white ${hospital.alerts > 0 ? 'bg-red-500' : 'bg-blue-500'
+                                    <div className={`relative flex items-center justify-center w-4 h-4 rounded-full shadow-sm border-2 border-white ${hospital.alerts > 0 ? 'bg-red-500' : (selectedHospitalId === hospital.id ? 'bg-blue-600' : 'bg-blue-400')
                                         }`}>
-                                        <Building2 className="w-5 h-5 text-white" />
-                                        {selectedHospitalId === hospital.id && (
-                                            <div className="absolute -bottom-2 w-3 h-3 bg-white transform rotate-45" />
-                                        )}
                                     </div>
+
                                     {/* Tooltip */}
-                                    <div className={`absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2 bg-white px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-200 ${selectedHospitalId === hospital.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                                    <div className={`absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white px-3 py-2 rounded-lg shadow-lg border border-gray-100 whitespace-nowrap transition-opacity duration-200 z-30 ${selectedHospitalId === hospital.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                                         }`}>
-                                        <p className="text-sm font-bold text-gray-900">{hospital.name}</p>
-                                        <p className="text-xs text-gray-500">{hospital.bags} units</p>
+                                        <p className="text-xs font-bold text-gray-900">{hospital.name}</p>
                                     </div>
                                 </button>
                             ))}
@@ -157,48 +165,29 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                     </div>
                 </div>
 
-                {/* Bottom Detail Section */}
-                <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between mb-8">
-                        <div>
-                            <h3 className="text-xl font-semibold text-gray-900">{selectedHospital.name}</h3>
-                            <p className="text-sm text-gray-500">Real-time facility status</p>
-                        </div>
-                        <div className="flex gap-3">
-                            <span className="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium flex items-center gap-2">
-                                <Activity className="w-4 h-4" />
-                                Operational
-                            </span>
-                        </div>
+                {/* Bottom Detail Section - Specific Cards */}
+                <div className="space-y-6">
+                    <div className="flex items-center justify-center">
+                        <h3 className="text-xl font-semibold text-gray-800">{selectedHospital.name}</h3>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-8">
-                        <div className="space-y-1">
-                            <p className="text-sm text-gray-500">Blood Units</p>
-                            <p className="text-2xl font-semibold text-gray-900">{selectedHospital.bags}</p>
-                            <div className="w-full bg-gray-100 rounded-full h-1.5 mt-2">
-                                <div className="bg-red-500 h-1.5 rounded-full" style={{ width: '75%' }} />
-                            </div>
+                    <div className="grid grid-cols-3 gap-6">
+                        {/* Blood Bags Card */}
+                        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
+                            <h4 className="text-4xl font-bold text-gray-900 mb-2">{selectedHospital.bags.toLocaleString()}</h4>
+                            <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Blood Bags</p>
                         </div>
-                        <div className="space-y-1">
-                            <p className="text-sm text-gray-500">Avg Temperature</p>
-                            <div className="flex items-center gap-2">
-                                <Thermometer className="w-5 h-5 text-blue-500" />
-                                <p className="text-2xl font-semibold text-gray-900">{selectedHospital.temp}</p>
-                            </div>
-                            <p className="text-xs text-emerald-600">Optimal range</p>
+
+                        {/* Departments Card */}
+                        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
+                            <h4 className="text-4xl font-bold text-gray-900 mb-2">{selectedHospital.depts}</h4>
+                            <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Departments</p>
                         </div>
-                        <div className="space-y-1">
-                            <p className="text-sm text-gray-500">Active Alerts</p>
-                            <p className={`text-2xl font-semibold ${selectedHospital.alerts > 0 ? 'text-red-600' : 'text-gray-900'}`}>
-                                {selectedHospital.alerts}
-                            </p>
-                            <p className="text-xs text-gray-400">Last 24 hours</p>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="text-sm text-gray-500">Last Sync</p>
-                            <p className="text-2xl font-semibold text-gray-900">2m ago</p>
-                            <p className="text-xs text-gray-400">Auto-refresh on</p>
+
+                        {/* ColdStorages Card */}
+                        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
+                            <h4 className="text-4xl font-bold text-gray-900 mb-2">{selectedHospital.coldStorage}</h4>
+                            <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">ColdStorages</p>
                         </div>
                     </div>
                 </div>
