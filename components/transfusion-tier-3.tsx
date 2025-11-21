@@ -274,31 +274,23 @@ export function TransfusionTier3({ category, onClose }: TransfusionTier3Props) {
     }
 
     return (
-        <div className="fixed inset-0 bg-gray-900/20 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
-            <div className="bg-gray-50 w-[95vw] h-[90vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
-                {/* Header */}
-                <div className="bg-white px-8 py-6 border-b border-gray-100 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={onClose}
-                            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                        >
-                            <ArrowLeft className="w-6 h-6 text-gray-600" />
-                        </button>
-                        <h2 className="text-2xl font-bold text-gray-900">{getTitle()}</h2>
-                    </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    >
-                        <X className="w-6 h-6 text-gray-400" />
-                    </button>
+        <div className="bg-gray-50 rounded-3xl border border-gray-200 overflow-hidden animate-in slide-in-from-top-4 duration-300 mt-6">
+            {/* Header */}
+            <div className="bg-white px-8 py-6 border-b border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <h2 className="text-2xl font-bold text-gray-900">{getTitle()}</h2>
                 </div>
+                <button
+                    onClick={onClose}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                    <X className="w-6 h-6 text-gray-400" />
+                </button>
+            </div>
 
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto p-8">
-                    {renderContent()}
-                </div>
+            {/* Content */}
+            <div className="p-8">
+                {renderContent()}
             </div>
         </div>
     )

@@ -260,86 +260,108 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                     <div className="grid grid-cols-5 gap-6">
                         {/* Card 1: Blood Bags */}
                         <button
-                            onClick={() => setActiveTier3Category('blood-bags')}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
+                            onClick={() => setActiveTier3Category(activeTier3Category === 'blood-bags' ? null : 'blood-bags')}
+                            className={`bg-white rounded-2xl p-6 shadow-sm border transition-all text-left group relative ${activeTier3Category === 'blood-bags' ? 'ring-2 ring-blue-500 border-transparent' : 'border-gray-100 hover:shadow-md'
+                                }`}
                         >
                             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-blue-600 transition-colors">Total Blood Bags</p>
-                            <div className="flex items-end justify-between">
+                            <div className="flex items-end justify-between mt-4">
                                 <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.bags.toLocaleString()}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
+                                <ChevronDown className={`w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-transform duration-300 ${activeTier3Category === 'blood-bags' ? 'rotate-180 text-blue-500' : ''}`} />
                             </div>
+                            {activeTier3Category === 'blood-bags' && (
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-gray-200 rotate-45 z-10"></div>
+                            )}
                         </button>
 
                         {/* Card 2: Departments */}
                         <button
-                            onClick={() => setActiveTier3Category('departments')}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
+                            onClick={() => setActiveTier3Category(activeTier3Category === 'departments' ? null : 'departments')}
+                            className={`bg-white rounded-2xl p-6 shadow-sm border transition-all text-left group relative ${activeTier3Category === 'departments' ? 'ring-2 ring-emerald-500 border-transparent' : 'border-gray-100 hover:shadow-md'
+                                }`}
                         >
                             <div className="flex justify-between items-start w-full">
                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-emerald-600 transition-colors">Departments</p>
                                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                             </div>
-                            <div className="flex items-end justify-between w-full">
+                            <div className="flex items-end justify-between mt-4">
                                 <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.depts}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-colors" />
+                                <ChevronDown className={`w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-transform duration-300 ${activeTier3Category === 'departments' ? 'rotate-180 text-emerald-500' : ''}`} />
                             </div>
+                            {activeTier3Category === 'departments' && (
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-gray-200 rotate-45 z-10"></div>
+                            )}
                         </button>
 
                         {/* Card 3: Cold Storages */}
                         <button
-                            onClick={() => setActiveTier3Category('cold-storage')}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
+                            onClick={() => setActiveTier3Category(activeTier3Category === 'cold-storage' ? null : 'cold-storage')}
+                            className={`bg-white rounded-2xl p-6 shadow-sm border transition-all text-left group relative ${activeTier3Category === 'cold-storage' ? 'ring-2 ring-amber-500 border-transparent' : 'border-gray-100 hover:shadow-md'
+                                }`}
                         >
                             <div className="flex justify-between items-start w-full">
                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-amber-600 transition-colors">Cold Storages</p>
                                 <div className="w-2 h-2 rounded-full bg-amber-500"></div>
                             </div>
-                            <div className="flex items-end justify-between w-full">
+                            <div className="flex items-end justify-between mt-4">
                                 <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.coldStorage}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-amber-500 transition-colors" />
+                                <ChevronDown className={`w-5 h-5 text-gray-300 group-hover:text-amber-500 transition-transform duration-300 ${activeTier3Category === 'cold-storage' ? 'rotate-180 text-amber-500' : ''}`} />
                             </div>
+                            {activeTier3Category === 'cold-storage' && (
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-gray-200 rotate-45 z-10"></div>
+                            )}
                         </button>
 
                         {/* Card 4: Active Alerts */}
                         <button
-                            onClick={() => setActiveTier3Category('alerts')}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
+                            onClick={() => setActiveTier3Category(activeTier3Category === 'alerts' ? null : 'alerts')}
+                            className={`bg-white rounded-2xl p-6 shadow-sm border transition-all text-left group relative ${activeTier3Category === 'alerts' ? 'ring-2 ring-red-500 border-transparent' : 'border-gray-100 hover:shadow-md'
+                                }`}
                         >
                             <div className="flex justify-between items-start w-full">
                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-red-600 transition-colors">Active Alerts</p>
                                 <AlertTriangle className="w-4 h-4 text-red-500" />
                             </div>
-                            <div className="flex items-end justify-between w-full">
+                            <div className="flex items-end justify-between mt-4">
                                 <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.alerts}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-red-500 transition-colors" />
+                                <ChevronDown className={`w-5 h-5 text-gray-300 group-hover:text-red-500 transition-transform duration-300 ${activeTier3Category === 'alerts' ? 'rotate-180 text-red-500' : ''}`} />
                             </div>
+                            {activeTier3Category === 'alerts' && (
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-gray-200 rotate-45 z-10"></div>
+                            )}
                         </button>
 
                         {/* Card 5: Avg Temperature */}
                         <button
-                            onClick={() => setActiveTier3Category('cold-storage')} // Reusing cold-storage for temp
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
+                            onClick={() => setActiveTier3Category(activeTier3Category === 'cold-storage' ? null : 'cold-storage')} // Reusing cold-storage for temp
+                            className={`bg-white rounded-2xl p-6 shadow-sm border transition-all text-left group relative ${activeTier3Category === 'cold-storage' ? 'ring-2 ring-blue-500 border-transparent' : 'border-gray-100 hover:shadow-md'
+                                }`}
                         >
                             <div className="flex justify-between items-start w-full">
                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-blue-600 transition-colors">Avg Temp</p>
                                 <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                             </div>
-                            <div className="flex items-end justify-between w-full">
+                            <div className="flex items-end justify-between mt-4">
                                 <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.temp}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
+                                <ChevronDown className={`w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-transform duration-300 ${activeTier3Category === 'cold-storage' ? 'rotate-180 text-blue-500' : ''}`} />
                             </div>
+                            {activeTier3Category === 'cold-storage' && (
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-gray-200 rotate-45 z-10"></div>
+                            )}
                         </button>
                     </div>
+
+                    {/* Tier 3 Inline Panel */}
+                    {activeTier3Category && (
+                        <div className="mt-2">
+                            <TransfusionTier3
+                                category={activeTier3Category}
+                                onClose={() => setActiveTier3Category(null)}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
-
-            {/* Tier 3 Overlay */}
-            {activeTier3Category && (
-                <TransfusionTier3
-                    category={activeTier3Category}
-                    onClose={() => setActiveTier3Category(null)}
-                />
-            )}
         </>
     )
 }
