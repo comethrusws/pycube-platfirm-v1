@@ -76,13 +76,6 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* Tier 2: Cross-Product Analysis */}
-        <section className="px-8 py-12 bg-secondary/30">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-2xl font-semibold text-foreground mb-8 tracking-tight">Analyze</h2>
-            <AnalyzeTiles />
-          </div>
-        </section>
 
         {/* Tier 3: Financial Impact */}
         <section className="px-8 py-12">
