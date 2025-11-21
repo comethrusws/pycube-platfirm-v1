@@ -10,10 +10,13 @@ import { AIRecommendationsPanel } from '@/components/ai-recommendations-panel'
 import { FacilityMap } from '@/components/facility-map'
 import { Footer } from '@/components/footer'
 import { WorkflowDetail } from '@/components/workflow-detail'
+import { TransfusionDetail } from '@/components/transfusion-detail'
 
 export default function Dashboard() {
   const [expandedWorkflow, setExpandedWorkflow] = useState<string | null>(null)
+  const [showTransfusionDetail, setShowTransfusionDetail] = useState(false)
   const detailRef = useRef<HTMLDivElement>(null)
+  const transfusionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (expandedWorkflow && detailRef.current) {
@@ -23,8 +26,22 @@ export default function Dashboard() {
     }
   }, [expandedWorkflow])
 
-  const handleCardClick = (label: string) => {
-    setExpandedWorkflow(expandedWorkflow === label ? null : label)
+  useEffect(() => {
+    if (showTransfusionDetail && transfusionRef.current) {
+      setTimeout(() => {
+        transfusionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  }, [showTransfusionDetail])
+
+  const handleCardClick = (label: string, secondary?: string) => {
+    if (label === 'Transfusion Medicine') {
+      setShowTransfusionDetail(true)
+      setExpandedWorkflow(null)
+    } else {
+      setExpandedWorkflow(expandedWorkflow === label ? null : label)
+      setShowTransfusionDetail(false)
+    }
   }
 
   return (
@@ -48,6 +65,14 @@ export default function Dashboard() {
             workflowName={expandedWorkflow || ''}
             isOpen={!!expandedWorkflow}
             onClose={() => setExpandedWorkflow(null)}
+          />
+        </div>
+
+        {/* Transfusion Detail Section */}
+        <div ref={transfusionRef}>
+          <TransfusionDetail
+            isOpen={showTransfusionDetail}
+            onClose={() => setShowTransfusionDetail(false)}
           />
         </div>
 

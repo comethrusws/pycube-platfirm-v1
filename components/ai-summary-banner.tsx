@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+
 
 const alerts = [
   {
@@ -41,63 +41,40 @@ const alerts = [
 ]
 
 export function AISummaryBanner() {
-  const [currentAlertIndex, setCurrentAlertIndex] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsTransitioning(true)
-      setTimeout(() => {
-        setCurrentAlertIndex((prevIndex) => (prevIndex + 1) % alerts.length)
-        setIsTransitioning(false)
-      }, 300)
-    }, 5000)
-
-    return () => clearInterval(interval)
-  }, [])
-
-  const currentAlert = alerts[currentAlertIndex]
-
   return (
     <div className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-8 py-6">
-        <div
-          className={`flex items-start gap-4 transition-all duration-300 ${isTransitioning ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'
-            }`}
-        >
-          {/* Status indicator dot */}
-          <div className="flex-shrink-0 mt-1">
-            <div className="flex h-8 w-8 rounded-full bg-gray-100 items-center justify-center">
-              <div className={`h-3 w-3 rounded-full ${currentAlert.statusColor} transition-colors duration-500`} />
-            </div>
-          </div>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900">System Status Snapshot</h2>
+          <p className="text-sm text-gray-500">Real-time overview of hospital operations</p>
+        </div>
 
-          {/* Content */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-baseline gap-3 mb-2">
-              <h3 className="text-lg font-semibold text-gray-900">
-                {currentAlert.title}
-              </h3>
-              <div className="flex gap-1.5">
-                {alerts.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${index === currentAlertIndex
-                        ? `w-8 ${currentAlert.statusColor}`
-                        : 'w-1.5 bg-gray-300'
-                      }`}
-                  />
-                ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {alerts.map((alert) => (
+            <div
+              key={alert.id}
+              className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-md transition-all duration-200"
+            >
+              {/* Status indicator dot */}
+              <div className="flex-shrink-0 mt-1">
+                <div className="flex h-8 w-8 rounded-full bg-white border border-gray-100 items-center justify-center shadow-sm">
+                  <div className={`h-3 w-3 rounded-full ${alert.statusColor}`} />
+                </div>
               </div>
-              {/* <div className="ml-auto text-sm font-medium text-gray-400">
-                {currentAlertIndex + 1} / {alerts.length}
-              </div> */}
-              
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    {alert.title}
+                  </h3>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {alert.message}
+                </p>
+              </div>
             </div>
-            <p className="text-base text-gray-600 leading-relaxed">
-              {currentAlert.message}
-            </p>
-          </div>
+          ))}
         </div>
       </div>
     </div>
