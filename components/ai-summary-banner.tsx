@@ -1,46 +1,93 @@
 'use client'
 
+type AlertSeverity = 'critical' | 'warning' | 'success'
 
+interface Alert {
+  id: number
+  severity: AlertSeverity
+  title: string
+  message: string
+}
 
-const alerts = [
+const alerts: Alert[] = [
+  // CRITICAL (Red) - 3 cards
   {
     id: 1,
-    status: 'normal',
-    title: 'Hospital operating normally',
-    message: '$4.8M annualized savings identified. 23 high-risk items require attention across OR, Lab & Supply Chain.',
-    statusColor: 'bg-emerald-500'
+    severity: 'critical',
+    title: 'Critical Equipment Failures',
+    message: '12 OR ventilators offline - immediate replacement required. CT scanner malfunction in radiology - 18 appointments canceled. Blood bank refrigeration system failure - $240K inventory at risk.'
   },
   {
     id: 2,
-    status: 'critical',
-    title: 'Equipment maintenance required',
-    message: '28 high-risk OR/Lab devices need immediate attention. Preventive action recommended to avoid downtime.',
-    statusColor: 'bg-red-500'
+    severity: 'critical',
+    title: 'Patient Safety Alerts',
+    message: '3 medication dispensing errors detected in last 4 hours. Surgical instrument sterilization cycle failed - OR 4 & 5 affected. Emergency generator test failure - backup power compromised.'
   },
   {
     id: 3,
-    status: 'success',
-    title: 'Optimization complete',
-    message: '312 underutilized assets successfully redeployed. $1.4M purchase request avoided through smart redistribution.',
-    statusColor: 'bg-emerald-500'
+    severity: 'critical',
+    title: 'Compliance Violations',
+    message: '47 expired pharmaceuticals found in ICU storage. Missing documentation for 23 hazardous waste disposals. Overdue fire safety inspection - 14 days past deadline.'
   },
+  // WARNING (Orange) - 2 cards
   {
     id: 4,
-    status: 'info',
-    title: 'Specimen tracking update',
-    message: '92% traceability achieved across all departments. Zero custody breaks recorded in the past 24 hours.',
-    statusColor: 'bg-emerald-500'
+    severity: 'warning',
+    title: 'Supply Chain Disruptions',
+    message: '24 RBC units expiring within 48 hours - $540K waste risk. Critical PPE inventory below 7-day threshold.'
   },
   {
     id: 5,
-    status: 'warning',
-    title: 'Inventory alert',
-    message: '24 RBC units approaching expiration within 48 hours. $540K waste prevention protocols activated.',
-    statusColor: 'bg-yellow-500'
+    severity: 'warning',
+    title: 'Capacity Constraints',
+    message: 'ICU at 94% capacity - diversion protocols may activate. Lab processing times 40% above benchmark.'
+  },
+  // SUCCESS (Green) - 3 cards
+  {
+    id: 6,
+    severity: 'success',
+    title: 'Asset Optimization Achieved',
+    message: '312 underutilized assets redeployed - $1.4M in avoided purchases. OR utilization increased to 87% through smart scheduling. Equipment sharing protocol saved $680K in duplicate orders.'
+  },
+  {
+    id: 7,
+    severity: 'success',
+    title: 'Quality Metrics Improved',
+    message: 'Specimen traceability at 98% - zero custody breaks in 30 days. Surgical site infection rate decreased by 22% this quarter. Patient satisfaction scores increased to 4.7/5.0.'
+  },
+  {
+    id: 8,
+    severity: 'success',
+    title: 'Cost Savings Identified',
+    message: '$4.8M in annualized savings from supply chain optimization. Energy consumption reduced by 18% through smart HVAC controls. Lab reagent waste decreased by 31% via AI-driven inventory management.'
   }
 ]
 
+// Severity configuration with light hue backgrounds
+const severityConfig = {
+  critical: {
+    bgColor: 'bg-red-50',
+    dotColor: 'bg-red-500',
+    borderColor: 'border-red-100'
+  },
+  warning: {
+    bgColor: 'bg-orange-50',
+    dotColor: 'bg-orange-500',
+    borderColor: 'border-orange-100'
+  },
+  success: {
+    bgColor: 'bg-green-50',
+    dotColor: 'bg-green-500',
+    borderColor: 'border-green-100'
+  }
+}
+
 export function AISummaryBanner() {
+  // Industry standard order: Red → Orange → Green
+  const criticalAlerts = alerts.filter(a => a.severity === 'critical')
+  const warningAlerts = alerts.filter(a => a.severity === 'warning')
+  const successAlerts = alerts.filter(a => a.severity === 'success')
+
   return (
     <div className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-8 py-6">
@@ -50,23 +97,23 @@ export function AISummaryBanner() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Normal, Success, Info */}
+          {/* Left Column: Critical (Red) */}
           <div className="flex flex-col gap-6">
-            {alerts.filter(a => ['normal', 'success', 'info'].includes(a.status)).map((alert) => (
+            {criticalAlerts.map((alert) => (
               <AlertCard key={alert.id} alert={alert} />
             ))}
           </div>
 
-          {/* Middle Column: Critical */}
+          {/* Middle Column: Warning (Orange) */}
           <div className="flex flex-col gap-6">
-            {alerts.filter(a => a.status === 'critical').map((alert) => (
+            {warningAlerts.map((alert) => (
               <AlertCard key={alert.id} alert={alert} />
             ))}
           </div>
 
-          {/* Right Column: Warning */}
+          {/* Right Column: Success (Green) */}
           <div className="flex flex-col gap-6">
-            {alerts.filter(a => a.status === 'warning').map((alert) => (
+            {successAlerts.map((alert) => (
               <AlertCard key={alert.id} alert={alert} />
             ))}
           </div>
@@ -76,25 +123,25 @@ export function AISummaryBanner() {
   )
 }
 
-function AlertCard({ alert }: { alert: typeof alerts[0] }) {
+function AlertCard({ alert }: { alert: Alert }) {
+  const config = severityConfig[alert.severity]
+
   return (
     <div
-      className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-md transition-all duration-200 h-full"
+      className={`flex items-start gap-4 p-4 rounded-xl border ${config.borderColor} ${config.bgColor} hover:shadow-md transition-all duration-200`}
     >
       {/* Status indicator dot */}
       <div className="flex-shrink-0 mt-1">
         <div className="flex h-8 w-8 rounded-full bg-white border border-gray-100 items-center justify-center shadow-sm">
-          <div className={`h-3 w-3 rounded-full ${alert.statusColor}`} />
+          <div className={`h-3 w-3 rounded-full ${config.dotColor}`} />
         </div>
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-semibold text-gray-900">
-            {alert.title}
-          </h3>
-        </div>
+        <h3 className="text-sm font-semibold text-gray-900 mb-2">
+          {alert.title}
+        </h3>
         <p className="text-sm text-gray-600 leading-relaxed">
           {alert.message}
         </p>
@@ -102,4 +149,3 @@ function AlertCard({ alert }: { alert: typeof alerts[0] }) {
     </div>
   )
 }
-      
