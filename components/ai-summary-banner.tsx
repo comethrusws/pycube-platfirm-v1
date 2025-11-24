@@ -14,52 +14,52 @@ const alerts: Alert[] = [
   {
     id: 1,
     severity: 'critical',
-    title: 'Critical Equipment Failures',
-    message: '12 OR ventilators offline - immediate replacement required. CT scanner malfunction in radiology - 18 appointments canceled. Blood bank refrigeration system failure - $240K inventory at risk.'
+    title: 'Equipment Maintenance Required',
+    message: '28 high-risk OR/Lab devices need immediate attention. Preventive action recommended to avoid downtime.'
   },
   {
     id: 2,
     severity: 'critical',
-    title: 'Patient Safety Alerts',
-    message: '3 medication dispensing errors detected in last 4 hours. Surgical instrument sterilization cycle failed - OR 4 & 5 affected. Emergency generator test failure - backup power compromised.'
+    title: 'Blood Supply Alert',
+    message: 'O-negative inventory critically low - 12 units remaining. Emergency procurement initiated.'
   },
   {
     id: 3,
     severity: 'critical',
-    title: 'Compliance Violations',
-    message: '47 expired pharmaceuticals found in ICU storage. Missing documentation for 23 hazardous waste disposals. Overdue fire safety inspection - 14 days past deadline.'
+    title: 'Sterilization Failure Detected',
+    message: 'Autoclave malfunction in Central Supply - 47 surgical instrument sets affected. OR schedule impact expected.'
   },
   // WARNING (Orange) - 2 cards
   {
     id: 4,
     severity: 'warning',
-    title: 'Supply Chain Disruptions',
-    message: '24 RBC units expiring within 48 hours - $540K waste risk. Critical PPE inventory below 7-day threshold.'
+    title: 'Inventory Expiration Alert',
+    message: '24 RBC units approaching expiration within 48 hours. $540K waste prevention protocols activated.'
   },
   {
     id: 5,
     severity: 'warning',
-    title: 'Capacity Constraints',
-    message: 'ICU at 94% capacity - diversion protocols may activate. Lab processing times 40% above benchmark.'
+    title: 'High Census Warning',
+    message: 'ICU bed capacity at 89% - consider diversion planning for critical admits.'
   },
   // SUCCESS (Green) - 3 cards
   {
     id: 6,
     severity: 'success',
-    title: 'Asset Optimization Achieved',
-    message: '312 underutilized assets redeployed - $1.4M in avoided purchases. OR utilization increased to 87% through smart scheduling. Equipment sharing protocol saved $680K in duplicate orders.'
+    title: 'Hospital Operating Normally',
+    message: '$4.8M annualized savings identified. 23 optimization opportunities flagged across OR, Lab & Supply Chain.'
   },
   {
     id: 7,
     severity: 'success',
-    title: 'Quality Metrics Improved',
-    message: 'Specimen traceability at 98% - zero custody breaks in 30 days. Surgical site infection rate decreased by 22% this quarter. Patient satisfaction scores increased to 4.7/5.0.'
+    title: 'Asset Optimization Complete',
+    message: '312 underutilized assets successfully redeployed. $1.4M purchase request avoided through smart redistribution.'
   },
   {
     id: 8,
     severity: 'success',
-    title: 'Cost Savings Identified',
-    message: '$4.8M in annualized savings from supply chain optimization. Energy consumption reduced by 18% through smart HVAC controls. Lab reagent waste decreased by 31% via AI-driven inventory management.'
+    title: 'Quality Milestone Achieved',
+    message: '98% specimen traceability across all departments. Zero custody breaks recorded in the past 30 days.'
   }
 ]
 
