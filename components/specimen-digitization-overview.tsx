@@ -303,14 +303,6 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
 
                     {activeTab === 'Custody Breaks' && (
                         <div className="col-span-3">
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Custody Breaks by Location (Last 30 Days)</h3>
-                                {/* Chart removed as per requirements */}
-                                <div className="text-sm text-gray-500 italic">
-                                    See detailed breakdown in the table below.
-                                </div>
-                            </div>
-
                             {/* Custody Breaks Table */}
                             <div>
                                 <h3 className="text-sm font-semibold text-gray-900 mb-4">Recent Custody Breaks</h3>
