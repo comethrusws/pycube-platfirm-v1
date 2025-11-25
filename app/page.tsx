@@ -11,12 +11,15 @@ import { FacilityMap } from '@/components/facility-map'
 import { Footer } from '@/components/footer'
 import { WorkflowDetail } from '@/components/workflow-detail'
 import { TransfusionDetail } from '@/components/transfusion-detail'
+import { SpecimenDigitizationOverview } from '@/components/specimen-digitization-overview'
 
 export default function Dashboard() {
   const [expandedWorkflow, setExpandedWorkflow] = useState<string | null>(null)
   const [showTransfusionDetail, setShowTransfusionDetail] = useState(false)
+  const [showSpecimenDetail, setShowSpecimenDetail] = useState(false)
   const detailRef = useRef<HTMLDivElement>(null)
   const transfusionRef = useRef<HTMLDivElement>(null)
+  const specimenRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (expandedWorkflow && detailRef.current) {
@@ -34,13 +37,27 @@ export default function Dashboard() {
     }
   }, [showTransfusionDetail])
 
+  useEffect(() => {
+    if (showSpecimenDetail && specimenRef.current) {
+      setTimeout(() => {
+        specimenRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  }, [showSpecimenDetail])
+
   const handleCardClick = (label: string, secondary?: string) => {
     if (label === 'Transfusion Medicine') {
       setShowTransfusionDetail(true)
       setExpandedWorkflow(null)
+      setShowSpecimenDetail(false)
+    } else if (label === 'Lab Medicine') {
+      setShowSpecimenDetail(true)
+      setExpandedWorkflow(null)
+      setShowTransfusionDetail(false)
     } else {
       setExpandedWorkflow(expandedWorkflow === label ? null : label)
       setShowTransfusionDetail(false)
+      setShowSpecimenDetail(false)
     }
   }
 
@@ -73,6 +90,14 @@ export default function Dashboard() {
           <TransfusionDetail
             isOpen={showTransfusionDetail}
             onClose={() => setShowTransfusionDetail(false)}
+          />
+        </div>
+
+        {/* Specimen Digitization Overview Section */}
+        <div ref={specimenRef}>
+          <SpecimenDigitizationOverview
+            isOpen={showSpecimenDetail}
+            onClose={() => setShowSpecimenDetail(false)}
           />
         </div>
 
