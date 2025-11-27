@@ -12,14 +12,17 @@ import { Footer } from '@/components/footer'
 import { WorkflowDetail } from '@/components/workflow-detail'
 import { TransfusionDetail } from '@/components/transfusion-detail'
 import { SpecimenDigitizationOverview } from '@/components/specimen-digitization-overview'
+import { InfraHealthDetail } from '@/components/infra-health-detail'
 
 export default function Dashboard() {
   const [expandedWorkflow, setExpandedWorkflow] = useState<string | null>(null)
   const [showTransfusionDetail, setShowTransfusionDetail] = useState(false)
   const [showSpecimenDetail, setShowSpecimenDetail] = useState(false)
+  const [showInfraHealthDetail, setShowInfraHealthDetail] = useState(false)
   const detailRef = useRef<HTMLDivElement>(null)
   const transfusionRef = useRef<HTMLDivElement>(null)
   const specimenRef = useRef<HTMLDivElement>(null)
+  const infraHealthRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (expandedWorkflow && detailRef.current) {
@@ -45,19 +48,35 @@ export default function Dashboard() {
     }
   }, [showSpecimenDetail])
 
+  useEffect(() => {
+    if (showInfraHealthDetail && infraHealthRef.current) {
+      setTimeout(() => {
+        infraHealthRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  }, [showInfraHealthDetail])
+
   const handleCardClick = (label: string, secondary?: string) => {
     if (label === 'Transfusion Medicine') {
       setShowTransfusionDetail(true)
       setExpandedWorkflow(null)
       setShowSpecimenDetail(false)
+      setShowInfraHealthDetail(false)
     } else if (label === 'Lab Medicine') {
       setShowSpecimenDetail(true)
       setExpandedWorkflow(null)
       setShowTransfusionDetail(false)
+      setShowInfraHealthDetail(false)
+    } else if (label === 'Infra Health') {
+      setShowInfraHealthDetail(true)
+      setExpandedWorkflow(null)
+      setShowTransfusionDetail(false)
+      setShowSpecimenDetail(false)
     } else {
       setExpandedWorkflow(expandedWorkflow === label ? null : label)
       setShowTransfusionDetail(false)
       setShowSpecimenDetail(false)
+      setShowInfraHealthDetail(false)
     }
   }
 
@@ -98,6 +117,14 @@ export default function Dashboard() {
           <SpecimenDigitizationOverview
             isOpen={showSpecimenDetail}
             onClose={() => setShowSpecimenDetail(false)}
+          />
+        </div>
+
+        {/* Infrastructure Health Detail Section */}
+        <div ref={infraHealthRef}>
+          <InfraHealthDetail
+            isOpen={showInfraHealthDetail}
+            onClose={() => setShowInfraHealthDetail(false)}
           />
         </div>
 
