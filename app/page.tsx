@@ -13,16 +13,19 @@ import { WorkflowDetail } from '@/components/workflow-detail'
 import { TransfusionDetail } from '@/components/transfusion-detail'
 import { SpecimenDigitizationOverview } from '@/components/specimen-digitization-overview'
 import { InfraHealthDetail } from '@/components/infra-health-detail'
+import { SupplyChainDetail } from '@/components/supply-chain-detail'
 
 export default function Dashboard() {
   const [expandedWorkflow, setExpandedWorkflow] = useState<string | null>(null)
   const [showTransfusionDetail, setShowTransfusionDetail] = useState(false)
   const [showSpecimenDetail, setShowSpecimenDetail] = useState(false)
   const [showInfraHealthDetail, setShowInfraHealthDetail] = useState(false)
+  const [showSupplyChainDetail, setShowSupplyChainDetail] = useState(false)
   const detailRef = useRef<HTMLDivElement>(null)
   const transfusionRef = useRef<HTMLDivElement>(null)
   const specimenRef = useRef<HTMLDivElement>(null)
   const infraHealthRef = useRef<HTMLDivElement>(null)
+  const supplyChainRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (expandedWorkflow && detailRef.current) {
@@ -56,27 +59,45 @@ export default function Dashboard() {
     }
   }, [showInfraHealthDetail])
 
+  useEffect(() => {
+    if (showSupplyChainDetail && supplyChainRef.current) {
+      setTimeout(() => {
+        supplyChainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  }, [showSupplyChainDetail])
+
   const handleCardClick = (label: string, secondary?: string) => {
     if (label === 'Transfusion Medicine') {
       setShowTransfusionDetail(true)
       setExpandedWorkflow(null)
       setShowSpecimenDetail(false)
       setShowInfraHealthDetail(false)
+      setShowSupplyChainDetail(false)
     } else if (label === 'Lab Medicine') {
       setShowSpecimenDetail(true)
       setExpandedWorkflow(null)
       setShowTransfusionDetail(false)
       setShowInfraHealthDetail(false)
+      setShowSupplyChainDetail(false)
     } else if (label === 'Infra Health') {
       setShowInfraHealthDetail(true)
       setExpandedWorkflow(null)
       setShowTransfusionDetail(false)
       setShowSpecimenDetail(false)
+      setShowSupplyChainDetail(false)
+    } else if (label === 'Supply chain') {
+      setShowSupplyChainDetail(true)
+      setExpandedWorkflow(null)
+      setShowTransfusionDetail(false)
+      setShowSpecimenDetail(false)
+      setShowInfraHealthDetail(false)
     } else {
       setExpandedWorkflow(expandedWorkflow === label ? null : label)
       setShowTransfusionDetail(false)
       setShowSpecimenDetail(false)
       setShowInfraHealthDetail(false)
+      setShowSupplyChainDetail(false)
     }
   }
 
@@ -125,6 +146,14 @@ export default function Dashboard() {
           <InfraHealthDetail
             isOpen={showInfraHealthDetail}
             onClose={() => setShowInfraHealthDetail(false)}
+          />
+        </div>
+
+        {/* Supply Chain Detail Section */}
+        <div ref={supplyChainRef}>
+          <SupplyChainDetail
+            isOpen={showSupplyChainDetail}
+            onClose={() => setShowSupplyChainDetail(false)}
           />
         </div>
 
