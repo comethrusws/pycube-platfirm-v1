@@ -12,24 +12,24 @@ interface SpecimenDigitizationOverviewProps {
 }
 
 const trendData = [
-    { week: 'W1', value: 82 },
-    { week: 'W2', value: 84 },
-    { week: 'W3', value: 83 },
-    { week: 'W4', value: 85 },
-    { week: 'W5', value: 86 },
-    { week: 'W6', value: 88 },
-    { week: 'W7', value: 89 },
-    { week: 'W8', value: 90 },
-    { week: 'W9', value: 91 },
-    { week: 'W10', value: 91 },
-    { week: 'W11', value: 92 },
-    { week: 'W12', value: 92 },
+    { week: 'W1', value: 86 },
+    { week: 'W2', value: 88 },
+    { week: 'W3', value: 89 },
+    { week: 'W4', value: 90 },
+    { week: 'W5', value: 91 },
+    { week: 'W6', value: 92 },
+    { week: 'W7', value: 93 },
+    { week: 'W8', value: 94 },
+    { week: 'W9', value: 95 },
+    { week: 'W10', value: 95 },
+    { week: 'W11', value: 96 },
+    { week: 'W12', value: 96 },
 ]
 
 const pieData = [
-    { name: 'Fully Traceable', value: 92, color: '#10b981' }, // emerald-500
-    { name: 'Partial', value: 5, color: '#f59e0b' }, // amber-500
-    { name: 'Missing', value: 3, color: '#ef4444' }, // red-500
+    { name: 'Fully Traceable', value: 96, color: '#10b981' }, // emerald-500
+    { name: 'Partial', value: 3, color: '#f59e0b' }, // amber-500
+    { name: 'Missing', value: 1, color: '#ef4444' }, // red-500
 ]
 
 const departmentData = [
@@ -89,10 +89,10 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div className="text-sm font-medium text-gray-500 mb-2">Digitization Coverage</div>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-4xl font-semibold text-gray-900">92%</span>
+                            <span className="text-4xl font-semibold text-gray-900">96%</span>
                             <span className="text-sm font-medium text-emerald-600 flex items-center">
                                 <ArrowUpRight className="w-4 h-4 mr-0.5" />
-                                +7% this week
+                                +2% this week
                             </span>
                         </div>
                     </div>
@@ -104,11 +104,11 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                         <div className="text-sm font-medium text-gray-500 mb-2">Traceability</div>
                         <div className="space-y-1">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-900 font-medium">92% fully tracked</span>
-                                <span className="text-gray-500">8% gaps</span>
+                                <span className="text-gray-900 font-medium">96% fully tracked</span>
+                                <span className="text-gray-500">4% gaps</span>
                             </div>
                             <div className="w-full bg-gray-100 rounded-full h-2">
-                                <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '92%' }} />
+                                <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '96%' }} />
                             </div>
                         </div>
                     </div>

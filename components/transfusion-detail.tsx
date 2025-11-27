@@ -63,9 +63,12 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
         <>
             <div className="bg-gray-50 border-t border-b border-gray-200 py-8 animate-in slide-in-from-top duration-300 font-sans">
                 <div className="max-w-7xl mx-auto px-6">
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-2xl font-bold text-gray-900">Transfusion Medicine - Detailed Analytics</h2>
+                    {/* Breadcrumbs & Header */}
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <div className="text-sm text-gray-500 mb-1">Dashboard {'>'} Transfusion Medicine</div>
+                            <h2 className="text-2xl font-semibold text-gray-900">Transfusion Medicine - Detailed Analytics</h2>
+                        </div>
                         <button
                             onClick={onClose}
                             className="p-2 hover:bg-gray-200 rounded-full transition-colors"
