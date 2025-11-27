@@ -92,7 +92,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <CheckCircle className="w-5 h-5 text-emerald-500" />
                             </div>
                             <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-bold text-emerald-500">96</span>
+                                <span className="text-5xl font-semibold text-gray-900">96</span>
                                 <span className="text-2xl text-gray-400">/100</span>
                             </div>
                             <p className="text-xs text-gray-500 mt-2">Excellent • All systems operational</p>
@@ -105,7 +105,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Activity className="w-5 h-5 text-blue-500" />
                             </div>
                             <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-bold text-blue-500">{avgUptime.toFixed(2)}</span>
+                                <span className="text-5xl font-semibold text-gray-900">{avgUptime.toFixed(2)}</span>
                                 <span className="text-2xl text-gray-400">%</span>
                             </div>
                             <p className="text-xs text-gray-500 mt-2">Target: 99.5% • On track</p>
@@ -118,7 +118,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Shield className="w-5 h-5 text-orange-500" />
                             </div>
                             <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-bold text-orange-500">{totalVulnerabilities}</span>
+                                <span className="text-5xl font-semibold text-gray-900">{totalVulnerabilities}</span>
                                 <span className="text-xl text-gray-400">vulns</span>
                             </div>
                             <p className="text-xs text-gray-500 mt-2">{criticalVulnerabilities} critical • Needs attention</p>
@@ -131,7 +131,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <AlertTriangle className="w-5 h-5 text-amber-500" />
                             </div>
                             <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-bold text-gray-900">{totalIncidents}</span>
+                                <span className="text-5xl font-semibold text-gray-900">{totalIncidents}</span>
                                 <span className="text-xl text-gray-400">open</span>
                             </div>
                             <p className="text-xs text-gray-500 mt-2">0 Sev-1 • {totalIncidents} Sev-2/3</p>
@@ -262,8 +262,8 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                             </td>
                                             <td className="py-4 px-4">
                                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${system.status === 'healthy'
-                                                        ? 'bg-emerald-50 text-emerald-700'
-                                                        : 'bg-orange-50 text-orange-700'
+                                                    ? 'bg-emerald-50 text-emerald-700'
+                                                    : 'bg-orange-50 text-orange-700'
                                                     }`}>
                                                     <div className={`w-1.5 h-1.5 rounded-full ${system.status === 'healthy' ? 'bg-emerald-500' : 'bg-orange-500'
                                                         }`}></div>
@@ -296,7 +296,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <HardDrive className="w-4 h-4 text-purple-500" />
                             </div>
                             <div className="flex items-end justify-between w-full">
-                                <h4 className="text-3xl font-bold text-gray-900">68%</h4>
+                                <h4 className="text-3xl font-semibold text-gray-900">68%</h4>
                                 <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-purple-500 transition-colors" />
                             </div>
                         </button>
@@ -310,7 +310,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Cpu className="w-4 h-4 text-blue-500" />
                             </div>
                             <div className="flex items-end justify-between w-full">
-                                <h4 className="text-3xl font-bold text-gray-900">54%</h4>
+                                <h4 className="text-3xl font-semibold text-gray-900">54%</h4>
                                 <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
                             </div>
                         </button>
@@ -324,7 +324,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Network className="w-4 h-4 text-emerald-500" />
                             </div>
                             <div className="flex items-end justify-between w-full">
-                                <h4 className="text-3xl font-bold text-gray-900">99.9%</h4>
+                                <h4 className="text-3xl font-semibold text-gray-900">99.9%</h4>
                                 <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-colors" />
                             </div>
                         </button>
@@ -338,7 +338,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Database className="w-4 h-4 text-amber-500" />
                             </div>
                             <div className="flex items-end justify-between w-full">
-                                <h4 className="text-3xl font-bold text-gray-900">98.2%</h4>
+                                <h4 className="text-3xl font-semibold text-gray-900">98.2%</h4>
                                 <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-amber-500 transition-colors" />
                             </div>
                         </button>
@@ -352,7 +352,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Clock className="w-4 h-4 text-orange-500" />
                             </div>
                             <div className="flex items-end justify-between w-full">
-                                <h4 className="text-3xl font-bold text-gray-900">84%</h4>
+                                <h4 className="text-3xl font-semibold text-gray-900">84%</h4>
                                 <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-orange-500 transition-colors" />
                             </div>
                         </button>

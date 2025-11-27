@@ -91,19 +91,19 @@ export function InfraHealthTier3({ category, onClose }: InfraHealthTier3Props) {
                         <div className="grid grid-cols-4 gap-4">
                             <div className="bg-purple-50 rounded-2xl p-4 border border-purple-100">
                                 <p className="text-xs font-semibold text-purple-600 mb-2">Total Capacity</p>
-                                <p className="text-2xl font-bold text-gray-900">1.75 PB</p>
+                                <p className="text-2xl font-semibold text-gray-900">1.75 PB</p>
                             </div>
                             <div className="bg-orange-50 rounded-2xl p-4 border border-orange-100">
                                 <p className="text-xs font-semibold text-orange-600 mb-2">Used Storage</p>
-                                <p className="text-2xl font-bold text-gray-900">1.19 PB</p>
+                                <p className="text-2xl font-semibold text-gray-900">1.19 PB</p>
                             </div>
                             <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
                                 <p className="text-xs font-semibold text-emerald-600 mb-2">Available</p>
-                                <p className="text-2xl font-bold text-gray-900">560 TB</p>
+                                <p className="text-2xl font-semibold text-gray-900">560 TB</p>
                             </div>
                             <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
                                 <p className="text-xs font-semibold text-amber-600 mb-2">Growth Rate</p>
-                                <p className="text-2xl font-bold text-gray-900">8.4 TB/mo</p>
+                                <p className="text-2xl font-semibold text-gray-900">8.4 TB/mo</p>
                             </div>
                         </div>
 
@@ -168,19 +168,19 @@ export function InfraHealthTier3({ category, onClose }: InfraHealthTier3Props) {
                         <div className="grid grid-cols-4 gap-4">
                             <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
                                 <p className="text-xs font-semibold text-blue-600 mb-2">Total VMs</p>
-                                <p className="text-2xl font-bold text-gray-900">306</p>
+                                <p className="text-2xl font-semibold text-gray-900">306</p>
                             </div>
                             <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
                                 <p className="text-xs font-semibold text-emerald-600 mb-2">Active</p>
-                                <p className="text-2xl font-bold text-gray-900">246</p>
+                                <p className="text-2xl font-semibold text-gray-900">246</p>
                             </div>
                             <div className="bg-orange-50 rounded-2xl p-4 border border-orange-100">
                                 <p className="text-xs font-semibold text-orange-600 mb-2">Idle/Unutilized</p>
-                                <p className="text-2xl font-bold text-gray-900">60</p>
+                                <p className="text-2xl font-semibold text-gray-900">60</p>
                             </div>
                             <div className="bg-purple-50 rounded-2xl p-4 border border-purple-100">
                                 <p className="text-xs font-semibold text-purple-600 mb-2">Avg CPU Usage</p>
-                                <p className="text-2xl font-bold text-gray-900">54%</p>
+                                <p className="text-2xl font-semibold text-gray-900">54%</p>
                             </div>
                         </div>
 
@@ -253,19 +253,19 @@ export function InfraHealthTier3({ category, onClose }: InfraHealthTier3Props) {
                         <div className="grid grid-cols-4 gap-4">
                             <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
                                 <p className="text-xs font-semibold text-emerald-600 mb-2">Uptime</p>
-                                <p className="text-2xl font-bold text-gray-900">99.92%</p>
+                                <p className="text-2xl font-semibold text-gray-900">99.92%</p>
                             </div>
                             <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
                                 <p className="text-xs font-semibold text-blue-600 mb-2">Avg Throughput</p>
-                                <p className="text-2xl font-bold text-gray-900">3.8 Gbps</p>
+                                <p className="text-2xl font-semibold text-gray-900">3.8 Gbps</p>
                             </div>
                             <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
                                 <p className="text-xs font-semibold text-amber-600 mb-2">Avg Jitter</p>
-                                <p className="text-2xl font-bold text-gray-900">2.5 ms</p>
+                                <p className="text-2xl font-semibold text-gray-900">2.5 ms</p>
                             </div>
                             <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
                                 <p className="text-xs font-semibold text-emerald-600 mb-2">Packet Loss</p>
-                                <p className="text-2xl font-bold text-gray-900">0.025%</p>
+                                <p className="text-2xl font-semibold text-gray-900">0.025%</p>
                             </div>
                         </div>
 
@@ -325,19 +325,19 @@ export function InfraHealthTier3({ category, onClose }: InfraHealthTier3Props) {
                         <div className="grid grid-cols-4 gap-4">
                             <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
                                 <p className="text-xs font-semibold text-emerald-600 mb-2">Success Rate</p>
-                                <p className="text-2xl font-bold text-gray-900">98.2%</p>
+                                <p className="text-2xl font-semibold text-gray-900">98.2%</p>
                             </div>
                             <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
                                 <p className="text-xs font-semibold text-blue-600 mb-2">Total Jobs</p>
-                                <p className="text-2xl font-bold text-gray-900">5</p>
+                                <p className="text-2xl font-semibold text-gray-900">5</p>
                             </div>
                             <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
                                 <p className="text-xs font-semibold text-amber-600 mb-2">Data Protected</p>
-                                <p className="text-2xl font-bold text-gray-900">2.06 TB</p>
+                                <p className="text-2xl font-semibold text-gray-900">2.06 TB</p>
                             </div>
                             <div className="bg-purple-50 rounded-2xl p-4 border border-purple-100">
                                 <p className="text-xs font-semibold text-purple-600 mb-2">Avg Duration</p>
-                                <p className="text-2xl font-bold text-gray-900">135 min</p>
+                                <p className="text-2xl font-semibold text-gray-900">135 min</p>
                             </div>
                         </div>
 
@@ -360,8 +360,8 @@ export function InfraHealthTier3({ category, onClose }: InfraHealthTier3Props) {
                                             <td className="py-3 px-2 text-sm font-medium text-gray-900">{job.job}</td>
                                             <td className="py-3 px-2">
                                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${job.status === 'success'
-                                                        ? 'bg-emerald-50 text-emerald-700'
-                                                        : 'bg-orange-50 text-orange-700'
+                                                    ? 'bg-emerald-50 text-emerald-700'
+                                                    : 'bg-orange-50 text-orange-700'
                                                     }`}>
                                                     <div className={`w-1.5 h-1.5 rounded-full ${job.status === 'success' ? 'bg-emerald-500' : 'bg-orange-500'
                                                         }`}></div>
@@ -391,19 +391,19 @@ export function InfraHealthTier3({ category, onClose }: InfraHealthTier3Props) {
                         <div className="grid grid-cols-4 gap-4">
                             <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
                                 <p className="text-xs font-semibold text-blue-600 mb-2">Total Assets</p>
-                                <p className="text-2xl font-bold text-gray-900">601</p>
+                                <p className="text-2xl font-semibold text-gray-900">601</p>
                             </div>
                             <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
                                 <p className="text-xs font-semibold text-emerald-600 mb-2">Fully Patched</p>
-                                <p className="text-2xl font-bold text-gray-900">499</p>
+                                <p className="text-2xl font-semibold text-gray-900">499</p>
                             </div>
                             <div className="bg-orange-50 rounded-2xl p-4 border border-orange-100">
                                 <p className="text-xs font-semibold text-orange-600 mb-2">Pending</p>
-                                <p className="text-2xl font-bold text-gray-900">102</p>
+                                <p className="text-2xl font-semibold text-gray-900">102</p>
                             </div>
                             <div className="bg-red-50 rounded-2xl p-4 border border-red-100">
                                 <p className="text-xs font-semibold text-red-600 mb-2">Overdue</p>
-                                <p className="text-2xl font-bold text-gray-900">47</p>
+                                <p className="text-2xl font-semibold text-gray-900">47</p>
                             </div>
                         </div>
 
