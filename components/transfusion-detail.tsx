@@ -129,23 +129,27 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
                             <h3 className="text-sm font-semibold text-gray-900 mb-6">Top Hospital Inventory</h3>
                             <div className="space-y-5 flex-1">
-                                {hospitals.slice(0, 5).map((hospital, idx) => (
-                                    <div key={hospital.id}>
-                                        <div className="flex justify-between text-xs font-medium mb-1.5">
-                                            <span className="text-gray-600">{hospital.name}</span>
-                                            <span className="text-gray-900">{hospital.bags} units</span>
+                                {hospitals.slice(0, 5).map((hospital, idx) => {
+                                    const maxBags = Math.max(...hospitals.slice(0, 5).map(h => h.bags))
+                                    const widthPercent = (hospital.bags / maxBags) * 100
+                                    return (
+                                        <div key={hospital.id}>
+                                            <div className="flex justify-between text-xs font-medium mb-1.5 gap-2">
+                                                <span className="text-gray-600 truncate flex-1">{hospital.name}</span>
+                                                <span className="text-gray-900 whitespace-nowrap">{hospital.bags} units</span>
+                                            </div>
+                                            <div className="w-full bg-gray-100 rounded-full h-2">
+                                                <div
+                                                    className="h-2 rounded-full transition-all duration-300"
+                                                    style={{
+                                                        width: `${widthPercent}%`,
+                                                        backgroundColor: idx % 2 === 0 ? '#3b82f6' : '#f97316' // Alternating Blue/Orange
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="w-full bg-gray-100 rounded-full h-2">
-                                            <div
-                                                className="h-2 rounded-full"
-                                                style={{
-                                                    width: `${(hospital.bags / 100) * 100}%`,
-                                                    backgroundColor: idx % 2 === 0 ? '#3b82f6' : '#f97316' // Alternating Blue/Orange
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         </div>
 
