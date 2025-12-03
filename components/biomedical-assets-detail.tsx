@@ -170,7 +170,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                     <div className="mb-8">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
-                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Performnce Insights</h3>
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Performance Insights</h3>
                             <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
                         </div>
 
