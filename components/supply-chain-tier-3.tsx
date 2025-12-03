@@ -1,7 +1,7 @@
 'use client'
 
 import { X, AlertTriangle, Clock, Package, TrendingDown, Thermometer, Truck, CheckCircle, DollarSign, ArrowRight, TrendingUp } from 'lucide-react'
-import { BarChart, Bar, LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip as RechartsTooltip, CartesianGrid, Cell } from 'recharts'
+import { BarChart, Bar, LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip as RechartsTooltip, CartesianGrid, Cell, Tooltip } from 'recharts'
 
 interface SupplyChainTier3Props {
     category: string
