@@ -168,7 +168,12 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
 
                     {/* Performance Insights */}
                     <div className="mb-8">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Performance Insights</h3>
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Performnce Insights</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
+                        </div>
+
 
                         {/* KPI Summary Cards */}
                         <div className="grid grid-cols-5 gap-4 mb-6">
@@ -283,10 +288,10 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
 
                     {/* TIER 3: OPTIMIZE - Recommended Actions */}
                     <div>
-                        <div className="flex items-center gap-2 mb-4">
-                            <div className="h-px bg-gradient-to-r from-purple-500 to-transparent flex-1" />
-                            <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider">Tier 3: Optimize - Recommended Actions</h3>
-                            <div className="h-px bg-gradient-to-l from-purple-500 to-transparent flex-1" />
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Recommended Actions</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
                         </div>
 
                         <div className="grid grid-cols-4 gap-4">

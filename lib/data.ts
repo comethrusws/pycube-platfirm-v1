@@ -154,7 +154,7 @@ export const digitizationTiles: DigitizationTile[] = [
   {
     label: 'Biomedical assets',
     value: 99,
-    secondary: '44,550/45,000',
+    secondary: '5005 Tagged items',
     icon: 'Package',
     description: 'Workflow digitization across all facilities',
     href: '/biomedical-assets',
