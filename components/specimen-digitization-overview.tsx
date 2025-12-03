@@ -98,9 +98,13 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                     </button>
                 </div>
 
-                {/* Coverage Status */}
+                {/* TIER 1: DIGITIZE - Coverage Status */}
                 <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Coverage Status</h3>
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="h-px bg-linear-to-r from-transparent to-emerald-500 flex-1" />
+                        <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Coverage Status</h3>
+                        <div className="h-px bg-linear-to-l from-emerald-500 to-transparent flex-1" />
+                    </div>
 
                 {/* Section 1: KPIs at a Glance */}
                 <div className="grid grid-cols-3 gap-6 mb-8">
@@ -422,9 +426,13 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                 </div>
                 </div>
 
-                {/* Deep Dive Actions */}
-                <div className="mt-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Optimization Opportunities</h3>
+                {/* TIER 3: OPTIMIZE - Recommended Actions */}
+                <div>
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="h-px bg-linear-to-r from-transparent to-emerald-500 flex-1" />
+                        <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Recommended Actions</h3>
+                        <div className="h-px bg-linear-to-l from-emerald-500 to-transparent flex-1" />
+                    </div>
 
                     <div className="grid grid-cols-4 gap-4">
                         {/* Custody Breaks Action Card */}

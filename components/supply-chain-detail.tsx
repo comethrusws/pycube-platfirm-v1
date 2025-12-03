@@ -1,17 +1,17 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronDown, AlertTriangle, TrendingUp, Package, DollarSign, Clock, Thermometer, ArrowUpRight, ArrowDownRight } from 'lucide-react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar } from 'recharts'
-import { SupplyChainTier3 } from './supply-chain-tier-3'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Package, Truck, Thermometer } from 'lucide-react'
 import { supplyChainData } from '@/lib/data'
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { useState } from 'react'
+import { SupplyChainTier3 } from './supply-chain-tier-3'
 
 interface SupplyChainDetailProps {
     isOpen: boolean
     onClose: () => void
 }
 
-// Inventory trend data (last 12 weeks)
+// Inventory trend data (last 12 weeks) - Local mock for chart
 const inventoryTrendData = [
     { week: 'W1', availability: 92, stockouts: 8 },
     { week: 'W2', availability: 94, stockouts: 6 },
@@ -27,23 +27,7 @@ const inventoryTrendData = [
     { week: 'W12', availability: 98.5, stockouts: 1.5 },
 ]
 
-// ABC analysis data
-const abcData = [
-    { name: 'Category A (High Value)', value: 18, color: '#ef4444' },
-    { name: 'Category B (Medium)', value: 23, color: '#f59e0b' },
-    { name: 'Category C (Low Value)', value: 59, color: '#10b981' },
-]
-
-// Vendor performance data
-const vendorPerformanceData = [
-    { vendor: 'Medico Supplies', onTime: 92, quality: 95, issues: 2 },
-    { vendor: 'Ultramed Labs', onTime: 88, quality: 91, issues: 4 },
-    { vendor: 'PharmaCorp', onTime: 85, quality: 89, issues: 3 },
-    { vendor: 'MediEquip Inc', onTime: 90, quality: 94, issues: 1 },
-    { vendor: 'LabTech Solutions', onTime: 87, quality: 90, issues: 5 },
-]
-
-// Cost trend data
+// Cost trend data - Local mock for chart
 const costTrendData = [
     { month: 'Jul', spend: 4.9, budget: 5.5 },
     { month: 'Aug', spend: 5.2, budget: 5.5 },
@@ -52,18 +36,8 @@ const costTrendData = [
     { month: 'Nov', spend: 5.2, budget: 5.5 },
 ]
 
-// Temperature compliance data
-const temperatureData = [
-    { location: 'Pharmacy Fridge-1', temp: 3.4, status: 'ok', compliance: 99 },
-    { location: 'Pharmacy Fridge-2', temp: 3.1, status: 'ok', compliance: 99 },
-    { location: 'Lab Cold Storage-1', temp: 2.8, status: 'ok', compliance: 98 },
-    { location: 'Blood Bank Fridge-4', temp: 6.8, status: 'critical', compliance: 72 },
-    { location: 'Vaccine Storage-1', temp: 4.2, status: 'ok', compliance: 97 },
-]
-
 export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
-    const [activeTab, setActiveTab] = useState('Inventory Status')
-    const [activeTier3Category, setActiveTier3Category] = useState<string | null>(null)
+    const [tier3Category, setTier3Category] = useState<string | null>(null)
 
     if (!isOpen) return null
 
@@ -71,11 +45,11 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
         <>
             <div className="bg-gray-50 border-t border-b border-gray-200 py-8 animate-in slide-in-from-top duration-300">
                 <div className="max-w-7xl mx-auto px-8">
-                    {/* Breadcrumbs & Header */}
+                    {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <div className="text-sm text-gray-500 mb-1">Dashboard {'>'} Supply Chain</div>
-                            <h2 className="text-2xl font-semibold text-gray-900">Supply Chain Management Overview</h2>
+                            <h2 className="text-2xl font-semibold text-gray-900">Supply Chain Management - Detailed Analytics</h2>
                         </div>
                         <button
                             onClick={onClose}
@@ -85,455 +59,342 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                         </button>
                     </div>
 
-                    {/* Coverage Status */}
+                    {/* TIER 1: DIGITIZE - Status Overview */}
                     <div className="mb-8">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Coverage Status</h3>
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Inventory Status</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
+                        </div>
 
-                    {/* Section 1: KPIs at a Glance */}
-                    <div className="grid grid-cols-4 gap-6 mb-8">
-                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                            <div className="text-sm font-medium text-gray-500 mb-2">Health Score</div>
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-semibold text-gray-900">{supplyChainData.summary.healthScore}%</span>
-                                <span className="text-sm font-medium text-emerald-600 flex items-center">
-                                    <ArrowUpRight className="w-4 h-4 mr-0.5" />
-                                    +{supplyChainData.summary.trendChange}% this month
-                                </span>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                            <div className="text-sm font-medium text-gray-500 mb-2">Monthly Spend</div>
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-semibold text-gray-900">${(supplyChainData.summary.monthlySpend / 1000000).toFixed(1)}M</span>
-                                <span className="text-sm font-medium text-orange-600 flex items-center">
-                                    <ArrowUpRight className="w-4 h-4 mr-0.5" />
-                                    +{supplyChainData.summary.spendChange}%
-                                </span>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                            <div className="text-sm font-medium text-gray-500 mb-2">Critical Item Availability</div>
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-semibold text-gray-900">{supplyChainData.summary.criticalAvailability}%</span>
-                                <span className="text-sm font-medium text-emerald-600 flex items-center">
-                                    <ArrowUpRight className="w-4 h-4 mr-0.5" />
-                                    Stable
-                                </span>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                            <div className="text-sm font-medium text-gray-500 mb-2">Wastage Index</div>
-                            <div className="space-y-1">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-900 font-medium">{supplyChainData.summary.wastageIndex}% wastage</span>
-                                    <span className="text-gray-500">Target: {supplyChainData.summary.wastageTarget}%</span>
+                        <div className="grid grid-cols-3 gap-6">
+                            {/* Health Score - Donut Chart */}
+                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Supply Chain Health</h3>
+                                <div className="flex items-center justify-center mb-6">
+                                    <div className="relative w-48 h-48">
+                                        <div className="w-full h-full rounded-full" style={{
+                                            background: `conic-gradient(
+                                                #10b981 0deg ${(supplyChainData.summary.healthScore / 100 * 360)}deg,
+                                                #f3f4f6 ${(supplyChainData.summary.healthScore / 100 * 360)}deg 360deg
+                                            )`
+                                        }}>
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="bg-white rounded-full w-32 h-32 flex flex-col items-center justify-center">
+                                                    <div className="text-4xl font-semibold text-gray-900">{supplyChainData.summary.healthScore}%</div>
+                                                    <div className="text-sm text-gray-500">Health Score</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="w-full bg-gray-100 rounded-full h-2">
-                                    <div className="bg-emerald-500 h-2 rounded-full" style={{ width: `${(supplyChainData.summary.wastageIndex / supplyChainData.summary.wastageTarget) * 10}%` }} />
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-gray-600">Monthly Spend</span>
+                                        <span className="text-lg font-semibold text-gray-900">${(supplyChainData.summary.monthlySpend / 1000000).toFixed(1)}M</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-gray-600">Active Vendors</span>
+                                        <span className="text-lg font-semibold text-blue-600">{supplyChainData.summary.activeVendors}</span>
+                                    </div>
                                 </div>
                             </div>
+
+                            {/* Critical Items Status */}
+                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Critical Items Status</h3>
+                                <div className="space-y-4">
+                                    {supplyChainData.highRiskItems.slice(0, 6).map((item) => (
+                                        <div key={item.id} className="space-y-1">
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-gray-700">{item.name}</span>
+                                                <span className="font-semibold text-gray-900">{item.daysUntilExpiry} days</span>
+                                            </div>
+                                            <div className="w-full bg-gray-100 rounded-full h-2">
+                                                <div
+                                                    className={`${item.status === 'critical' ? 'bg-red-500' : item.status === 'warning' ? 'bg-orange-500' : 'bg-emerald-500'} h-2 rounded-full transition-all duration-500`}
+                                                    style={{ width: `${Math.min((item.daysUntilExpiry / 30) * 100, 100)}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Alerts Overview */}
+                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Supply Chain Alerts</h3>
+                                <div className="text-center mb-6">
+                                    <div className="text-6xl font-semibold text-gray-900">{supplyChainData.expiringItems.urgent + supplyChainData.vendorIssues.length}</div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-3 mb-4">
+                                    <div className="bg-red-500 rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-semibold text-white">{supplyChainData.expiringItems.urgent}</div>
+                                        <div className="text-xs text-white/80 mt-1">Expiring</div>
+                                    </div>
+                                    <div className="bg-orange-500 rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-semibold text-white">{supplyChainData.vendorIssues.length}</div>
+                                        <div className="text-xs text-white/80 mt-1">Vendor Issues</div>
+                                    </div>
+                                    <div className="bg-blue-400 rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-semibold text-white">{supplyChainData.temperatureAlerts.length}</div>
+                                        <div className="text-xs text-white/80 mt-1">Temp Alerts</div>
+                                    </div>
+                                </div>
+                                <div className="bg-yellow-50 rounded-2xl p-4 text-center mb-4 border border-yellow-100">
+                                    <div className="text-sm font-medium text-yellow-800">
+                                        Wastage Index: {supplyChainData.summary.wastageIndex}% (Target: {supplyChainData.summary.wastageTarget}%)
+                                    </div>
+                                </div>
+                                <div className="space-y-2 text-xs">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-red-500" />
+                                        <span className="text-gray-600">Urgent Expiry</span>
+                                        <div className="ml-auto w-3 h-3 rounded-full bg-orange-500" />
+                                        <span className="text-gray-600">Vendor Issue</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-blue-400" />
+                                        <span className="text-gray-600">Temp Alert</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
                     </div>
 
                     {/* Performance Insights */}
                     <div className="mb-8">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Supply Chain Performance</h3>
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Performance Insights</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
+                        </div>
 
-                    {/* Tab Navigation */}
-                    <div className="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto">
-                        {['Inventory Status', 'Procurement', 'Cost Analytics', 'Cold Chain'].map((tab) => (
-                            <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab
-                                    ? 'border-blue-600 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                    }`}
-                            >
-                                {tab}
-                            </button>
-                        ))}
-                    </div>
 
-                    {/* Tab Content */}
-                    <div className="space-y-6">
-                        {activeTab === 'Inventory Status' && (
-                            <>
-                                {/* Charts */}
-                                <div className="grid grid-cols-3 gap-6">
-                                    {/* Availability Trend */}
-                                    <div className="col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 min-h-[300px] flex flex-col">
-                                        <h3 className="text-sm font-semibold text-gray-900 mb-4">Item Availability Trend (12 weeks)</h3>
-                                        <div className="flex-1 w-full h-[250px]">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <LineChart data={inventoryTrendData}>
-                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                                                    <XAxis
-                                                        dataKey="week"
-                                                        axisLine={false}
-                                                        tickLine={false}
-                                                        tick={{ fill: '#9ca3af', fontSize: 12 }}
-                                                        dy={10}
-                                                    />
-                                                    <YAxis
-                                                        axisLine={false}
-                                                        tickLine={false}
-                                                        tick={{ fill: '#9ca3af', fontSize: 12 }}
-                                                        domain={[85, 100]}
-                                                        tickFormatter={(value) => `${value}%`}
-                                                    />
-                                                    <Tooltip
-                                                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                                        formatter={(value: number, name: string) => [`${value}%`, name === 'availability' ? 'Availability' : 'Stockouts']}
-                                                    />
-                                                    <Line
-                                                        type="monotone"
-                                                        dataKey="availability"
-                                                        stroke="#10b981"
-                                                        strokeWidth={3}
-                                                        dot={{ fill: '#10b981', strokeWidth: 2, r: 4, stroke: '#fff' }}
-                                                        activeDot={{ r: 6, strokeWidth: 0 }}
-                                                    />
-                                                </LineChart>
-                                            </ResponsiveContainer>
-                                        </div>
+                        {/* KPI Summary Cards */}
+                        <div className="grid grid-cols-5 gap-4 mb-6">
+                            {[
+                                { label: 'Availability', value: `${supplyChainData.summary.criticalAvailability}%`, icon: CheckCircle2, color: 'text-emerald-600' },
+                                { label: 'Monthly Spend', value: `$${(supplyChainData.summary.monthlySpend / 1000000).toFixed(1)}M`, icon: DollarSign, color: 'text-blue-600' },
+                                { label: 'Wastage Index', value: `${supplyChainData.summary.wastageIndex}%`, icon: TrendingUp, color: 'text-red-600' },
+                                { label: 'Active Vendors', value: supplyChainData.summary.activeVendors.toString(), icon: Truck, color: 'text-blue-600' },
+                                { label: 'Temp Alerts', value: supplyChainData.temperatureAlerts.length.toString(), icon: Thermometer, color: 'text-orange-600' },
+                            ].map((metric) => (
+                                <div key={metric.label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                    <div className="flex items-start justify-between mb-2">
+                                        <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            {metric.label}
+                                        </span>
+                                        {metric.icon && (
+                                            <metric.icon className={`w-4 h-4 ${metric.color || 'text-gray-400'}`} />
+                                        )}
                                     </div>
+                                    <div className="text-3xl font-semibold text-gray-900">{metric.value}</div>
+                                </div>
+                            ))}
+                        </div>
 
-                                    {/* ABC Analysis Pie Chart */}
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 min-h-[300px] flex flex-col">
-                                        <h3 className="text-sm font-semibold text-gray-900 mb-4">ABC Inventory Analysis</h3>
-                                        <div className="flex-1 w-full h-[250px]">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <PieChart>
-                                                    <Pie
-                                                        data={abcData}
-                                                        cx="50%"
-                                                        cy="50%"
-                                                        innerRadius={60}
-                                                        outerRadius={80}
-                                                        paddingAngle={5}
-                                                        dataKey="value"
-                                                    >
-                                                        {abcData.map((entry, index) => (
-                                                            <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
-                                                        ))}
-                                                    </Pie>
-                                                    <Tooltip
-                                                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                                        formatter={(value: number) => [`${value}%`, '']}
-                                                    />
-                                                    <Legend
-                                                        verticalAlign="bottom"
-                                                        height={36}
-                                                        iconType="circle"
-                                                        formatter={(value, entry: any) => <span className="text-xs text-gray-600 ml-1">{value}</span>}
-                                                    />
-                                                </PieChart>
-                                            </ResponsiveContainer>
-                                        </div>
+                        {/* Analysis Charts */}
+                        <div className="grid grid-cols-2 gap-6 mb-6">
+                            {/* Availability Trend */}
+                            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Item Availability Trend (12 Weeks)</h3>
+                                <ResponsiveContainer width="100%" height={280}>
+                                    <LineChart data={inventoryTrendData}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                                        <XAxis dataKey="week" tick={{ fontSize: 11 }} />
+                                        <YAxis tick={{ fontSize: 11 }} domain={[85, 100]} />
+                                        <Tooltip />
+                                        <Line type="monotone" dataKey="availability" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                                <div className="text-xs text-gray-500 mt-2 text-center">
+                                    Availability consistently above 95% target for the last 6 weeks.
+                                </div>
+                            </div>
+
+                            {/* Cost Trend */}
+                            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Monthly Spend vs Budget</h3>
+                                <ResponsiveContainer width="100%" height={280}>
+                                    <BarChart data={costTrendData}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                                        <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                                        <YAxis tick={{ fontSize: 11 }} tickFormatter={(value) => `$${value}M`} />
+                                        <Tooltip />
+                                        <Bar dataKey="spend" name="Actual Spend" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="budget" name="Budget" fill="#e5e7eb" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                                <div className="flex items-center justify-center gap-4 mt-2 text-xs">
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-3 h-3 rounded-full bg-blue-500" />
+                                        <span className="text-gray-600">Actual</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-3 h-3 rounded-full bg-gray-200" />
+                                        <span className="text-gray-600">Budget</span>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                {/* Inventory Summary Cards */}
-                                <div className="grid grid-cols-4 gap-6">
-                                    <button
-                                        onClick={() => setActiveTier3Category('high-risk-items')}
-                                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left group"
-                                    >
-                                        <div className="flex items-center justify-between mb-4">
-                                            <AlertTriangle className="w-5 h-5 text-orange-500" />
-                                            <span className="text-xs font-medium text-orange-600">Action Needed</span>
-                                        </div>
-                                        <div className="text-3xl font-semibold text-gray-900 mb-1">14</div>
-                                        <div className="text-sm text-gray-500">High Risk Items</div>
-                                    </button>
-
-                                    <button
-                                        onClick={() => setActiveTier3Category('expiring-items')}
-                                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left group"
-                                    >
-                                        <div className="flex items-center justify-between mb-4">
-                                            <Clock className="w-5 h-5 text-red-500" />
-                                            <span className="text-xs font-medium text-red-600">Urgent</span>
-                                        </div>
-                                        <div className="text-3xl font-semibold text-gray-900 mb-1">312</div>
-                                        <div className="text-sm text-gray-500">Units Expiring (30d)</div>
-                                    </button>
-
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <Package className="w-5 h-5 text-blue-500" />
-                                        </div>
-                                        <div className="text-3xl font-semibold text-gray-900 mb-1">22</div>
-                                        <div className="text-sm text-gray-500">Avg Days on Hand</div>
-                                    </div>
-
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <TrendingUp className="w-5 h-5 text-emerald-500" />
-                                        </div>
-                                        <div className="text-3xl font-semibold text-gray-900 mb-1">94%</div>
-                                        <div className="text-sm text-gray-500">Fast Movers Fill Rate</div>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {activeTab === 'Procurement' && (
-                            <>
-                                {/* Procurement Metrics */}
-                                <div className="grid grid-cols-4 gap-6 mb-6">
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <div className="text-sm font-medium text-gray-500 mb-2">PO Cycle Time</div>
-                                        <div className="text-3xl font-semibold text-gray-900">3.2d</div>
-                                        <div className="text-xs text-emerald-600 mt-1">-0.5d vs last month</div>
-                                    </div>
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <div className="text-sm font-medium text-gray-500 mb-2">On-Time Delivery</div>
-                                        <div className="text-3xl font-semibold text-gray-900">88%</div>
-                                        <div className="text-xs text-orange-600 mt-1">-2% vs target</div>
-                                    </div>
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <div className="text-sm font-medium text-gray-500 mb-2">Contract Compliance</div>
-                                        <div className="text-3xl font-semibold text-gray-900">91%</div>
-                                        <div className="text-xs text-emerald-600 mt-1">+1% improvement</div>
-                                    </div>
-                                    <button
-                                        onClick={() => setActiveTier3Category('vendor-issues')}
-                                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left"
-                                    >
-                                        <div className="text-sm font-medium text-gray-500 mb-2">Vendor Issues</div>
-                                        <div className="text-3xl font-semibold text-gray-900">7</div>
-                                        <div className="text-xs text-orange-600 mt-1">This month</div>
-                                    </button>
-                                </div>
-
-                                {/* Vendor Performance Table */}
-                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Vendor Performance</h3>
-                                    <table className="w-full">
-                                        <thead>
-                                            <tr className="border-b border-gray-100">
-                                                <th className="text-left py-3 px-2 text-xs font-semibold text-gray-500 uppercase">Vendor</th>
-                                                <th className="text-right py-3 px-2 text-xs font-semibold text-gray-500 uppercase">On-Time %</th>
-                                                <th className="text-right py-3 px-2 text-xs font-semibold text-gray-500 uppercase">Quality %</th>
-                                                <th className="text-right py-3 px-2 text-xs font-semibold text-gray-500 uppercase">Issues</th>
-                                                <th className="text-left py-3 px-2 text-xs font-semibold text-gray-500 uppercase">Status</th>
+                        {/* Vendor Issues Table */}
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                            <h3 className="text-sm font-semibold text-gray-900 mb-4">Recent Vendor Issues</h3>
+                            <div className="overflow-hidden">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b border-gray-200">
+                                            <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Vendor</th>
+                                            <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Issue</th>
+                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Severity</th>
+                                            <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Impact</th>
+                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {supplyChainData.vendorIssues.slice(0, 5).map((issue) => (
+                                            <tr key={issue.id} className="border-b border-gray-100 hover:bg-gray-50">
+                                                <td className="text-sm text-gray-900 py-3 px-4">{issue.vendor}</td>
+                                                <td className="text-sm text-gray-900 py-3 px-4">{issue.issue}</td>
+                                                <td className="text-sm text-center py-3 px-4">
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${issue.severity === 'high' ? 'bg-red-100 text-red-700' : issue.severity === 'medium' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                        {issue.severity.toUpperCase()}
+                                                    </span>
+                                                </td>
+                                                <td className="text-sm text-gray-900 py-3 px-4">{issue.impact}</td>
+                                                <td className="text-sm text-center text-gray-500 py-3 px-4">{issue.reportedDate}</td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            {vendorPerformanceData.map((vendor, idx) => (
-                                                <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50">
-                                                    <td className="py-3 px-2 text-sm font-medium text-gray-900">{vendor.vendor}</td>
-                                                    <td className="py-3 px-2 text-right">
-                                                        <span className={`text-sm font-semibold ${vendor.onTime >= 90 ? 'text-emerald-600' : 'text-orange-600'}`}>
-                                                            {vendor.onTime}%
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-2 text-right">
-                                                        <span className={`text-sm font-semibold ${vendor.quality >= 93 ? 'text-emerald-600' : 'text-orange-600'}`}>
-                                                            {vendor.quality}%
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-2 text-right">
-                                                        <span className={`text-sm font-semibold ${vendor.issues <= 2 ? 'text-gray-400' : 'text-orange-600'}`}>
-                                                            {vendor.issues}
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-2">
-                                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${vendor.onTime >= 90 && vendor.issues <= 2
-                                                            ? 'bg-emerald-50 text-emerald-700'
-                                                            : 'bg-orange-50 text-orange-700'
-                                                            }`}>
-                                                            <div className={`w-1.5 h-1.5 rounded-full ${vendor.onTime >= 90 && vendor.issues <= 2 ? 'bg-emerald-500' : 'bg-orange-500'
-                                                                }`}></div>
-                                                            {vendor.onTime >= 90 && vendor.issues <= 2 ? 'Good' : 'Review'}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </>
-                        )}
-
-                        {activeTab === 'Cost Analytics' && (
-                            <>
-                                <div className="grid grid-cols-2 gap-6">
-                                    {/* Cost Trend */}
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <h3 className="text-sm font-semibold text-gray-900 mb-4">Monthly Spend Trend</h3>
-                                        <ResponsiveContainer width="100%" height={250}>
-                                            <BarChart data={costTrendData}>
-                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                                                <XAxis dataKey="month" stroke="#9ca3af" style={{ fontSize: '12px' }} />
-                                                <YAxis stroke="#9ca3af" style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}M`} />
-                                                <Tooltip />
-                                                <Legend iconType="square" wrapperStyle={{ fontSize: '12px' }} />
-                                                <Bar dataKey="spend" fill="#3b82f6" name="Actual Spend" radius={[4, 4, 0, 0]} />
-                                                <Bar dataKey="budget" fill="#cbd5e1" name="Budget" radius={[4, 4, 0, 0]} />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    </div>
-
-                                    {/* Cost Summary */}
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <h3 className="text-sm font-semibold text-gray-900 mb-4">Cost Breakdown</h3>
-                                        <div className="space-y-4">
-                                            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                                <div>
-                                                    <div className="text-sm font-medium text-gray-900">Wastage Cost (YTD)</div>
-                                                    <div className="text-xs text-gray-500">Expired + Damaged items</div>
-                                                </div>
-                                                <div className="text-lg font-semibold text-red-600">$28.4K</div>
-                                            </div>
-                                            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                                <div>
-                                                    <div className="text-sm font-medium text-gray-900">Price Variance</div>
-                                                    <div className="text-xs text-gray-500">Contract vs actual</div>
-                                                </div>
-                                                <div className="text-lg font-semibold text-orange-600">+3.4%</div>
-                                            </div>
-                                            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                                <div>
-                                                    <div className="text-sm font-medium text-gray-900">Avg Lead Time</div>
-                                                    <div className="text-xs text-gray-500">Order to delivery</div>
-                                                </div>
-                                                <div className="text-lg font-semibold text-gray-900">4.8d</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {activeTab === 'Cold Chain' && (
-                            <>
-                                {/* Temperature Compliance */}
-                                <div className="grid grid-cols-3 gap-6 mb-6">
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <div className="text-sm font-medium text-gray-500 mb-2">Overall Compliance</div>
-                                        <div className="text-3xl font-semibold text-gray-900">97%</div>
-                                        <div className="text-xs text-emerald-600 mt-1">Within acceptable range</div>
-                                    </div>
-                                    <button
-                                        onClick={() => setActiveTier3Category('temp-alerts')}
-                                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left"
-                                    >
-                                        <div className="text-sm font-medium text-gray-500 mb-2">Active Alerts</div>
-                                        <div className="text-3xl font-semibold text-gray-900">1</div>
-                                        <div className="text-xs text-red-600 mt-1">Fridge-4 out of range</div>
-                                    </button>
-                                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <div className="text-sm font-medium text-gray-500 mb-2">Monitored Units</div>
-                                        <div className="text-3xl font-semibold text-gray-900">5</div>
-                                        <div className="text-xs text-gray-500 mt-1">Active cold storage</div>
-                                    </div>
-                                </div>
-
-                                {/* Temperature Log Table */}
-                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Temperature Monitoring</h3>
-                                    <table className="w-full">
-                                        <thead>
-                                            <tr className="border-b border-gray-100">
-                                                <th className="text-left py-3 px-2 text-xs font-semibold text-gray-500 uppercase">Location</th>
-                                                <th className="text-right py-3 px-2 text-xs font-semibold text-gray-500 uppercase">Current Temp</th>
-                                                <th className="text-right py-3 px-2 text-xs font-semibold text-gray-500 uppercase">Compliance (7d)</th>
-                                                <th className="text-left py-3 px-2 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {temperatureData.map((item, idx) => (
-                                                <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50">
-                                                    <td className="py-3 px-2 text-sm font-medium text-gray-900">{item.location}</td>
-                                                    <td className="py-3 px-2 text-right">
-                                                        <span className={`text-sm font-semibold ${item.status === 'ok' ? 'text-gray-900' : 'text-red-600'}`}>
-                                                            {item.temp}°C
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-2 text-right">
-                                                        <span className={`text-sm font-semibold ${item.compliance >= 95 ? 'text-emerald-600' : 'text-red-600'}`}>
-                                                            {item.compliance}%
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-2">
-                                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${item.status === 'ok'
-                                                            ? 'bg-emerald-50 text-emerald-700'
-                                                            : 'bg-red-50 text-red-700'
-                                                            }`}>
-                                                            <div className={`w-1.5 h-1.5 rounded-full ${item.status === 'ok' ? 'bg-emerald-500' : 'bg-red-500'
-                                                                }`}></div>
-                                                            {item.status === 'ok' ? 'Stable' : 'Out of Range'}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </>
-                        )}
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="text-xs text-gray-500 mt-3">
+                                Total active vendor issues: <span className="font-semibold text-gray-900">{supplyChainData.vendorIssues.length}</span>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-
-                    {/* Action Recommendations */}
-                    <div className="mt-8">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Optimization Opportunities</h3>
 
                     {/* AI Insights */}
-                    <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
-                        <div className="flex items-center gap-2 mb-4">
-                            <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-                            <h3 className="text-sm font-semibold text-blue-900">AI INSIGHTS</h3>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="flex items-start justify-between bg-white p-4 rounded-xl shadow-sm border border-blue-100/50">
-                                <div className="flex gap-3">
-                                    <div className="mt-0.5">
-                                        <AlertTriangle className="w-5 h-5 text-orange-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-900 font-medium">312 units expiring in 30 days worth $42K. Prioritize distribution or adjust ordering patterns.</p>
+                    <div className="mb-8">
+                        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl p-8 border border-indigo-100/50 shadow-sm relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100/30 rounded-full blur-3xl -mr-16 -mt-16" />
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-100/30 rounded-full blur-3xl -ml-16 -mb-16" />
+
+                            <div className="relative flex items-start gap-6">
+                                <div className="p-4 bg-white rounded-2xl shadow-sm border border-indigo-100">
+                                    <div className="relative">
+                                        <div className="absolute inset-0 bg-indigo-400 blur-lg opacity-20" />
+                                        <Activity className="w-8 h-8 text-indigo-600 relative z-10" />
                                     </div>
                                 </div>
-                                <button className="text-sm font-medium text-blue-600 hover:text-blue-700 whitespace-nowrap">Apply</button>
-                            </div>
-                            <div className="flex items-start justify-between bg-white p-4 rounded-xl shadow-sm border border-blue-100/50">
-                                <div className="flex gap-3">
-                                    <div className="mt-0.5">
-                                        <DollarSign className="w-5 h-5 text-emerald-500" />
+                                <div>
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <h3 className="text-lg font-bold text-gray-900">AI Supply Chain Optimization</h3>
+                                        <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">
+                                            New Insight
+                                        </span>
                                     </div>
-                                    <div>
-                                        <p className="text-sm text-gray-900 font-medium">Consolidate orders from 3 vendors to 2 to save $18K annually through volume discounts.</p>
-                                    </div>
-                                </div>
-                                <button className="text-sm font-medium text-blue-600 hover:text-blue-700 whitespace-nowrap">View Details</button>
-                            </div>
-                            <div className="flex items-start justify-between bg-white p-4 rounded-xl shadow-sm border border-blue-100/50">
-                                <div className="flex gap-3">
-                                    <div className="mt-0.5">
-                                        <Thermometer className="w-5 h-5 text-red-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-900 font-medium">Blood Bank Fridge-4 showing temperature instability. Schedule technician visit to prevent inventory loss.</p>
+                                    <p className="text-gray-600 leading-relaxed text-lg">
+                                        Analysis of procurement patterns suggests a <span className="font-semibold text-indigo-700">15% potential cost saving</span> by consolidating vendor orders for 'Surgical Supplies' and 'Lab Reagents'.
+                                        Predicted wastage risk is elevated for 'Antibiotics' due to seasonal demand fluctuation.
+                                    </p>
+                                    <div className="mt-6 flex items-center gap-4">
+                                        <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm shadow-indigo-200">
+                                            View Optimization Plan
+                                        </button>
+                                        <button className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-xl border border-gray-200 transition-colors">
+                                            Dismiss
+                                        </button>
                                     </div>
                                 </div>
-                                <button className="text-sm font-medium text-blue-600 hover:text-blue-700 whitespace-nowrap">Schedule</button>
                             </div>
                         </div>
                     </div>
+
+                    {/* TIER 3: OPTIMIZE - Recommended Actions */}
+                    <div>
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Recommended Actions</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
+                        </div>
+
+                        <div className="grid grid-cols-4 gap-4">
+                            {/* Action Card: High Risk Items */}
+                            <button
+                                onClick={() => setTier3Category('high-risk-items')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="p-2 bg-red-100 rounded-lg group-hover:bg-red-200 transition-colors">
+                                        <AlertTriangle className="w-5 h-5 text-red-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-red-600 bg-red-100 px-2 py-1 rounded-full">Critical</span>
+                                </div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">{supplyChainData.highRiskItems.length}</div>
+                                <div className="text-sm font-medium text-gray-700 mb-2">High Risk Items</div>
+                                <div className="text-xs text-gray-500">Items below minimum stock levels. Click to view replenishment plan.</div>
+                            </button>
+
+                            {/* Action Card: Expiring Items */}
+                            <button
+                                onClick={() => setTier3Category('expiring-items')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+                                        <Clock className="w-5 h-5 text-orange-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-orange-600 bg-orange-100 px-2 py-1 rounded-full">Urgent</span>
+                                </div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">{supplyChainData.expiringItems.urgent}</div>
+                                <div className="text-sm font-medium text-gray-700 mb-2">Expiring Units</div>
+                                <div className="text-xs text-gray-500">Items expiring within 7 days. Click for wastage prevention.</div>
+                            </button>
+
+                            {/* Action Card: Vendor Issues */}
+                            <button
+                                onClick={() => setTier3Category('vendor-issues')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                                        <Truck className="w-5 h-5 text-blue-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded-full">Review</span>
+                                </div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">{supplyChainData.vendorIssues.length}</div>
+                                <div className="text-sm font-medium text-gray-700 mb-2">Vendor Issues</div>
+                                <div className="text-xs text-gray-500">Active vendor performance issues. Click to view report.</div>
+                            </button>
+
+                            {/* Action Card: Temp Alerts */}
+                            <button
+                                onClick={() => setTier3Category('temp-alerts')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="p-2 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
+                                        <Thermometer className="w-5 h-5 text-yellow-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full">Action Needed</span>
+                                </div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">{supplyChainData.temperatureAlerts.length}</div>
+                                <div className="text-sm font-medium text-gray-700 mb-2">Temp Alerts</div>
+                                <div className="text-xs text-gray-500">Cold chain deviations detected. Click for impact analysis.</div>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Tier 3 Overlay */}
-            {activeTier3Category && (
+            {/* Tier 3 Modal */}
+            {tier3Category && (
                 <SupplyChainTier3
-                    category={activeTier3Category}
-                    onClose={() => setActiveTier3Category(null)}
+                    category={tier3Category}
+                    onClose={() => setTier3Category(null)}
                 />
             )}
         </>

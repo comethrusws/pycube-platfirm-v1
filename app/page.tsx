@@ -11,7 +11,7 @@ import { FacilityMap } from '@/components/facility-map'
 import { Footer } from '@/components/footer'
 import { BiomedicalAssetsDetail } from '@/components/biomedical-assets-detail'
 import { TransfusionDetail } from '@/components/transfusion-detail'
-import { SpecimenDigitizationOverview } from '@/components/specimen-digitization-overview'
+import { LabMedicineDetail } from '@/components/lab-medicine-detail'
 import { InfraHealthDetail } from '@/components/infra-health-detail'
 import { SupplyChainDetail } from '@/components/supply-chain-detail'
 
@@ -132,9 +132,9 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* Specimen Digitization Overview Section */}
+        {/* Lab Medicine Detail Section */}
         <div ref={specimenRef}>
-          <SpecimenDigitizationOverview
+          <LabMedicineDetail
             isOpen={showSpecimenDetail}
             onClose={() => setShowSpecimenDetail(false)}
           />
