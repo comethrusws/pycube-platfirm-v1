@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ChevronDown, AlertTriangle, TrendingUp, Package, DollarSign, Clock, Thermometer, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar } from 'recharts'
 import { SupplyChainTier3 } from './supply-chain-tier-3'
+import { supplyChainData } from '@/lib/data'
 
 interface SupplyChainDetailProps {
     isOpen: boolean
@@ -89,27 +90,27 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                             <div className="text-sm font-medium text-gray-500 mb-2">Health Score</div>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-semibold text-gray-900">98.5%</span>
+                                <span className="text-4xl font-semibold text-gray-900">{supplyChainData.summary.healthScore}%</span>
                                 <span className="text-sm font-medium text-emerald-600 flex items-center">
                                     <ArrowUpRight className="w-4 h-4 mr-0.5" />
-                                    +0.5% this month
+                                    +{supplyChainData.summary.trendChange}% this month
                                 </span>
                             </div>
                         </div>
                         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                             <div className="text-sm font-medium text-gray-500 mb-2">Monthly Spend</div>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-semibold text-gray-900">$430K</span>
+                                <span className="text-4xl font-semibold text-gray-900">${(supplyChainData.summary.monthlySpend / 1000000).toFixed(1)}M</span>
                                 <span className="text-sm font-medium text-orange-600 flex items-center">
                                     <ArrowUpRight className="w-4 h-4 mr-0.5" />
-                                    +2.1%
+                                    +{supplyChainData.summary.spendChange}%
                                 </span>
                             </div>
                         </div>
                         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                             <div className="text-sm font-medium text-gray-500 mb-2">Critical Item Availability</div>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-semibold text-gray-900">98.5%</span>
+                                <span className="text-4xl font-semibold text-gray-900">{supplyChainData.summary.criticalAvailability}%</span>
                                 <span className="text-sm font-medium text-emerald-600 flex items-center">
                                     <ArrowUpRight className="w-4 h-4 mr-0.5" />
                                     Stable
@@ -120,11 +121,11 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                             <div className="text-sm font-medium text-gray-500 mb-2">Wastage Index</div>
                             <div className="space-y-1">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-gray-900 font-medium">1.5% wastage</span>
-                                    <span className="text-gray-500">Target: 1%</span>
+                                    <span className="text-gray-900 font-medium">{supplyChainData.summary.wastageIndex}% wastage</span>
+                                    <span className="text-gray-500">Target: {supplyChainData.summary.wastageTarget}%</span>
                                 </div>
                                 <div className="w-full bg-gray-100 rounded-full h-2">
-                                    <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '25%' }} />
+                                    <div className="bg-emerald-500 h-2 rounded-full" style={{ width: `${(supplyChainData.summary.wastageIndex / supplyChainData.summary.wastageTarget) * 10}%` }} />
                                 </div>
                             </div>
                         </div>

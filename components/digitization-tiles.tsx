@@ -1,42 +1,18 @@
 import { Package, TestTube, Droplet, Truck, Settings } from 'lucide-react'
+import { digitizationTiles } from '@/lib/data'
 
-const tiles = [
-  {
-    label: 'Biomedical assets',
-    value: 99,
-    secondary: '5005/5050',
-    description: 'Coverage',
-    Icon: Package,
-  },
-  {
-    label: 'Lab Medicine',
-    value: 96,
-    secondary: 'last 7 days',
-    description: 'Tracked samples',
-    Icon: TestTube,
-  },
-  {
-    label: 'Transfusion Medicine',
-    value: 92,
-    secondary: 'Blood bank',
-    description: 'Availability',
-    Icon: Droplet,
-  },
-  {
-    label: 'Supply chain',
-    value: 98.5,
-    secondary: 'Tracked items',
-    description: 'Visibility',
-    Icon: Truck,
-  },
-  {
-    label: 'Infra Health',
-    value: 96,
-    secondary: '98% tag health',
-    description: 'Gateway Status',
-    Icon: Settings,
-  },
-]
+const iconMap = {
+  Package,
+  TestTube,
+  Droplet,
+  Truck,
+  Settings,
+}
+
+const tiles = digitizationTiles.map(tile => ({
+  ...tile,
+  Icon: iconMap[tile.icon as keyof typeof iconMap],
+}))
 
 function getStatusColor(value: number) {
   if (value > 98) return 'text-emerald-500'
