@@ -1,12 +1,17 @@
 'use client'
 
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
+
 type AlertSeverity = 'critical' | 'warning' | 'success'
 
 interface Alert {
   id: number
   severity: AlertSeverity
   title: string
+  metric: string
   message: string
+  href?: string
 }
 
 const alerts: Alert[] = [
@@ -14,76 +19,94 @@ const alerts: Alert[] = [
   {
     id: 1,
     severity: 'critical',
-    title: 'Equipment Maintenance Required',
-    message: '28 high-risk OR/Lab devices need immediate attention. Preventive action recommended to avoid downtime.'
+    title: 'Equipment Maintenance',
+    metric: '28 Devices',
+    message: 'High-risk OR/Lab devices need immediate attention.',
+    href: '/maintenance'
   },
   {
     id: 2,
     severity: 'critical',
     title: 'Blood Supply Alert',
-    message: 'O-negative inventory critically low - 12 units remaining. Emergency procurement initiated.'
+    metric: '12 Units',
+    message: 'O-negative inventory critically low. Emergency procurement initiated.'
   },
   {
     id: 3,
     severity: 'critical',
-    title: 'Sterilization Failure Detected',
-    message: 'Autoclave malfunction in Central Supply - 47 surgical instrument sets affected. OR schedule impact expected.'
+    title: 'Sterilization Failure',
+    metric: '47 Sets',
+    message: 'Autoclave malfunction in Central Supply affecting surgical sets.'
   },
   // WARNING (Orange) - 2 cards
   {
     id: 4,
     severity: 'warning',
-    title: 'Inventory Expiration Alert',
-    message: '24 RBC units approaching expiration within 48 hours. $540K waste prevention protocols activated.'
+    title: 'Inventory Expiration',
+    metric: '24 Units',
+    message: 'RBC units approaching expiration within 48 hours.'
   },
   {
     id: 5,
     severity: 'warning',
     title: 'High Census Warning',
-    message: 'ICU bed capacity at 89% - consider diversion planning for critical admits.'
+    metric: '89% Capacity',
+    message: 'ICU bed capacity high - consider diversion planning.'
   },
   // SUCCESS (Green) - 3 cards
   {
     id: 6,
     severity: 'success',
-    title: 'Hospital Operating Normally',
-    message: '$4.8M annualized savings identified. 23 optimization opportunities flagged across OR, Lab & Supply Chain.'
+    title: 'Hospital Operations',
+    metric: '$4.8M Savings',
+    message: 'Annualized savings identified across OR, Lab & Supply Chain.',
+    href: '/financial-overview'
   },
   {
     id: 7,
     severity: 'success',
-    title: 'Asset Optimization Complete',
-    message: '312 underutilized assets successfully redeployed. $1.4M purchase request avoided through smart redistribution.'
+    title: 'Asset Optimization',
+    metric: '312 Assets',
+    message: 'Underutilized assets successfully redeployed.'
   },
   {
     id: 8,
     severity: 'success',
-    title: 'Quality Milestone Achieved',
-    message: '98% specimen traceability across all departments. Zero custody breaks recorded in the past 30 days.'
+    title: 'Quality Milestone',
+    metric: '98% Traceability',
+    message: 'Specimen traceability across all departments.'
   }
 ]
 
-// Severity configuration with light hue backgrounds
+// Severity configuration
 const severityConfig = {
   critical: {
     bgColor: 'bg-red-50',
     dotColor: 'bg-red-500',
-    borderColor: 'border-red-100'
+    borderColor: 'border-red-100',
+    textColor: 'text-red-700',
+    metricColor: 'text-red-600',
+    hoverBorder: 'hover:border-red-200'
   },
   warning: {
     bgColor: 'bg-orange-50',
     dotColor: 'bg-orange-500',
-    borderColor: 'border-orange-100'
+    borderColor: 'border-orange-100',
+    textColor: 'text-orange-700',
+    metricColor: 'text-orange-600',
+    hoverBorder: 'hover:border-orange-200'
   },
   success: {
     bgColor: 'bg-green-50',
     dotColor: 'bg-green-500',
-    borderColor: 'border-green-100'
+    borderColor: 'border-green-100',
+    textColor: 'text-green-700',
+    metricColor: 'text-green-600',
+    hoverBorder: 'hover:border-green-200'
   }
 }
 
 export function AISummaryBanner() {
-  // Industry standard order: Red → Orange → Green
   const criticalAlerts = alerts.filter(a => a.severity === 'critical')
   const warningAlerts = alerts.filter(a => a.severity === 'warning')
   const successAlerts = alerts.filter(a => a.severity === 'success')
@@ -98,21 +121,21 @@ export function AISummaryBanner() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column: Critical (Red) */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {criticalAlerts.map((alert) => (
               <AlertCard key={alert.id} alert={alert} />
             ))}
           </div>
 
           {/* Middle Column: Warning (Orange) */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {warningAlerts.map((alert) => (
               <AlertCard key={alert.id} alert={alert} />
             ))}
           </div>
 
           {/* Right Column: Success (Green) */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {successAlerts.map((alert) => (
               <AlertCard key={alert.id} alert={alert} />
             ))}
@@ -126,10 +149,8 @@ export function AISummaryBanner() {
 function AlertCard({ alert }: { alert: Alert }) {
   const config = severityConfig[alert.severity]
 
-  return (
-    <div
-      className={`flex items-start gap-4 p-4 rounded-xl border ${config.borderColor} ${config.bgColor} hover:shadow-md transition-all duration-200`}
-    >
+  const CardContent = () => (
+    <>
       {/* Status indicator dot */}
       <div className="flex-shrink-0 mt-1">
         <div className="flex h-8 w-8 rounded-full bg-white border border-gray-100 items-center justify-center shadow-sm">
@@ -139,13 +160,39 @@ function AlertCard({ alert }: { alert: Alert }) {
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-semibold text-gray-900 mb-2">
-          {alert.title}
-        </h3>
-        <p className="text-sm text-gray-600 leading-relaxed">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <h3 className="text-sm font-semibold text-gray-900 truncate">
+            {alert.title}
+          </h3>
+          <span className={`text-xs font-bold px-2 py-0.5 rounded-full bg-white/60 ${config.metricColor} border border-black/5`}>
+            {alert.metric}
+          </span>
+        </div>
+        <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
           {alert.message}
         </p>
+        {alert.href && (
+          <div className={`mt-2 flex items-center text-xs font-medium ${config.textColor} group-hover:underline`}>
+            View Analysis <ArrowRight className="ml-1 h-3 w-3" />
+          </div>
+        )}
       </div>
+    </>
+  )
+
+  const cardClasses = `flex items-start gap-4 p-4 rounded-xl border ${config.borderColor} ${config.bgColor} ${config.hoverBorder} hover:shadow-md transition-all duration-200 group relative`
+
+  if (alert.href) {
+    return (
+      <Link href={alert.href} className={cardClasses}>
+        <CardContent />
+      </Link>
+    )
+  }
+
+  return (
+    <div className={cardClasses}>
+      <CardContent />
     </div>
   )
 }
