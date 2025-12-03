@@ -189,6 +189,14 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         </div>
                     </div>
 
+                    {/* TIER 2: ANALYZE - Performance Insights */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
+                            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Performance Insights</h3>
+                            <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
+                        </div>
+
                     {/* New KPI Cards Grid */}
                     <div className="grid grid-cols-4 gap-6 mb-8">
                         {/* Row 1 */}
@@ -398,6 +406,7 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                             </div>
                         </div>
                     </div>
+                    </div>
 
                     {/* Middle Row: Map & List */}
                     <div className="grid grid-cols-12 gap-6 mb-8">
@@ -473,6 +482,14 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         </div>
                     </div>
 
+                    {/* TIER 3: OPTIMIZE - Recommended Actions */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="h-px bg-gradient-to-r from-purple-500 to-transparent flex-1" />
+                            <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider">Tier 3: Optimize - Deep Dive & Actions</h3>
+                            <div className="h-px bg-gradient-to-l from-purple-500 to-transparent flex-1" />
+                        </div>
+
                     {/* Bottom Row: 5 Detail Cards */}
                     <div className="grid grid-cols-5 gap-6">
                         {/* Card 1: Blood Bags */}
@@ -546,6 +563,7 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                 <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
                             </div>
                         </button>
+                    </div>
                     </div>
                 </div>
             </div>

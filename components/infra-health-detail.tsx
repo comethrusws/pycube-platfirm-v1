@@ -78,6 +78,14 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                         </button>
                     </div>
 
+                    {/* TIER 2: ANALYZE - Performance Insights */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
+                            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Infrastructure Performance</h3>
+                            <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
+                        </div>
+
                     {/* Top Row: Key Metrics */}
                     <div className="grid grid-cols-5 gap-6 mb-8">
                         {/* Gateway Status */}
@@ -248,6 +256,15 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                             </tbody>
                         </table>
                     </div>
+                    </div>
+
+                    {/* TIER 3: OPTIMIZE - Deep Dive & Actions */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="h-px bg-gradient-to-r from-purple-500 to-transparent flex-1" />
+                            <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider">Tier 3: Optimize - Recommended Actions</h3>
+                            <div className="h-px bg-gradient-to-l from-purple-500 to-transparent flex-1" />
+                        </div>
 
                     {/* Bottom Row: Operational KPIs */}
                     <div className="grid grid-cols-5 gap-6">
@@ -317,6 +334,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <h4 className="text-3xl font-semibold text-gray-900">100%</h4>
                             </div>
                         </button>
+                    </div>
                     </div>
                 </div>
             </div>

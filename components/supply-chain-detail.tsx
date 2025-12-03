@@ -85,6 +85,14 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                         </button>
                     </div>
 
+                    {/* TIER 2: ANALYZE - Performance Insights */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
+                            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Supply Chain Performance</h3>
+                            <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
+                        </div>
+
                     {/* Section 1: KPIs at a Glance */}
                     <div className="grid grid-cols-4 gap-6 mb-8">
                         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
@@ -468,9 +476,18 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                             </>
                         )}
                     </div>
+                    </div>
+
+                    {/* TIER 3: OPTIMIZE - Recommended Actions */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="h-px bg-gradient-to-r from-purple-500 to-transparent flex-1" />
+                            <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider">Tier 3: Optimize - AI-Driven Recommendations</h3>
+                            <div className="h-px bg-gradient-to-l from-purple-500 to-transparent flex-1" />
+                        </div>
 
                     {/* AI Insights */}
-                    <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100 mt-8">
+                    <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
                         <div className="flex items-center gap-2 mb-4">
                             <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
                             <h3 className="text-sm font-semibold text-blue-900">AI INSIGHTS</h3>
@@ -510,6 +527,7 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                                 <button className="text-sm font-medium text-blue-600 hover:text-blue-700 whitespace-nowrap">Schedule</button>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>

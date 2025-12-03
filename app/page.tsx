@@ -9,7 +9,7 @@ import { FinancialImpactTiles } from '@/components/financial-impact-tiles'
 import { AIRecommendationsPanel } from '@/components/ai-recommendations-panel'
 import { FacilityMap } from '@/components/facility-map'
 import { Footer } from '@/components/footer'
-import { WorkflowDetail } from '@/components/workflow-detail'
+import { BiomedicalAssetsDetail } from '@/components/biomedical-assets-detail'
 import { TransfusionDetail } from '@/components/transfusion-detail'
 import { SpecimenDigitizationOverview } from '@/components/specimen-digitization-overview'
 import { InfraHealthDetail } from '@/components/infra-health-detail'
@@ -116,10 +116,9 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Expandable Detail Section */}
+        {/* Biomedical Assets Detail Section */}
         <div ref={detailRef}>
-          <WorkflowDetail
-            workflowName={expandedWorkflow || ''}
+          <BiomedicalAssetsDetail
             isOpen={!!expandedWorkflow}
             onClose={() => setExpandedWorkflow(null)}
           />

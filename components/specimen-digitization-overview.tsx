@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, ArrowUpRight, ArrowRight } from 'lucide-react'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, ArrowUpRight, ArrowRight, Clock, MapPin, TrendingUp } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar, Rectangle } from 'recharts'
 import { FacilityTable, DepartmentTable, CustodyBreaksTable, TransitRouteTable } from '@/components/specimen-tables'
 import { SpecimenDetail } from '@/components/specimen-detail'
+import { LabMedicineTier3 } from '@/components/lab-medicine-tier-3'
 import { labMedicineData } from '@/lib/data'
 
 interface SpecimenDigitizationOverviewProps {
@@ -72,6 +73,7 @@ const custodyBreaksData = labMedicineData.custodyBreaks.byFacility.map(f => ({
 export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigitizationOverviewProps) {
     const [activeTab, setActiveTab] = useState('By Facility')
     const [selectedSpecimenId, setSelectedSpecimenId] = useState<string | null>(null)
+    const [tier3Category, setTier3Category] = useState<string | null>(null)
 
     if (!isOpen) return null
 
@@ -409,7 +411,90 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                         </div>
                     </div>
                 </div>
+
+                {/* TIER 3: OPTIMIZE - Deep Dive Actions */}
+                <div className="mt-8">
+                    <div className="flex items-center gap-2 mb-6">
+                        <div className="h-px bg-gradient-to-r from-purple-500 to-transparent flex-1" />
+                        <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider">Tier 3: Optimize - Deep Dive Analysis</h3>
+                        <div className="h-px bg-gradient-to-l from-purple-500 to-transparent flex-1" />
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-4">
+                        {/* Custody Breaks Action Card */}
+                        <button
+                            onClick={() => setTier3Category('custody-breaks')}
+                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                        >
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="p-2 bg-red-100 rounded-lg group-hover:bg-red-200 transition-colors">
+                                    <AlertTriangle className="w-5 h-5 text-red-600" />
+                                </div>
+                                <span className="text-xs font-semibold text-red-600 bg-red-100 px-2 py-1 rounded-full">Critical</span>
+                            </div>
+                            <div className="text-3xl font-semibold text-gray-900 mb-1">618</div>
+                            <div className="text-sm font-medium text-gray-700 mb-2">Custody Breaks</div>
+                            <div className="text-xs text-gray-500">Analyze root causes and prevention strategies</div>
+                        </button>
+
+                        {/* Route Optimization Action Card */}
+                        <button
+                            onClick={() => setTier3Category('route-optimization')}
+                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                        >
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                                    <MapPin className="w-5 h-5 text-blue-600" />
+                                </div>
+                                <span className="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded-full">Optimize</span>
+                            </div>
+                            <div className="text-3xl font-semibold text-gray-900 mb-1">$120K</div>
+                            <div className="text-sm font-medium text-gray-700 mb-2">Transit Savings</div>
+                            <div className="text-xs text-gray-500">Route consolidation and timing improvements</div>
+                        </button>
+
+                        {/* Department Performance Action Card */}
+                        <button
+                            onClick={() => setTier3Category('department-performance')}
+                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                        >
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="p-2 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
+                                    <Clock className="w-5 h-5 text-yellow-600" />
+                                </div>
+                                <span className="text-xs font-semibold text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full">Action Needed</span>
+                            </div>
+                            <div className="text-3xl font-semibold text-gray-900 mb-1">27 min</div>
+                            <div className="text-sm font-medium text-gray-700 mb-2">TAT Reduction</div>
+                            <div className="text-xs text-gray-500">OR and ED turnaround time optimization</div>
+                        </button>
+
+                        {/* Specimen Risks Action Card */}
+                        <button
+                            onClick={() => setTier3Category('specimen-risks')}
+                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                        >
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+                                    <TrendingUp className="w-5 h-5 text-orange-600" />
+                                </div>
+                                <span className="text-xs font-semibold text-orange-600 bg-orange-100 px-2 py-1 rounded-full">High Risk</span>
+                            </div>
+                            <div className="text-3xl font-semibold text-gray-900 mb-1">72%</div>
+                            <div className="text-sm font-medium text-gray-700 mb-2">Risk Reduction</div>
+                            <div className="text-xs text-gray-500">Enhanced protocols for high-risk specimens</div>
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            {/* Tier 3 Modal */}
+            {tier3Category && (
+                <LabMedicineTier3
+                    category={tier3Category}
+                    onClose={() => setTier3Category(null)}
+                />
+            )}
         </div>
     )
 }
