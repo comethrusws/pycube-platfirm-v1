@@ -1,6 +1,6 @@
 'use client'
 
-import { X, Battery, Signal, TrendingUp, Network, Server, Radio, MapPin, AlertTriangle, Zap } from 'lucide-react'
+import { X, Battery, Signal, TrendingUp, Network, Server, Radio, MapPin, AlertTriangle, Zap, DollarSign, Clock, ArrowRight } from 'lucide-react'
 import { BarChart, Bar, LineChart, Line, AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip as RechartsTooltip, Legend, CartesianGrid, Cell } from 'recharts'
 
 interface InfraHealthTier3Props {
