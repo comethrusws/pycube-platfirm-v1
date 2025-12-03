@@ -663,52 +663,52 @@ export const infraHealthData = {
 export const biomedicalAssetsData = {
   // Tier 2 Summary
   summary: {
-    assetsDigitized: 44550,
-    pendingDigitization: 450,
-    totalAssets: 45000,
-    digitizationPercentage: 99,
-    dailyMovements: 2800,
+    assetsDigitized: 5005,
+    pendingDigitization: 1729,
+    totalAssets: 6734,
+    digitizationPercentage: 74,
+    dailyMovements: 420,
   },
 
   // Status Breakdown (Workflow States)
   statusBreakdown: [
-    { label: 'Collected', current: 9850, total: 10000 },
-    { label: 'Ready for Pick-up', current: 8920, total: 9000 },
-    { label: 'Picked-up', current: 10780, total: 11000 },
-    { label: 'In Transit', current: 8640, total: 9000 },
-    { label: 'Reached Destination', current: 44550, total: 45000 },
-    { label: 'Unknown', current: 450, total: 1000 },
+    { label: 'Collected', current: 1240, total: 1350 },
+    { label: 'Ready for Pick-up', current: 980, total: 1100 },
+    { label: 'Picked-up', current: 1180, total: 1250 },
+    { label: 'In Transit', current: 840, total: 950 },
+    { label: 'Reached Destination', current: 5005, total: 5500 },
+    { label: 'Unknown', current: 185, total: 350 },
   ] as AssetStatus[],
 
   // Yesterday's Pending (Comparison)
   yesterdayPending: {
-    total: 680,
-    collected: 285,
-    readyForPickup: 180,
-    inTransit: 215,
+    total: 95,
+    collected: 42,
+    readyForPickup: 28,
+    inTransit: 25,
     unknown: 0,
   },
 
   // Bottom Metrics
   metrics: {
-    overallCollected: 9850,
-    assetsDigitized: 44550,
-    assetsUnknown: 450,
-    assetsMissing: 285,
-    assetsDamaged: 142,
-    maintenanceDue: 1240,
-    highValueAssets: 8400,
+    overallCollected: 1240,
+    assetsDigitized: 5005,
+    assetsUnknown: 185,
+    assetsMissing: 42,
+    assetsDamaged: 18,
+    maintenanceDue: 156,
+    highValueAssets: 980,
   },
 
   // Asset Categories
   categories: [
-    { category: 'Surgical Equipment', count: 8500, digitized: 8415, percentage: 99 },
-    { category: 'Imaging Devices', count: 2400, digitized: 2376, percentage: 99 },
-    { category: 'Patient Monitors', count: 6800, digitized: 6732, percentage: 99 },
-    { category: 'Infusion Pumps', count: 5200, digitized: 5148, percentage: 99 },
-    { category: 'Ventilators', count: 1800, digitized: 1782, percentage: 99 },
-    { category: 'Beds & Transport', count: 9400, digitized: 9306, percentage: 99 },
-    { category: 'Lab Equipment', count: 3200, digitized: 3168, percentage: 99 },
-    { category: 'Wheelchairs & Mobility', count: 7700, digitized: 7623, percentage: 99 },
+    { category: 'Surgical Equipment', count: 1180, digitized: 885, percentage: 75 },
+    { category: 'Imaging Devices', count: 420, digitized: 312, percentage: 74 },
+    { category: 'Patient Monitors', count: 950, digitized: 702, percentage: 74 },
+    { category: 'Infusion Pumps', count: 720, digitized: 536, percentage: 74 },
+    { category: 'Ventilators', count: 285, digitized: 208, percentage: 73 },
+    { category: 'Beds & Transport', count: 1340, digitized: 998, percentage: 75 },
+    { category: 'Lab Equipment', count: 480, digitized: 352, percentage: 73 },
+    { category: 'Wheelchairs & Mobility', count: 1359, digitized: 1012, percentage: 74 },
   ],
 };

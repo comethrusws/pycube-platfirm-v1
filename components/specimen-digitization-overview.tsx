@@ -98,6 +98,14 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                     </button>
                 </div>
 
+                {/* Coverage Status */}
+                <div className="mb-8">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                        <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Coverage Status</h3>
+                        <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
+                    </div>
+
                 {/* Section 1: KPIs at a Glance */}
                 <div className="grid grid-cols-3 gap-6 mb-8">
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
@@ -127,6 +135,15 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                         </div>
                     </div>
                 </div>
+                </div>
+
+                {/* TIER 2: ANALYZE - Specimen Analysis */}
+                <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-6">
+                        <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
+                        <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Specimen Tracking Performance</h3>
+                        <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
+                    </div>
 
                 {/* Coverage Breakdown Tabs */}
                 <div className="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto">
@@ -410,6 +427,7 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                             <button className="text-sm font-medium text-blue-600 hover:text-blue-700 whitespace-nowrap">Apply</button>
                         </div>
                     </div>
+                </div>
                 </div>
 
                 {/* TIER 3: OPTIMIZE - Deep Dive Actions */}

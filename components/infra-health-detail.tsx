@@ -78,12 +78,12 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                         </button>
                     </div>
 
-                    {/* TIER 2: ANALYZE - Performance Insights */}
+                    {/* Coverage Status */}
                     <div className="mb-8">
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
-                            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Infrastructure Performance</h3>
-                            <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Coverage Status</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
                         </div>
 
                     {/* Top Row: Key Metrics */}
@@ -150,6 +150,15 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                             <p className="text-xs text-gray-500 mt-2">Avg across all zones</p>
                         </div>
                     </div>
+                    </div>
+
+                    {/* TIER 2: ANALYZE - Performance Insights */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
+                            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Infrastructure Performance</h3>
+                            <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
+                        </div>
 
                     {/* Charts Row */}
                     <div className="grid grid-cols-3 gap-6 mb-8">

@@ -85,12 +85,12 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                         </button>
                     </div>
 
-                    {/* TIER 2: ANALYZE - Performance Insights */}
+                    {/* Coverage Status */}
                     <div className="mb-8">
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
-                            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Supply Chain Performance</h3>
-                            <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Coverage Status</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
                         </div>
 
                     {/* Section 1: KPIs at a Glance */}
@@ -138,6 +138,15 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                             </div>
                         </div>
                     </div>
+                    </div>
+
+                    {/* TIER 2: ANALYZE - Performance Insights */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
+                            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Supply Chain Performance</h3>
+                            <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
+                        </div>
 
                     {/* Tab Navigation */}
                     <div className="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto">
