@@ -92,7 +92,7 @@ export function AISummaryBanner() {
     <div className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-8 py-6">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900">System Status Snapshot</h2>
+          <h2 className="text-xl font-bold text-gray-900">Today's Insights</h2>
           <p className="text-sm text-gray-500">Real-time overview of hospital operations</p>
         </div>
 
