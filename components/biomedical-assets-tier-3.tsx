@@ -17,11 +17,6 @@ export function BiomedicalAssetsTier3({ category, onClose }: BiomedicalAssetsTie
                 <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 rounded-t-3xl">
                     <div className="flex items-center justify-between">
                         <div>
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-semibold text-purple-600 bg-purple-100 px-3 py-1 rounded-full uppercase tracking-wider">
-                                    Tier 3: Optimize
-                                </span>
-                            </div>
                             <h2 className="text-2xl font-semibold text-gray-900">
                                 {category === 'asset-utilization' && 'Underutilized Assets - Redeployment Opportunities'}
                                 {category === 'maintenance-backlog' && 'Maintenance Backlog - Critical Impact Analysis'}
@@ -165,17 +160,17 @@ function AssetUtilizationContent() {
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Financial Impact</h3>
                 <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white">
+                    <div className="bg-orange-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Total Asset Value</div>
                         <div className="text-4xl font-bold mb-1">$7.5M</div>
                         <div className="text-xs opacity-75">Currently underutilized</div>
                     </div>
-                    <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white">
+                    <div className="bg-emerald-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Annual Savings Opportunity</div>
                         <div className="text-4xl font-bold mb-1">$2.1M</div>
                         <div className="text-xs opacity-75">Through redeployment</div>
                     </div>
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
+                    <div className="bg-blue-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Efficiency Gain</div>
                         <div className="text-4xl font-bold mb-1">28%</div>
                         <div className="text-xs opacity-75">Target utilization improvement</div>
@@ -339,17 +334,17 @@ function MaintenanceBacklogContent() {
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Cost Impact</h3>
                 <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white">
+                    <div className="bg-red-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Immediate Cost to Resolve</div>
                         <div className="text-4xl font-bold mb-1">$142K</div>
                         <div className="text-xs opacity-75">All 68 overdue units</div>
                     </div>
-                    <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white">
+                    <div className="bg-orange-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Avoided Emergency Repairs</div>
                         <div className="text-4xl font-bold mb-1">$620K</div>
                         <div className="text-xs opacity-75">vs. reactive maintenance</div>
                     </div>
-                    <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white">
+                    <div className="bg-emerald-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Net Savings</div>
                         <div className="text-4xl font-bold mb-1">$478K</div>
                         <div className="text-xs opacity-75">ROI: 337%</div>
@@ -491,17 +486,17 @@ function HighValueTrackingContent() {
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Financial Protection</h3>
                 <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
+                    <div className="bg-blue-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Protected Asset Value</div>
                         <div className="text-4xl font-bold mb-1">$120M</div>
                         <div className="text-xs opacity-75">8,400 high-value assets</div>
                     </div>
-                    <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white">
+                    <div className="bg-emerald-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Prevented Downtime</div>
                         <div className="text-4xl font-bold mb-1">$8.4M</div>
                         <div className="text-xs opacity-75">Annual value saved</div>
                     </div>
-                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
+                    <div className="bg-purple-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Revenue Protected</div>
                         <div className="text-4xl font-bold mb-1">$42M</div>
                         <div className="text-xs opacity-75">Procedure revenue secured</div>
@@ -665,17 +660,17 @@ function WorkflowBottlenecksContent() {
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Productivity Impact</h3>
                 <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl p-6 text-white">
+                    <div className="bg-yellow-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Current Annual Cost</div>
                         <div className="text-4xl font-bold mb-1">$1.2M</div>
                         <div className="text-xs opacity-75">Lost productivity</div>
                     </div>
-                    <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white">
+                    <div className="bg-emerald-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Potential Savings</div>
                         <div className="text-4xl font-bold mb-1">$840K</div>
                         <div className="text-xs opacity-75">Through optimization</div>
                     </div>
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
+                    <div className="bg-blue-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Time Savings</div>
                         <div className="text-4xl font-bold mb-1">3,200</div>
                         <div className="text-xs opacity-75">Staff hours annually</div>

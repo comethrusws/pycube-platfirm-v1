@@ -17,11 +17,6 @@ export function LabMedicineTier3({ category, onClose }: LabMedicineTier3Props) {
                 <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 rounded-t-3xl">
                     <div className="flex items-center justify-between">
                         <div>
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-semibold text-purple-600 bg-purple-100 px-3 py-1 rounded-full uppercase tracking-wider">
-                                    Tier 3: Optimize
-                                </span>
-                            </div>
                             <h2 className="text-2xl font-semibold text-gray-900">
                                 {category === 'custody-breaks' && 'Custody Breaks Analysis - Root Cause & Prevention'}
                                 {category === 'route-optimization' && 'Transit Route Optimization - Time & Cost Savings'}
@@ -157,17 +152,17 @@ function CustodyBreaksContent() {
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Impact & Risk</h3>
                 <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white">
+                    <div className="bg-red-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Compliance Risk</div>
                         <div className="text-4xl font-bold mb-1">High</div>
                         <div className="text-xs opacity-75">96 critical breaks</div>
                     </div>
-                    <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white">
+                    <div className="bg-orange-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Re-collection Cost</div>
                         <div className="text-4xl font-bold mb-1">$48K</div>
                         <div className="text-xs opacity-75">Est. monthly impact</div>
                     </div>
-                    <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white">
+                    <div className="bg-emerald-500 rounded-2xl p-6 text-white">
                         <div className="text-sm font-medium mb-2 opacity-90">Reduction Potential</div>
                         <div className="text-4xl font-bold mb-1">68%</div>
                         <div className="text-xs opacity-75">With interventions</div>
@@ -236,17 +231,17 @@ function RouteOptimizationContent() {
             </div>
 
             <div className="grid grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
+                <div className="bg-blue-500 rounded-2xl p-6 text-white">
                     <div className="text-sm font-medium mb-2 opacity-90">Current On-Time Rate</div>
                     <div className="text-4xl font-bold mb-1">82%</div>
                     <div className="text-xs opacity-75">2,340 routes/month</div>
                 </div>
-                <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white">
+                <div className="bg-emerald-500 rounded-2xl p-6 text-white">
                     <div className="text-sm font-medium mb-2 opacity-90">Target On-Time Rate</div>
                     <div className="text-4xl font-bold mb-1">95%</div>
                     <div className="text-xs opacity-75">With optimization</div>
                 </div>
-                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
+                <div className="bg-purple-500 rounded-2xl p-6 text-white">
                     <div className="text-sm font-medium mb-2 opacity-90">Annual Savings</div>
                     <div className="text-4xl font-bold mb-1">$120K</div>
                     <div className="text-xs opacity-75">Courier + TAT improvements</div>

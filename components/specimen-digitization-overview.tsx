@@ -100,11 +100,7 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
 
                 {/* Coverage Status */}
                 <div className="mb-8">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
-                        <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Coverage Status</h3>
-                        <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
-                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Coverage Status</h3>
 
                 {/* Section 1: KPIs at a Glance */}
                 <div className="grid grid-cols-3 gap-6 mb-8">
@@ -137,13 +133,9 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                 </div>
                 </div>
 
-                {/* TIER 2: ANALYZE - Specimen Analysis */}
+                {/* Specimen Analysis */}
                 <div className="mb-8">
-                    <div className="flex items-center gap-2 mb-6">
-                        <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
-                        <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Specimen Tracking Performance</h3>
-                        <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
-                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Specimen Tracking Performance</h3>
 
                 {/* Coverage Breakdown Tabs */}
                 <div className="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto">
@@ -430,13 +422,9 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                 </div>
                 </div>
 
-                {/* TIER 3: OPTIMIZE - Deep Dive Actions */}
+                {/* Deep Dive Actions */}
                 <div className="mt-8">
-                    <div className="flex items-center gap-2 mb-6">
-                        <div className="h-px bg-gradient-to-r from-purple-500 to-transparent flex-1" />
-                        <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider">Tier 3: Optimize - Deep Dive Analysis</h3>
-                        <div className="h-px bg-gradient-to-l from-purple-500 to-transparent flex-1" />
-                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Optimization Opportunities</h3>
 
                     <div className="grid grid-cols-4 gap-4">
                         {/* Custody Breaks Action Card */}

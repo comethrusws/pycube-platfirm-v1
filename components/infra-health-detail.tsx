@@ -80,11 +80,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
 
                     {/* Coverage Status */}
                     <div className="mb-8">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
-                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Coverage Status</h3>
-                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
-                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Coverage Status</h3>
 
                     {/* Top Row: Key Metrics */}
                     <div className="grid grid-cols-5 gap-6 mb-8">
@@ -152,13 +148,9 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                     </div>
                     </div>
 
-                    {/* TIER 2: ANALYZE - Performance Insights */}
+                    {/* Performance Insights */}
                     <div className="mb-8">
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
-                            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Infrastructure Performance</h3>
-                            <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
-                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Infrastructure Performance</h3>
 
                     {/* Charts Row */}
                     <div className="grid grid-cols-3 gap-6 mb-8">
@@ -267,13 +259,9 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                     </div>
                     </div>
 
-                    {/* TIER 3: OPTIMIZE - Deep Dive & Actions */}
-                    <div className="mb-8">
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="h-px bg-gradient-to-r from-purple-500 to-transparent flex-1" />
-                            <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider">Tier 3: Optimize - Recommended Actions</h3>
-                            <div className="h-px bg-gradient-to-l from-purple-500 to-transparent flex-1" />
-                        </div>
+                    {/* Action Items */}
+                    <div className="mt-8">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Optimization Opportunities</h3>
 
                     {/* Bottom Row: Operational KPIs */}
                     <div className="grid grid-cols-5 gap-6">

@@ -166,13 +166,9 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                         </div>
                     </div>
 
-                    {/* TIER 2: ANALYZE - Performance Insights */}
+                    {/* Performance Insights */}
                     <div className="mb-8">
-                        <div className="flex items-center gap-2 mb-4">
-                            <div className="h-px bg-gradient-to-r from-blue-500 to-transparent flex-1" />
-                            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wider">Tier 2: Analyze - Performance Insights</h3>
-                            <div className="h-px bg-gradient-to-l from-blue-500 to-transparent flex-1" />
-                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Performance Insights</h3>
 
                         {/* KPI Summary Cards */}
                         <div className="grid grid-cols-5 gap-4 mb-6">
