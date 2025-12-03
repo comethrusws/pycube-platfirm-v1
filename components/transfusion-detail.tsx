@@ -1,69 +1,61 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronDown, Building2, Droplet, AlertTriangle, Snowflake, Thermometer, Activity, ArrowUpRight, ArrowDownRight, Link, Package, DollarSign, Clock, RotateCcw, AlertCircle, TrendingUp } from 'lucide-react'
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from 'recharts'
-import { TransfusionTier3 } from './transfusion-tier-3'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Thermometer, Droplet } from 'lucide-react'
 import { transfusionData } from '@/lib/data'
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { useState } from 'react'
+import { TransfusionTier3 } from './transfusion-tier-3'
 
 interface TransfusionDetailProps {
     isOpen: boolean
     onClose: () => void
 }
 
-// Map hospital data with visual positions for facility map
-const hospitals = transfusionData.hospitals.map((h, idx) => {
-  const positions = [
-    { x: 45, y: 40 }, { x: 55, y: 35 }, { x: 30, y: 25 }, { x: 65, y: 55 },
-    { x: 70, y: 30 }, { x: 60, y: 28 }, { x: 48, y: 45 }, { x: 52, y: 50 },
-    { x: 50, y: 52 }, { x: 51, y: 53 }, { x: 49, y: 51 }, { x: 50, y: 54 },
-    { x: 51, y: 55 }, { x: 62, y: 32 }, { x: 68, y: 25 }, { x: 42, y: 38 },
-    { x: 58, y: 42 }, { x: 35, y: 48 },
-  ]
-  return {
-    ...h,
-    ...positions[idx],
-    depts: Math.floor(h.beds / 120),
-    coldStorage: Math.floor(h.bags / 35),
-    temp: (2.8 + Math.random() * 1.5).toFixed(1) + '°C',
-  }
-})
-
-const bloodTypeData = transfusionData.bloodTypes.map(bt => ({
-  name: bt.type,
-  value: bt.current,
-  color: bt.status === 'healthy' ? '#10b981' : bt.status === 'low' ? '#f59e0b' : '#ef4444',
-}))
-
 export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
+    const [tier3Category, setTier3Category] = useState<string | null>(null)
     const [selectedHospitalId, setSelectedHospitalId] = useState<number | null>(null)
-    const [activeTier3Category, setActiveTier3Category] = useState<string | null>(null)
 
     if (!isOpen) return null
 
-    // Calculate aggregated stats
-    const totalBags = hospitals.reduce((acc, h) => acc + h.bags, 0)
-    const totalAlerts = hospitals.reduce((acc, h) => acc + h.alerts, 0)
-    const totalDepts = hospitals.reduce((acc, h) => acc + h.depts, 0)
-    const totalColdStorage = hospitals.reduce((acc, h) => acc + h.coldStorage, 0)
-    const avgTemp = (hospitals.reduce((acc, h) => acc + parseFloat(h.temp), 0) / hospitals.length).toFixed(1) + '°C'
-
+    // Get selected hospital data or aggregate data
     const selectedHospital = selectedHospitalId
-        ? hospitals.find(h => h.id === selectedHospitalId)!
-        : {
-            name: 'All Hospitals',
-            bags: totalBags,
-            depts: totalDepts,
-            coldStorage: totalColdStorage,
-            alerts: totalAlerts,
-            temp: avgTemp
-        }
+        ? transfusionData.hospitals.find(h => h.id === selectedHospitalId)
+        : null
+
+    // Compute stats based on selection
+    const hospitalStats = selectedHospital ? {
+        totalBloodBags: selectedHospital.bags,
+        departments: Math.floor(Math.random() * 15) + 20, // Mock data per hospital
+        coldStorages: Math.floor(Math.random() * 30) + 10,
+        activeAlerts: selectedHospital.alerts + selectedHospital.tempAlerts,
+        avgTemp: (3.2 + Math.random() * 0.8).toFixed(1)
+    } : {
+        totalBloodBags: transfusionData.summary.totalBloodBags,
+        departments: 35,
+        coldStorages: 128,
+        activeAlerts: transfusionData.summary.activeAlerts,
+        avgTemp: '3.6'
+    }
+
+    // Data preparation
+    const bloodTypeData = transfusionData.bloodTypes.map(type => ({
+        type: type.type,
+        current: type.current,
+        target: type.target,
+        status: type.status
+    }))
+
+    const departmentData = transfusionData.departmentUsage.slice(0, 5).map(dept => ({
+        name: dept.department,
+        used: dept.unitsUsed,
+        allocated: dept.totalAllocated
+    }))
 
     return (
         <>
-            <div className="bg-gray-50 border-t border-b border-gray-200 py-8 animate-in slide-in-from-top duration-300 font-sans">
-                <div className="max-w-7xl mx-auto px-6">
-                    {/* Breadcrumbs & Header */}
+            <div className="bg-gray-50 border-t border-b border-gray-200 py-8 animate-in slide-in-from-top duration-300">
+                <div className="max-w-7xl mx-auto px-8">
+                    {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <div className="text-sm text-gray-500 mb-1">Dashboard {'>'} Transfusion Medicine</div>
@@ -71,490 +63,693 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                            className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
                         >
-                            <ChevronDown className="w-6 h-6 text-gray-600" />
+                            <ChevronDown className="w-5 h-5 text-gray-600" />
                         </button>
                     </div>
 
-                    {/* Top Row: Charts & Summaries */}
-                    <div className="grid grid-cols-3 gap-6 mb-8">
-                        {/* Card 1: Blood Type Distribution (Donut) */}
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
-                            <h3 className="text-sm font-semibold text-gray-900 mb-4">Blood Type Distribution</h3>
-                            <div className="flex-1 relative min-h-[200px]">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={bloodTypeData}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={60}
-                                            outerRadius={80}
-                                            paddingAngle={5}
-                                            dataKey="value"
-                                        >
-                                            {bloodTypeData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
-                                            ))}
-                                        </Pie>
-                                        <RechartsTooltip />
-                                        <Legend
-                                            verticalAlign="bottom"
-                                            height={36}
-                                            iconType="circle"
-                                            formatter={(value, entry: any) => <span className="text-xs font-medium text-gray-600 ml-1">{value}</span>}
-                                        />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                                {/* Center Text */}
-                                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-8">
-                                    <span className="text-3xl font-bold text-gray-900">{totalBags.toLocaleString()}</span>
-                                    <span className="text-xs text-gray-500 font-medium">units</span>
-                                </div>
-                            </div>
-                            <div className="flex justify-between items-center mt-2 pt-4 border-t border-gray-50">
-                                <div className="flex flex-col">
-                                    <span className="text-xs text-gray-500">Units Available</span>
-                                    <span className="text-lg font-bold text-gray-900">{totalBags.toLocaleString()}</span>
-                                </div>
-                                <div className="flex flex-col text-right">
-                                    <span className="text-xs text-gray-500">Pending Requests</span>
-                                    <span className="text-lg font-bold text-gray-900">45</span>
-                                </div>
-                            </div>
+                    {/* TIER 1: DIGITIZE - Status Overview */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Inventory Status</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
                         </div>
 
-                        {/* Card 2: Hospital Inventory Status (Progress Bars) */}
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
-                            <h3 className="text-sm font-semibold text-gray-900 mb-6">Top Hospital Inventory</h3>
-                            <div className="space-y-5 flex-1">
-                                {hospitals.slice(0, 5).map((hospital, idx) => {
-                                    const maxBags = Math.max(...hospitals.slice(0, 5).map(h => h.bags))
-                                    const widthPercent = (hospital.bags / maxBags) * 100
-                                    return (
-                                        <div key={hospital.id}>
-                                            <div className="flex justify-between text-xs font-medium mb-1.5 gap-2">
-                                                <span className="text-gray-600 truncate flex-1">{hospital.name}</span>
-                                                <span className="text-gray-900 whitespace-nowrap">{hospital.bags} units</span>
+                        <div className="grid grid-cols-3 gap-6">
+                            {/* Total Inventory - Donut Chart */}
+                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Total Blood Inventory</h3>
+                                <div className="flex items-center justify-center mb-6">
+                                    <div className="relative w-48 h-48">
+                                        <div className="w-full h-full rounded-full" style={{
+                                            background: `conic-gradient(
+                                                #ef4444 0deg 270deg,
+                                                #fca5a5 270deg 360deg
+                                            )`
+                                        }}>
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="bg-white rounded-full w-32 h-32 flex flex-col items-center justify-center">
+                                                    <div className="text-4xl font-semibold text-gray-900">{transfusionData.summary.totalBloodBags.toLocaleString()}</div>
+                                                    <div className="text-sm text-gray-500">units</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-gray-600">Daily Transfusions</span>
+                                        <span className="text-lg font-semibold text-gray-900">{transfusionData.summary.dailyTransfusions.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-gray-600">Active Alerts</span>
+                                        <span className="text-lg font-semibold text-red-600">{transfusionData.summary.activeAlerts.toLocaleString()}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Blood Type Status */}
+                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Blood Type Inventory Status</h3>
+                                <div className="space-y-4">
+                                    {transfusionData.bloodTypes.slice(0, 6).map((item) => (
+                                        <div key={item.type} className="space-y-1">
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-gray-700">{item.type}</span>
+                                                <span className="font-semibold text-gray-900">{item.current} / {item.target}</span>
                                             </div>
                                             <div className="w-full bg-gray-100 rounded-full h-2">
                                                 <div
-                                                    className="h-2 rounded-full transition-all duration-300"
-                                                    style={{
-                                                        width: `${widthPercent}%`,
-                                                        backgroundColor: idx % 2 === 0 ? '#3b82f6' : '#f97316' // Alternating Blue/Orange
-                                                    }}
+                                                    className={`${item.status === 'critical' ? 'bg-red-500' : item.status === 'low' ? 'bg-orange-500' : 'bg-emerald-500'} h-2 rounded-full transition-all duration-500`}
+                                                    style={{ width: `${Math.min((item.current / item.target) * 100, 100)}%` }}
                                                 />
                                             </div>
                                         </div>
-                                    )
-                                })}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Card 3: Critical Alerts Summary */}
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
-                            <h3 className="text-sm font-semibold text-gray-900 mb-4">Yesterday's Critical Alerts</h3>
-                            <div className="flex-1 flex flex-col items-center justify-center">
-                                <span className="text-6xl font-bold text-gray-900 mb-6">{transfusionData.summary.activeAlerts}</span>
-                                <div className="flex gap-3 w-full mb-6">
-                                    <div className="flex-1 bg-blue-500 rounded-xl p-3 text-center text-white">
-                                        <span className="block text-xl font-bold">{transfusionData.summary.tempAlerts}</span>
-                                        <span className="text-[10px] opacity-90 uppercase">Temp</span>
+                            {/* Alerts Overview */}
+                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Critical Alerts Overview</h3>
+                                <div className="text-center mb-6">
+                                    <div className="text-6xl font-semibold text-gray-900">{transfusionData.summary.activeAlerts}</div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-3 mb-4">
+                                    <div className="bg-red-500 rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-semibold text-white">{transfusionData.summary.stockAlerts}</div>
+                                        <div className="text-xs text-white/80 mt-1">Stock</div>
                                     </div>
-                                    <div className="flex-1 bg-blue-400 rounded-xl p-3 text-center text-white">
-                                        <span className="block text-xl font-bold">{transfusionData.summary.stockAlerts}</span>
-                                        <span className="text-[10px] opacity-90 uppercase">Stock</span>
+                                    <div className="bg-blue-400 rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-semibold text-white">{transfusionData.summary.tempAlerts}</div>
+                                        <div className="text-xs text-white/80 mt-1">Temp</div>
                                     </div>
-                                    <div className="flex-1 bg-orange-500 rounded-xl p-3 text-center text-white">
-                                        <span className="block text-xl font-bold">{transfusionData.summary.expiryAlerts}</span>
-                                        <span className="text-[10px] opacity-90 uppercase">Expiry</span>
+                                    <div className="bg-orange-500 rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-semibold text-white">{transfusionData.summary.expiryAlerts}</div>
+                                        <div className="text-xs text-white/80 mt-1">Expiry</div>
                                     </div>
                                 </div>
-                                <div className="w-full bg-amber-400 rounded-xl p-3 text-center text-white font-bold">
-                                    0 Unresolved
+                                <div className="bg-yellow-50 rounded-2xl p-4 text-center mb-4 border border-yellow-100">
+                                    <div className="text-sm font-medium text-yellow-800">
+                                        {transfusionData.kpis.find(k => k.label === 'Critical Stock Alert')?.subtitle || 'Critical stock levels detected'}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="mt-4 flex justify-between text-xs text-gray-500 px-2">
-                                <div className="flex items-center gap-1.5">
-                                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                                    <span>Temp Issue</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-                                    <span>Expiring</span>
+                                <div className="space-y-2 text-xs">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-red-500" />
+                                        <span className="text-gray-600">Critical Stock</span>
+                                        <div className="ml-auto w-3 h-3 rounded-full bg-orange-500" />
+                                        <span className="text-gray-600">Expiry Risk</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-blue-400" />
+                                        <span className="text-gray-600">Temp Excursion</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* New KPI Cards Grid */}
-                    <div className="grid grid-cols-4 gap-6 mb-8">
-                        {/* Row 1 */}
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <AlertTriangle className="w-8 h-8 text-orange-400 mb-2" />
-                                <h3 className="text-sm font-semibold text-orange-400">Contamination Prevention</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-orange-400">24</span>
-                                    <span className="text-xs text-gray-500">Alerts</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-orange-400">55</span>
-                                    <span className="text-xs text-gray-500">Expired</span>
-                                </div>
-                            </div>
+                    {/* Performance Insights */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Performance Insights</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
                         </div>
 
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <Link className="w-8 h-8 text-gray-600 mb-2" />
-                                <h3 className="text-sm font-semibold text-gray-600">Chain of Custody</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-gray-700">84.9%</span>
-                                    <span className="text-xs text-gray-500">Compliance</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-gray-400">52.1%</span>
-                                    <span className="text-xs text-gray-500">Traceability</span>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <Package className="w-8 h-8 text-emerald-400 mb-2" />
-                                <h3 className="text-sm font-semibold text-emerald-400">Inventory Management</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-emerald-500">41</span>
-                                    <span className="text-xs text-gray-500">Available</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-emerald-300">95.2%</span>
-                                    <span className="text-xs text-gray-500">Accuracy</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <DollarSign className="w-8 h-8 text-purple-400 mb-2" />
-                                <h3 className="text-sm font-semibold text-purple-400">Cost Savings</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-purple-500">$-1500</span>
-                                    <span className="text-xs text-gray-500">Saved</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-purple-300">106.8%</span>
-                                    <span className="text-xs text-gray-500">Wastage</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Row 2 */}
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <Clock className="w-8 h-8 text-gray-600 mb-2" />
-                                <h3 className="text-sm font-semibold text-gray-600">Response Time</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-gray-700">0</span>
-                                    <span className="text-xs text-gray-500">Avg Mins</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-gray-400">0</span>
-                                    <span className="text-xs text-gray-500">Emergency</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <RotateCcw className="w-8 h-8 text-emerald-400 mb-2" />
-                                <h3 className="text-sm font-semibold text-emerald-400">Return Rate</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-emerald-500">56.2%</span>
-                                    <span className="text-xs text-gray-500">Unused Units</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-emerald-300">59</span>
-                                    <span className="text-xs text-gray-500">Missed Scans</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <AlertCircle className="w-8 h-8 text-orange-400 mb-2" />
-                                <h3 className="text-sm font-semibold text-orange-400">Expiration Alert</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-orange-400">0</span>
-                                    <span className="text-xs text-gray-500">Nearing Expiry</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-orange-300">24</span>
-                                    <span className="text-xs text-gray-500">Alerts</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <Building2 className="w-8 h-8 text-gray-600 mb-2" />
-                                <h3 className="text-sm font-semibold text-gray-600">Department Usage</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-gray-700">2</span>
-                                    <span className="text-xs text-gray-500">Total Used</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-gray-400">15</span>
-                                    <span className="text-xs text-gray-500">Departments</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Row 3 */}
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <Droplet className="w-8 h-8 text-purple-400 mb-2" />
-                                <h3 className="text-sm font-semibold text-purple-400">Blood Components</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-purple-500">2</span>
-                                    <span className="text-xs text-gray-500">Total Used</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-purple-300">5</span>
-                                    <span className="text-xs text-gray-500">Types</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <TrendingUp className="w-8 h-8 text-emerald-400 mb-2" />
-                                <h3 className="text-sm font-semibold text-emerald-400">Most Used</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-emerald-500">2</span>
-                                    <span className="text-xs text-gray-500">Units</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-emerald-300">RBC</span>
-                                    <span className="text-xs text-gray-500">Component</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <AlertTriangle className="w-8 h-8 text-orange-400 mb-2" />
-                                <h3 className="text-sm font-semibold text-orange-400">Most Expiring</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-orange-400">0</span>
-                                    <span className="text-xs text-gray-500">Units</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-orange-300">RBC</span>
-                                    <span className="text-xs text-gray-500">Component</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-40">
-                            <div className="flex flex-col items-center mb-4">
-                                <Clock className="w-8 h-8 text-gray-600 mb-2" />
-                                <h3 className="text-sm font-semibold text-gray-600">Storage Time</h3>
-                            </div>
-                            <div className="flex justify-between items-end w-full mt-auto px-4">
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-gray-700">0</span>
-                                    <span className="text-xs text-gray-500">Expiring</span>
-                                </div>
-                                <div className="text-center">
-                                    <span className="block text-2xl font-bold text-gray-400">2</span>
-                                    <span className="text-xs text-gray-500">Available</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Middle Row: Map & List */}
-                    <div className="grid grid-cols-12 gap-6 mb-8">
-                        {/* Hospital List */}
-                        <div className="col-span-4 bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[400px]">
-                            <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
-                                <h3 className="font-semibold text-gray-900">Hospital Network</h3>
-                                <span className="text-xs font-medium bg-white px-2 py-1 rounded-md border border-gray-200 text-gray-500">
-                                    {hospitals.length} Locations
-                                </span>
-                            </div>
-                            <div className="overflow-y-auto flex-1 p-3 space-y-1">
-                                <button
-                                    onClick={() => setSelectedHospitalId(null)}
-                                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center justify-between ${selectedHospitalId === null
-                                        ? 'bg-blue-50 border-blue-100 ring-1 ring-blue-100'
-                                        : 'hover:bg-gray-50 border border-transparent'
-                                        }`}
-                                >
-                                    <span className={`font-medium text-sm ${selectedHospitalId === null ? 'text-blue-900' : 'text-gray-700'}`}>
-                                        All Hospitals
+                        {/* Comprehensive KPI Grid */}
+                        <div className="grid grid-cols-4 gap-4 mb-6">
+                            {/* Row 1 */}
+                            {/* Contamination Prevention */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-orange-100 rounded-lg">
+                                        <AlertTriangle className="w-5 h-5 text-orange-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Contamination Prevention
                                     </span>
-                                </button>
-                                {hospitals.map((hospital) => (
-                                    <button
-                                        key={hospital.id}
-                                        onClick={() => setSelectedHospitalId(hospital.id)}
-                                        className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center justify-between ${selectedHospitalId === hospital.id
-                                            ? 'bg-blue-50 border-blue-100 ring-1 ring-blue-100'
-                                            : 'hover:bg-gray-50 border border-transparent'
-                                            }`}
-                                    >
-                                        <span className={`font-medium text-sm ${selectedHospitalId === hospital.id ? 'text-blue-900' : 'text-gray-700'}`}>
-                                            {hospital.name}
-                                        </span>
-                                        {hospital.alerts > 0 && (
-                                            <div className="w-2 h-2 bg-red-500 rounded-full" />
-                                        )}
-                                    </button>
-                                ))}
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">24</div>
+                                        <div className="text-xs text-gray-500 mt-1">Alerts</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">55</div>
+                                        <div className="text-xs text-gray-500 mt-1">Expired</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Chain of Custody */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Activity className="w-5 h-5 text-gray-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Chain of Custody
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">84.9%</div>
+                                        <div className="text-xs text-gray-500 mt-1">Compliance</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">52.1%</div>
+                                        <div className="text-xs text-gray-500 mt-1">Traceability</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Inventory Management */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-teal-100 rounded-lg">
+                                        <CheckCircle2 className="w-5 h-5 text-teal-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Inventory Management
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">41</div>
+                                        <div className="text-xs text-gray-500 mt-1">Available</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">95.2%</div>
+                                        <div className="text-xs text-gray-500 mt-1">Accuracy</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Cost Savings */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-purple-100 rounded-lg">
+                                        <DollarSign className="w-5 h-5 text-purple-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Cost Savings
+                                    </span>
+                                </div>
+                                <div className="flex flex-col items-center justify-center py-2">
+                                    <div className="text-4xl font-semibold text-purple-600">$127K</div>
+                                    <div className="text-xs text-gray-500 mt-2">This Month</div>
+
+                                </div>
+                            </div>
+
+                            {/* Row 2 */}
+                            {/* Response Time */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Clock className="w-5 h-5 text-gray-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Response Time
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Avg Mins</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Emergency</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Return Rate */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-teal-100 rounded-lg">
+                                        <TrendingUp className="w-5 h-5 text-teal-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Return Rate
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">56.2%</div>
+                                        <div className="text-xs text-gray-500 mt-1">Unused Units</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">59</div>
+                                        <div className="text-xs text-gray-500 mt-1">Missed Scans</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Expiration Alert */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-orange-100 rounded-lg">
+                                        <AlertCircle className="w-5 h-5 text-orange-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Expiration Alert
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Nearing Expiry</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">24</div>
+                                        <div className="text-xs text-gray-500 mt-1">Alerts</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Department Usage */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Activity className="w-5 h-5 text-gray-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Department Usage
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">2</div>
+                                        <div className="text-xs text-gray-500 mt-1">Total Used</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">15</div>
+                                        <div className="text-xs text-gray-500 mt-1">Departments</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Row 3 */}
+                            {/* Blood Components */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-purple-100 rounded-lg">
+                                        <Droplet className="w-5 h-5 text-purple-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Blood Components
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">2</div>
+                                        <div className="text-xs text-gray-500 mt-1">Units</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">7</div>
+                                        <div className="text-xs text-gray-500 mt-1">Types</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Most Used */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-teal-100 rounded-lg">
+                                        <TrendingUp className="w-5 h-5 text-teal-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Most Used
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">2</div>
+                                        <div className="text-xs text-gray-500 mt-1">Units</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-teal-600">RBC</div>
+                                        <div className="text-xs text-gray-500 mt-1">Component</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Most Expiring */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-orange-100 rounded-lg">
+                                        <AlertTriangle className="w-5 h-5 text-orange-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Most Expiring
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Units</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-orange-600">RBC</div>
+                                        <div className="text-xs text-gray-500 mt-1">Component</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Storage Time */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Clock className="w-5 h-5 text-gray-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Storage Time
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Expiring</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">2</div>
+                                        <div className="text-xs text-gray-500 mt-1">Available</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Interactive Map */}
-                        <div className="col-span-8 bg-white rounded-3xl shadow-sm border border-gray-100 p-4 h-[400px] relative overflow-hidden">
-                            <div className="absolute inset-0 m-4 rounded-2xl overflow-hidden bg-gray-100 border border-gray-100">
-                                <img
-                                    src="/map.png"
-                                    alt="Hospital Network Map"
-                                    className="w-full h-full object-cover opacity-90"
-                                />
+                        {/* Analysis Charts */}
+                        <div className="grid grid-cols-2 gap-6 mb-6">
+                            {/* Department Usage */}
+                            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Department Usage vs Allocation</h3>
+                                <ResponsiveContainer width="100%" height={280}>
+                                    <BarChart data={departmentData}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                                        <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                                        <YAxis tick={{ fontSize: 11 }} />
+                                        <Tooltip />
+                                        <Bar dataKey="used" name="Used" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="allocated" name="Allocated" fill="#e5e7eb" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                                <div className="text-xs text-gray-500 mt-2 text-center">
+                                    Top 5 departments by volume. Emergency Department shows highest utilization.
+                                </div>
+                            </div>
 
-                                {hospitals.map((hospital) => (
-                                    <button
-                                        key={hospital.id}
-                                        onClick={() => setSelectedHospitalId(hospital.id)}
-                                        className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group ${selectedHospitalId === hospital.id ? 'z-20 scale-125' : 'z-10 hover:scale-110'
-                                            }`}
-                                        style={{ left: `${hospital.x}%`, top: `${hospital.y}%` }}
-                                    >
-                                        <div className={`relative flex items-center justify-center w-4 h-4 rounded-full shadow-sm border-2 border-white ${hospital.alerts > 0 ? 'bg-red-500' : (selectedHospitalId === hospital.id ? 'bg-blue-600' : 'bg-blue-400')
-                                            }`}>
+                            {/* Blood Type Distribution */}
+                            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Blood Type Inventory Levels</h3>
+                                <ResponsiveContainer width="100%" height={280}>
+                                    <BarChart data={bloodTypeData}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                                        <XAxis dataKey="type" tick={{ fontSize: 11 }} />
+                                        <YAxis tick={{ fontSize: 11 }} />
+                                        <Tooltip />
+                                        <Bar dataKey="current" fill="#ef4444" radius={[4, 4, 0, 0]}>
+                                            {bloodTypeData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.status === 'critical' ? '#ef4444' : entry.status === 'low' ? '#f59e0b' : '#10b981'} />
+                                            ))}
+                                        </Bar>
+                                        <Bar dataKey="target" fill="#e5e7eb" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                                <div className="flex items-center justify-center gap-4 mt-2 text-xs">
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                                        <span className="text-gray-600">Healthy</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-3 h-3 rounded-full bg-orange-500" />
+                                        <span className="text-gray-600">Low</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-3 h-3 rounded-full bg-red-500" />
+                                        <span className="text-gray-600">Critical</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Hospital Network & Map */}
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                            <div className="grid grid-cols-[30%_70%] gap-6">
+                                {/* Left: Hospital Network List */}
+                                <div>
+                                    <div className="mb-4">
+                                        <h3 className="text-sm font-semibold text-gray-900">Hospital Network</h3>
+                                        <p className="text-xs text-gray-500 mt-1">18 Locations</p>
+                                    </div>
+
+                                    <div className="space-y-1 pr-2 max-h-[400px] overflow-y-auto">
+                                        <div
+                                            onClick={() => setSelectedHospitalId(null)}
+                                            className={`py-2 px-3 rounded-lg font-medium text-xs cursor-pointer transition-colors ${selectedHospitalId === null ? 'bg-blue-100 text-blue-700' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                                                }`}
+                                        >
+                                            All Hospitals
                                         </div>
 
-                                        {/* Tooltip */}
-                                        <div className={`absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white px-3 py-2 rounded-lg shadow-lg border border-gray-100 whitespace-nowrap transition-opacity duration-200 z-30 ${selectedHospitalId === hospital.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                                            }`}>
-                                            <p className="text-xs font-bold text-gray-900">{hospital.name}</p>
-                                        </div>
-                                    </button>
-                                ))}
+                                        {transfusionData.hospitals.map((hospital) => (
+                                            <div
+                                                key={hospital.id}
+                                                onClick={() => setSelectedHospitalId(hospital.id)}
+                                                className={`py-2 px-3 rounded-lg flex items-center justify-between cursor-pointer transition-colors ${selectedHospitalId === hospital.id ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                <span className={`text-sm ${selectedHospitalId === hospital.id ? 'text-blue-900 font-medium' : 'text-gray-700'
+                                                    }`}>
+                                                    {hospital.name}
+                                                </span>
+                                                <div className="w-2 h-2 rounded-full bg-red-500" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Right: Map Visualization */}
+                                <div className="relative bg-gray-100 rounded-2xl overflow-hidden" style={{ minHeight: '450px' }}>
+                                    {/* Map background image */}
+                                    <div className="absolute inset-0">
+                                        <img src="/map.png" alt="Hospital Network Map" className="w-full h-full object-cover opacity-40" />
+                                    </div>
+
+                                    {/* Hospital location markers */}
+                                    <div className="absolute inset-0">
+                                        {/* Top cluster */}
+                                        <div className="absolute top-[15%] left-[55%] w-3 h-3 rounded-full bg-red-500 shadow-lg animate-pulse" />
+                                        <div className="absolute top-[18%] left-[58%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[12%] left-[62%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+
+                                        {/* Middle-left cluster */}
+                                        <div className="absolute top-[40%] left-[35%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[42%] left-[38%] w-3 h-3 rounded-full bg-red-500 shadow-lg animate-pulse" />
+                                        <div className="absolute top-[45%] left-[33%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+
+                                        {/* Center cluster */}
+                                        <div className="absolute top-[50%] left-[50%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[48%] left-[52%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[53%] left-[48%] w-3 h-3 rounded-full bg-red-500 shadow-lg animate-pulse" />
+                                        <div className="absolute top-[52%] left-[54%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+
+                                        {/* Right cluster */}
+                                        <div className="absolute top-[35%] left-[70%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[38%] left-[72%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[40%] left-[75%] w-3 h-3 rounded-full bg-red-500 shadow-lg animate-pulse" />
+
+                                        {/* Bottom cluster */}
+                                        <div className="absolute top-[65%] left-[45%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[68%] left-[48%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[70%] left-[52%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+
+                                        {/* Additional scattered markers */}
+                                        <div className="absolute top-[25%] left-[45%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[60%] left-[65%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                    </div>
+
+                                    {/* Map overlay info */}
+                                    <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+                                        <div className="text-xs text-gray-600">Total Coverage</div>
+                                        <div className="text-lg font-semibold text-gray-900">18 Hospitals</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Summary Statistics Cards */}
+                            <div className="grid grid-cols-5 gap-4 mt-6">
+                                {/* Total Blood Bags */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Total Blood Bags</div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.totalBloodBags.toLocaleString()}</div>
+                                </div>
+
+                                {/* Departments */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider">Departments</div>
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                    </div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.departments}</div>
+                                </div>
+
+                                {/* Cold Storages */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider">Cold Storages</div>
+                                        <div className="w-2 h-2 rounded-full bg-orange-500" />
+                                    </div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.coldStorages}</div>
+                                </div>
+
+                                {/* Active Alerts */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider">Active Alerts</div>
+                                        <AlertTriangle className="w-3 h-3 text-red-500" />
+                                    </div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.activeAlerts}</div>
+                                </div>
+
+                                {/* Avg Temp */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider">Avg Temp</div>
+                                        <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                    </div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.avgTemp}°C</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Bottom Row: 5 Detail Cards */}
-                    <div className="grid grid-cols-5 gap-6">
-                        {/* Card 1: Blood Bags */}
-                        <button
-                            onClick={() => setActiveTier3Category('blood-bags')}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
-                        >
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-blue-600 transition-colors">Total Blood Bags</p>
-                            <div className="flex items-end justify-between">
-                                <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.bags.toLocaleString()}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
-                            </div>
-                        </button>
+                    {/* AI Insights */}
+                    <div className="mb-8">
+                        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl p-8 border border-indigo-100/50 shadow-sm relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100/30 rounded-full blur-3xl -mr-16 -mt-16" />
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-100/30 rounded-full blur-3xl -ml-16 -mb-16" />
 
-                        {/* Card 2: Departments */}
-                        <button
-                            onClick={() => setActiveTier3Category('departments')}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
-                        >
-                            <div className="flex justify-between items-start w-full">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-emerald-600 transition-colors">Departments</p>
-                                <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                            <div className="relative flex items-start gap-6">
+                                <div className="p-4 bg-white rounded-2xl shadow-sm border border-indigo-100">
+                                    <div className="relative">
+                                        <div className="absolute inset-0 bg-indigo-400 blur-lg opacity-20" />
+                                        <Activity className="w-8 h-8 text-indigo-600 relative z-10" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <h3 className="text-lg font-bold text-gray-900">AI Predictive Modeling</h3>
+                                        <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">
+                                            New Insight
+                                        </span>
+                                    </div>
+                                    <p className="text-gray-600 leading-relaxed text-lg">
+                                        Forecasts a <span className="font-semibold text-indigo-700">critical shortage of O- blood</span> within 48 hours due to scheduled high-risk surgeries.
+                                        Recommendation: Initiate emergency procurement from regional blood bank immediately.
+                                    </p>
+                                    <div className="mt-6 flex items-center gap-4">
+                                        <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm shadow-indigo-200">
+                                            View Procurement Plan
+                                        </button>
+                                        <button className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-xl border border-gray-200 transition-colors">
+                                            Dismiss
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex items-end justify-between w-full">
-                                <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.depts}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-colors" />
-                            </div>
-                        </button>
+                        </div>
+                    </div>
 
-                        {/* Card 3: Cold Storages */}
-                        <button
-                            onClick={() => setActiveTier3Category('cold-storage')}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
-                        >
-                            <div className="flex justify-between items-start w-full">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-amber-600 transition-colors">Cold Storages</p>
-                                <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                            </div>
-                            <div className="flex items-end justify-between w-full">
-                                <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.coldStorage}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-amber-500 transition-colors" />
-                            </div>
-                        </button>
+                    {/* TIER 3: OPTIMIZE - Recommended Actions */}
+                    <div>
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Recommended Actions</h3>
+                            <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
+                        </div>
 
-                        {/* Card 4: Active Alerts */}
-                        <button
-                            onClick={() => setActiveTier3Category('alerts')}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
-                        >
-                            <div className="flex justify-between items-start w-full">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-red-600 transition-colors">Active Alerts</p>
-                                <AlertTriangle className="w-4 h-4 text-red-500" />
-                            </div>
-                            <div className="flex items-end justify-between w-full">
-                                <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.alerts}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-red-500 transition-colors" />
-                            </div>
-                        </button>
+                        <div className="grid grid-cols-4 gap-4">
+                            {/* Action Card: Critical Stock */}
+                            <button
+                                onClick={() => setTier3Category('blood-bags')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="p-2 bg-red-100 rounded-lg group-hover:bg-red-200 transition-colors">
+                                        <Droplet className="w-5 h-5 text-red-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-red-600 bg-red-100 px-2 py-1 rounded-full">Critical</span>
+                                </div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">280</div>
+                                <div className="text-sm font-medium text-gray-700 mb-2">Critical Stock Level</div>
+                                <div className="text-xs text-gray-500">A- Type below safety threshold. Click to view procurement plan.</div>
+                            </button>
 
-                        {/* Card 5: Avg Temperature */}
-                        <button
-                            onClick={() => setActiveTier3Category('cold-storage')} // Reusing cold-storage for temp
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-32 hover:shadow-md transition-all text-left group"
-                        >
-                            <div className="flex justify-between items-start w-full">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-blue-600 transition-colors">Avg Temp</p>
-                                <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                            </div>
-                            <div className="flex items-end justify-between w-full">
-                                <h4 className="text-3xl font-bold text-gray-900">{selectedHospital.temp}</h4>
-                                <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
-                            </div>
-                        </button>
+                            {/* Action Card: Department Usage */}
+                            <button
+                                onClick={() => setTier3Category('departments')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+                                        <TrendingUp className="w-5 h-5 text-orange-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-orange-600 bg-orange-100 px-2 py-1 rounded-full">Action Needed</span>
+                                </div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">3,850</div>
+                                <div className="text-sm font-medium text-gray-700 mb-2">High Usage Alert</div>
+                                <div className="text-xs text-gray-500">Emergency Dept usage +42%. Click to view demand forecast.</div>
+                            </button>
+
+                            {/* Action Card: Cold Chain */}
+                            <button
+                                onClick={() => setTier3Category('cold-storage')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                                        <Thermometer className="w-5 h-5 text-blue-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded-full">Monitor</span>
+                                </div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">24</div>
+                                <div className="text-sm font-medium text-gray-700 mb-2">Temp Excursions</div>
+                                <div className="text-xs text-gray-500">Cold chain deviations detected. Click for impact analysis.</div>
+                            </button>
+
+                            {/* Action Card: Chain of Custody */}
+                            <button
+                                onClick={() => setTier3Category('alerts')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="p-2 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
+                                        <Activity className="w-5 h-5 text-yellow-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full">Optimize</span>
+                                </div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">1,017</div>
+                                <div className="text-sm font-medium text-gray-700 mb-2">Custody Gaps</div>
+                                <div className="text-xs text-gray-500">Tracking gaps in last 30 days. Click for compliance report.</div>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Tier 3 Overlay */}
-            {activeTier3Category && (
+            {/* Tier 3 Modal */}
+            {tier3Category && (
                 <TransfusionTier3
-                    category={activeTier3Category}
-                    onClose={() => setActiveTier3Category(null)}
+                    category={tier3Category}
+                    onClose={() => setTier3Category(null)}
                 />
             )}
         </>
