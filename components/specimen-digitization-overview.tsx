@@ -5,57 +5,69 @@ import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, ArrowUp
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar, Rectangle } from 'recharts'
 import { FacilityTable, DepartmentTable, CustodyBreaksTable, TransitRouteTable } from '@/components/specimen-tables'
 import { SpecimenDetail } from '@/components/specimen-detail'
+import { labMedicineData } from '@/lib/data'
 
 interface SpecimenDigitizationOverviewProps {
     isOpen: boolean
     onClose: () => void
 }
 
-const trendData = [
-    { week: 'W1', value: 86 },
-    { week: 'W2', value: 88 },
-    { week: 'W3', value: 89 },
-    { week: 'W4', value: 90 },
-    { week: 'W5', value: 91 },
-    { week: 'W6', value: 92 },
-    { week: 'W7', value: 93 },
-    { week: 'W8', value: 94 },
-    { week: 'W9', value: 95 },
-    { week: 'W10', value: 95 },
-    { week: 'W11', value: 96 },
-    { week: 'W12', value: 96 },
-]
+const trendData = labMedicineData.trendData
 
 const pieData = [
-    { name: 'Fully Traceable', value: 96, color: '#10b981' }, // emerald-500
-    { name: 'Partial', value: 3, color: '#f59e0b' }, // amber-500
-    { name: 'Missing', value: 1, color: '#ef4444' }, // red-500
+    { name: 'Fully Traceable', value: labMedicineData.summary.fullyTracked, color: '#10b981' },
+    { name: 'Partial', value: Math.floor(labMedicineData.summary.gapsPercentage / 2), color: '#f59e0b' },
+    { name: 'Missing', value: Math.ceil(labMedicineData.summary.gapsPercentage / 2), color: '#ef4444' },
 ]
 
-const departmentData = [
-    { name: 'OR', value: 78, color: '#ef4444' },
-    { name: 'ED', value: 83, color: '#f59e0b' },
-    { name: 'ICU', value: 93, color: '#10b981' },
-    { name: 'Med/Surg', value: 94, color: '#10b981' },
-    { name: 'Oncology', value: 96, color: '#10b981' },
-]
+const departmentData = labMedicineData.departments.slice(0, 5).map(dept => {
+  const getColor = (coverage: number) => {
+    if (coverage >= 94) return '#10b981'
+    if (coverage >= 85) return '#f59e0b'
+    return '#ef4444'
+  }
+  return {
+    name: dept.dept.replace(/\b(Emergency Department|Intensive Care Units|Operating Rooms|Medical\/Surgical Floors)\b/g, (match) => {
+      const abbrev: Record<string, string> = {
+        'Emergency Department': 'ED',
+        'Intensive Care Units': 'ICU',
+        'Operating Rooms': 'OR',
+        'Medical/Surgical Floors': 'Med/Surg',
+      }
+      return abbrev[match] || match
+    }),
+    value: dept.coverage,
+    color: getColor(dept.coverage),
+  }
+})
 
-const specimenTypeData = [
-    { name: 'Blood', value: 91, volume: 4000 },
-    { name: 'Tissue', value: 89, volume: 2000 },
-    { name: 'Pathology', value: 94, volume: 1500 },
-    { name: 'Frozen', value: 87, volume: 1000 },
-    { name: 'Urine', value: 93, volume: 3000 },
-    { name: 'Micro', value: 95, volume: 1200 },
-]
+const specimenTypeData = labMedicineData.specimenTypes.map(st => ({
+  name: st.type.replace(/\b(Blood Draw|Tissue Biopsy|Pathology Block|Frozen Section|Urine Sample|Microbiology Culture)\b/g, (match) => {
+    const abbrev: Record<string, string> = {
+      'Blood Draw': 'Blood',
+      'Tissue Biopsy': 'Tissue',
+      'Pathology Block': 'Pathology',
+      'Frozen Section': 'Frozen',
+      'Urine Sample': 'Urine',
+      'Microbiology Culture': 'Micro',
+    }
+    return abbrev[match] || match
+  }),
+  value: st.coverage,
+  volume: st.total,
+}))
 
-const custodyBreaksData = [
-    { name: 'Main Lab', value: 12 },
-    { name: 'OR Annex', value: 28 },
-    { name: 'ED', value: 35 },
-    { name: 'ICU', value: 6 },
-    { name: 'Clinic', value: 3 },
-]
+const custodyBreaksData = labMedicineData.custodyBreaks.byFacility.map(f => ({
+  name: f.facility.replace(/\b(Main Lab - Central Campus|OR Pathology Lab|Emergency Department Lab)\b/g, (match) => {
+    const abbrev: Record<string, string> = {
+      'Main Lab - Central Campus': 'Main Lab',
+      'OR Pathology Lab': 'OR Annex',
+      'Emergency Department Lab': 'ED',
+    }
+    return abbrev[match] || match
+  }),
+  value: f.breaks,
+}))
 
 export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigitizationOverviewProps) {
     const [activeTab, setActiveTab] = useState('By Facility')
@@ -89,26 +101,26 @@ export function SpecimenDigitizationOverview({ isOpen, onClose }: SpecimenDigiti
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div className="text-sm font-medium text-gray-500 mb-2">Digitization Coverage</div>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-4xl font-semibold text-gray-900">96%</span>
+                            <span className="text-4xl font-semibold text-gray-900">{labMedicineData.summary.digitizationCoverage}%</span>
                             <span className="text-sm font-medium text-emerald-600 flex items-center">
                                 <ArrowUpRight className="w-4 h-4 mr-0.5" />
-                                +2% this week
+                                +{labMedicineData.summary.trendImprovement}% this week
                             </span>
                         </div>
                     </div>
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div className="text-sm font-medium text-gray-500 mb-2">Total Specimens (7 days)</div>
-                        <div className="text-4xl font-semibold text-gray-900">12,810</div>
+                        <div className="text-4xl font-semibold text-gray-900">{labMedicineData.summary.totalSpecimens7Days.toLocaleString()}</div>
                     </div>
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div className="text-sm font-medium text-gray-500 mb-2">Traceability</div>
                         <div className="space-y-1">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-900 font-medium">96% fully tracked</span>
-                                <span className="text-gray-500">4% gaps</span>
+                                <span className="text-gray-900 font-medium">{labMedicineData.summary.fullyTracked}% fully tracked</span>
+                                <span className="text-gray-500">{labMedicineData.summary.gapsPercentage}% gaps</span>
                             </div>
                             <div className="w-full bg-gray-100 rounded-full h-2">
-                                <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '96%' }} />
+                                <div className="bg-emerald-500 h-2 rounded-full" style={{ width: `${labMedicineData.summary.fullyTracked}%` }} />
                             </div>
                         </div>
                     </div>

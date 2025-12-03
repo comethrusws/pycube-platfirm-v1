@@ -4,36 +4,36 @@ import { useState } from 'react'
 import { ChevronDown, Building2, Droplet, AlertTriangle, Snowflake, Thermometer, Activity, ArrowUpRight, ArrowDownRight, Link, Package, DollarSign, Clock, RotateCcw, AlertCircle, TrendingUp } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from 'recharts'
 import { TransfusionTier3 } from './transfusion-tier-3'
+import { transfusionData } from '@/lib/data'
 
 interface TransfusionDetailProps {
     isOpen: boolean
     onClose: () => void
 }
 
-const hospitals = [
-    { id: 1, name: 'St. John Hospital', x: 45, y: 40, bags: 37, depts: 6, coldStorage: 10, alerts: 2, temp: '3.4°C' },
-    { id: 2, name: 'Providence Southfield', x: 55, y: 35, bags: 42, depts: 9, coldStorage: 12, alerts: 0, temp: '4.1°C' },
-    { id: 3, name: 'Genesys Hospital', x: 30, y: 25, bags: 28, depts: 5, coldStorage: 8, alerts: 1, temp: '2.8°C' },
-    { id: 4, name: 'Warren Hospital', x: 65, y: 55, bags: 31, depts: 4, coldStorage: 6, alerts: 0, temp: '3.9°C' },
-    { id: 5, name: 'Rochester Hospital', x: 70, y: 30, bags: 45, depts: 7, coldStorage: 11, alerts: 0, temp: '3.5°C' },
-    { id: 6, name: 'Beaumont Troy', x: 60, y: 28, bags: 55, depts: 8, coldStorage: 14, alerts: 0, temp: '3.6°C' },
-    { id: 7, name: 'Henry Ford West', x: 48, y: 45, bags: 62, depts: 10, coldStorage: 15, alerts: 1, temp: '4.0°C' },
-    { id: 8, name: 'Sinai-Grace', x: 52, y: 50, bags: 33, depts: 5, coldStorage: 7, alerts: 0, temp: '3.8°C' },
-    { id: 9, name: 'Harper University', x: 50, y: 52, bags: 40, depts: 6, coldStorage: 9, alerts: 0, temp: '3.7°C' },
-    { id: 10, name: 'Detroit Receiving', x: 51, y: 53, bags: 38, depts: 6, coldStorage: 8, alerts: 0, temp: '3.9°C' },
-    { id: 11, name: 'Hutzel Women\'s', x: 49, y: 51, bags: 25, depts: 4, coldStorage: 5, alerts: 0, temp: '3.5°C' },
-    { id: 12, name: 'Karmanos Cancer Ctr', x: 50, y: 54, bags: 30, depts: 5, coldStorage: 6, alerts: 0, temp: '3.6°C' },
-    { id: 13, name: 'Children\'s Hospital', x: 51, y: 55, bags: 22, depts: 4, coldStorage: 5, alerts: 0, temp: '3.8°C' },
-    { id: 14, name: 'Ascension Macomb', x: 62, y: 32, bags: 48, depts: 7, coldStorage: 10, alerts: 0, temp: '3.7°C' },
-    { id: 15, name: 'McLaren Macomb', x: 68, y: 25, bags: 35, depts: 5, coldStorage: 8, alerts: 0, temp: '3.9°C' },
-]
+// Map hospital data with visual positions for facility map
+const hospitals = transfusionData.hospitals.map((h, idx) => {
+  const positions = [
+    { x: 45, y: 40 }, { x: 55, y: 35 }, { x: 30, y: 25 }, { x: 65, y: 55 },
+    { x: 70, y: 30 }, { x: 60, y: 28 }, { x: 48, y: 45 }, { x: 52, y: 50 },
+    { x: 50, y: 52 }, { x: 51, y: 53 }, { x: 49, y: 51 }, { x: 50, y: 54 },
+    { x: 51, y: 55 }, { x: 62, y: 32 }, { x: 68, y: 25 }, { x: 42, y: 38 },
+    { x: 58, y: 42 }, { x: 35, y: 48 },
+  ]
+  return {
+    ...h,
+    ...positions[idx],
+    depts: Math.floor(h.beds / 120),
+    coldStorage: Math.floor(h.bags / 35),
+    temp: (2.8 + Math.random() * 1.5).toFixed(1) + '°C',
+  }
+})
 
-const bloodTypeData = [
-    { name: 'A Positive', value: 450, color: '#10b981' }, // Emerald
-    { name: 'O Positive', value: 380, color: '#3b82f6' }, // Blue
-    { name: 'B Positive', value: 220, color: '#f97316' }, // Orange
-    { name: 'AB Positive', value: 198, color: '#ef4444' }, // Red
-]
+const bloodTypeData = transfusionData.bloodTypes.map(bt => ({
+  name: bt.type,
+  value: bt.current,
+  color: bt.status === 'healthy' ? '#10b981' : bt.status === 'low' ? '#f59e0b' : '#ef4444',
+}))
 
 export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
     const [selectedHospitalId, setSelectedHospitalId] = useState<number | null>(null)
@@ -129,23 +129,27 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
                             <h3 className="text-sm font-semibold text-gray-900 mb-6">Top Hospital Inventory</h3>
                             <div className="space-y-5 flex-1">
-                                {hospitals.slice(0, 5).map((hospital, idx) => (
-                                    <div key={hospital.id}>
-                                        <div className="flex justify-between text-xs font-medium mb-1.5">
-                                            <span className="text-gray-600">{hospital.name}</span>
-                                            <span className="text-gray-900">{hospital.bags} units</span>
+                                {hospitals.slice(0, 5).map((hospital, idx) => {
+                                    const maxBags = Math.max(...hospitals.slice(0, 5).map(h => h.bags))
+                                    const widthPercent = (hospital.bags / maxBags) * 100
+                                    return (
+                                        <div key={hospital.id}>
+                                            <div className="flex justify-between text-xs font-medium mb-1.5 gap-2">
+                                                <span className="text-gray-600 truncate flex-1">{hospital.name}</span>
+                                                <span className="text-gray-900 whitespace-nowrap">{hospital.bags} units</span>
+                                            </div>
+                                            <div className="w-full bg-gray-100 rounded-full h-2">
+                                                <div
+                                                    className="h-2 rounded-full transition-all duration-300"
+                                                    style={{
+                                                        width: `${widthPercent}%`,
+                                                        backgroundColor: idx % 2 === 0 ? '#3b82f6' : '#f97316' // Alternating Blue/Orange
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="w-full bg-gray-100 rounded-full h-2">
-                                            <div
-                                                className="h-2 rounded-full"
-                                                style={{
-                                                    width: `${(hospital.bags / 100) * 100}%`,
-                                                    backgroundColor: idx % 2 === 0 ? '#3b82f6' : '#f97316' // Alternating Blue/Orange
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         </div>
 
@@ -153,18 +157,18 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
                             <h3 className="text-sm font-semibold text-gray-900 mb-4">Yesterday's Critical Alerts</h3>
                             <div className="flex-1 flex flex-col items-center justify-center">
-                                <span className="text-6xl font-bold text-gray-900 mb-6">{totalAlerts + 12}</span>
+                                <span className="text-6xl font-bold text-gray-900 mb-6">{transfusionData.summary.activeAlerts}</span>
                                 <div className="flex gap-3 w-full mb-6">
                                     <div className="flex-1 bg-blue-500 rounded-xl p-3 text-center text-white">
-                                        <span className="block text-xl font-bold">8</span>
+                                        <span className="block text-xl font-bold">{transfusionData.summary.tempAlerts}</span>
                                         <span className="text-[10px] opacity-90 uppercase">Temp</span>
                                     </div>
                                     <div className="flex-1 bg-blue-400 rounded-xl p-3 text-center text-white">
-                                        <span className="block text-xl font-bold">4</span>
+                                        <span className="block text-xl font-bold">{transfusionData.summary.stockAlerts}</span>
                                         <span className="text-[10px] opacity-90 uppercase">Stock</span>
                                     </div>
                                     <div className="flex-1 bg-orange-500 rounded-xl p-3 text-center text-white">
-                                        <span className="block text-xl font-bold">{totalAlerts}</span>
+                                        <span className="block text-xl font-bold">{transfusionData.summary.expiryAlerts}</span>
                                         <span className="text-[10px] opacity-90 uppercase">Expiry</span>
                                     </div>
                                 </div>

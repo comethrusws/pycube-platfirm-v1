@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ChevronDown, Radio, Zap, Wifi, Battery, MapPin, TrendingUp, AlertTriangle, HardDrive, Server, Network, Signal, Package } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar } from 'recharts'
 import { InfraHealthTier3 } from './infra-health-tier-3'
+import { infraHealthData } from '@/lib/data'
 
 interface InfraHealthDetailProps {
     isOpen: boolean
@@ -86,10 +87,10 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Radio className="w-5 h-5 text-emerald-500" />
                             </div>
                             <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-semibold text-gray-900">96%</span>
+                                <span className="text-5xl font-semibold text-gray-900">{infraHealthData.summary.gatewayUptime}%</span>
                                 <span className="text-md text-gray-400">Uptime</span>
                             </div>
-                            <p className="text-xs text-gray-500 mt-2">{activeGateways}/{totalGateways} gateways online</p>
+                            <p className="text-xs text-gray-500 mt-2">{infraHealthData.summary.gatewaysOnline}/{infraHealthData.summary.gatewaysTotal} gateways online</p>
                         </div>
 
                         {/* RFID Tag Health */}
@@ -99,10 +100,10 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Zap className="w-5 h-5 text-emerald-500" />
                             </div>
                             <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-semibold text-gray-900">98%</span>
+                                <span className="text-5xl font-semibold text-gray-900">{infraHealthData.summary.rfidTagHealth}%</span>
                                 <span className="text-md text-gray-400">Healthy</span>
                             </div>
-                            <p className="text-xs text-gray-500 mt-2">4,905/5,005 tags active</p>
+                            <p className="text-xs text-gray-500 mt-2">{infraHealthData.summary.tagsActive.toLocaleString()}/{infraHealthData.summary.tagsTotal.toLocaleString()} tags active</p>
                         </div>
 
                         {/* Tagging Coverage */}
@@ -112,9 +113,9 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Package className="w-5 h-5 text-orange-500" />
                             </div>
                             <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-semibold text-gray-900">74.3%</span>
+                                <span className="text-5xl font-semibold text-gray-900">{infraHealthData.summary.taggingCoverage}%</span>
                             </div>
-                            <p className="text-xs text-gray-500 mt-2">5,005/6,734 assets tagged</p>
+                            <p className="text-xs text-gray-500 mt-2">{infraHealthData.summary.assetsTagged.toLocaleString()}/{infraHealthData.summary.assetsTotal.toLocaleString()} assets tagged</p>
                         </div>
 
                         {/* Asset Visibility */}
@@ -124,9 +125,9 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <MapPin className="w-5 h-5 text-blue-500" />
                             </div>
                             <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-semibold text-gray-900">98.5%</span>
+                                <span className="text-5xl font-semibold text-gray-900">{infraHealthData.summary.realTimeVisibility}%</span>
                             </div>
-                            <p className="text-xs text-gray-500 mt-2">4,930/5,005 tagged assets</p>
+                            <p className="text-xs text-gray-500 mt-2">{infraHealthData.summary.visibleAssets.toLocaleString()}/{infraHealthData.summary.assetsTagged.toLocaleString()} tagged assets</p>
                         </div>
 
                         {/* Network Coverage */}
@@ -136,7 +137,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 <Wifi className="w-5 h-5 text-purple-500" />
                             </div>
                             <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-semibold text-gray-900">{avgCoverage.toFixed(1)}%</span>
+                                <span className="text-5xl font-semibold text-gray-900">{infraHealthData.summary.networkCoverage}%</span>
                             </div>
                             <p className="text-xs text-gray-500 mt-2">Avg across all zones</p>
                         </div>
