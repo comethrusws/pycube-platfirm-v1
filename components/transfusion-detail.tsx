@@ -668,52 +668,6 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         </div>
                     </div>
 
-                    {/* Hospital-wise Statistics Table */}
-                    <div className="mb-8">
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                            <h3 className="text-sm font-semibold text-gray-900 mb-4">Hospital Inventory Statistics</h3>
-                            <div className="overflow-hidden">
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="border-b border-gray-200">
-                                            <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Hospital</th>
-                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Blood Bags</th>
-                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Stock Alerts</th>
-                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Temp Alerts</th>
-                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {transfusionData.hospitals.map((hosp) => (
-                                            <tr key={hosp.id} className="border-b border-gray-100 hover:bg-gray-50">
-                                                <td className="text-sm text-gray-900 py-3 px-4">{hosp.name}</td>
-                                                <td className="text-sm text-center text-gray-900 py-3 px-4">{hosp.bags}</td>
-                                                <td className="text-sm text-center py-3 px-4">
-                                                    <span className={`font-semibold ${hosp.alerts > 5 ? 'text-red-600' : hosp.alerts > 2 ? 'text-orange-600' : 'text-gray-900'}`}>
-                                                        {hosp.alerts}
-                                                    </span>
-                                                </td>
-                                                <td className="text-sm text-center py-3 px-4">
-                                                    <span className={`font-semibold ${hosp.tempAlerts > 3 ? 'text-red-600' : hosp.tempAlerts > 0 ? 'text-orange-600' : 'text-gray-900'}`}>
-                                                        {hosp.tempAlerts}
-                                                    </span>
-                                                </td>
-                                                <td className="text-sm text-center py-3 px-4">
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${hosp.alerts > 5 || hosp.tempAlerts > 3 ? 'bg-red-100 text-red-700' : hosp.alerts > 2 || hosp.tempAlerts > 0 ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-emerald-700'}`}>
-                                                        {hosp.alerts > 5 || hosp.tempAlerts > 3 ? 'Critical' : hosp.alerts > 2 || hosp.tempAlerts > 0 ? 'Warning' : 'Normal'}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="text-xs text-gray-500 mt-3">
-                                Total inventory across network: <span className="font-semibold text-gray-900">{transfusionData.summary.totalBloodBags.toLocaleString()} units</span>
-                            </div>
-                        </div>
-                    </div>
-
                     {/* TIER 3: OPTIMIZE - Recommended Actions */}
                     <div>
                         <div className="flex items-center gap-4 mb-6">
