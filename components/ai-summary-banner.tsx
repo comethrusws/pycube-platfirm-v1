@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
 type AlertSeverity = 'critical' | 'warning' | 'success'
@@ -11,7 +10,8 @@ interface Alert {
   title: string
   metric: string
   message: string
-  href?: string
+  actionId?: string
+  actionLabel?: string
 }
 
 const alerts: Alert[] = [
@@ -22,7 +22,8 @@ const alerts: Alert[] = [
     title: 'Equipment Maintenance',
     metric: '28 Devices',
     message: 'High-risk OR/Lab devices need immediate attention.',
-    href: '/maintenance'
+    actionId: 'Infra Health',
+    actionLabel: 'View Device List'
   },
   {
     id: 2,
@@ -60,7 +61,8 @@ const alerts: Alert[] = [
     title: 'Hospital Operations',
     metric: '$4.8M Savings',
     message: 'Annualized savings identified across OR, Lab & Supply Chain.',
-    href: '/financial-overview'
+    actionId: 'Supply chain',
+    actionLabel: 'View Savings Breakdown'
   },
   {
     id: 7,
@@ -106,7 +108,11 @@ const severityConfig = {
   }
 }
 
-export function AISummaryBanner() {
+interface AISummaryBannerProps {
+  onCardClick?: (actionId: string) => void
+}
+
+export function AISummaryBanner({ onCardClick }: AISummaryBannerProps) {
   const criticalAlerts = alerts.filter(a => a.severity === 'critical')
   const warningAlerts = alerts.filter(a => a.severity === 'warning')
   const successAlerts = alerts.filter(a => a.severity === 'success')
@@ -123,21 +129,21 @@ export function AISummaryBanner() {
           {/* Left Column: Critical (Red) */}
           <div className="flex flex-col gap-4">
             {criticalAlerts.map((alert) => (
-              <AlertCard key={alert.id} alert={alert} />
+              <AlertCard key={alert.id} alert={alert} onClick={onCardClick} />
             ))}
           </div>
 
           {/* Middle Column: Warning (Orange) */}
           <div className="flex flex-col gap-4">
             {warningAlerts.map((alert) => (
-              <AlertCard key={alert.id} alert={alert} />
+              <AlertCard key={alert.id} alert={alert} onClick={onCardClick} />
             ))}
           </div>
 
           {/* Right Column: Success (Green) */}
           <div className="flex flex-col gap-4">
             {successAlerts.map((alert) => (
-              <AlertCard key={alert.id} alert={alert} />
+              <AlertCard key={alert.id} alert={alert} onClick={onCardClick} />
             ))}
           </div>
         </div>
@@ -146,7 +152,7 @@ export function AISummaryBanner() {
   )
 }
 
-function AlertCard({ alert }: { alert: Alert }) {
+function AlertCard({ alert, onClick }: { alert: Alert; onClick?: (id: string) => void }) {
   const config = severityConfig[alert.severity]
 
   const CardContent = () => (
@@ -159,7 +165,7 @@ function AlertCard({ alert }: { alert: Alert }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 text-left">
         <div className="flex items-center justify-between gap-2 mb-1">
           <h3 className="text-sm font-semibold text-gray-900 truncate">
             {alert.title}
@@ -171,22 +177,25 @@ function AlertCard({ alert }: { alert: Alert }) {
         <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
           {alert.message}
         </p>
-        {alert.href && (
+        {alert.actionId && (
           <div className={`mt-2 flex items-center text-xs font-medium ${config.textColor} group-hover:underline`}>
-            View Analysis <ArrowRight className="ml-1 h-3 w-3" />
+            {alert.actionLabel || 'View Analysis'} <ArrowRight className="ml-1 h-3 w-3" />
           </div>
         )}
       </div>
     </>
   )
 
-  const cardClasses = `flex items-start gap-4 p-4 rounded-xl border ${config.borderColor} ${config.bgColor} ${config.hoverBorder} hover:shadow-md transition-all duration-200 group relative`
+  const cardClasses = `flex items-start gap-4 p-4 rounded-xl border ${config.borderColor} ${config.bgColor} ${config.hoverBorder} hover:shadow-md transition-all duration-200 group relative w-full`
 
-  if (alert.href) {
+  if (alert.actionId && onClick) {
     return (
-      <Link href={alert.href} className={cardClasses}>
+      <button
+        onClick={() => onClick(alert.actionId!)}
+        className={cardClasses}
+      >
         <CardContent />
-      </Link>
+      </button>
     )
   }
 

@@ -106,7 +106,7 @@ export default function Dashboard() {
       <TopBar />
 
       <main className="flex-1">
-        <AISummaryBanner />
+        <AISummaryBanner onCardClick={handleCardClick} />
 
         {/* Tier 1: Digitization KPIs */}
         <section className="px-8 py-12">
