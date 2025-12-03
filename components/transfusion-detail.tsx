@@ -13,8 +13,29 @@ interface TransfusionDetailProps {
 
 export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
     const [tier3Category, setTier3Category] = useState<string | null>(null)
+    const [selectedHospitalId, setSelectedHospitalId] = useState<number | null>(null)
 
     if (!isOpen) return null
+
+    // Get selected hospital data or aggregate data
+    const selectedHospital = selectedHospitalId
+        ? transfusionData.hospitals.find(h => h.id === selectedHospitalId)
+        : null
+
+    // Compute stats based on selection
+    const hospitalStats = selectedHospital ? {
+        totalBloodBags: selectedHospital.bags,
+        departments: Math.floor(Math.random() * 15) + 20, // Mock data per hospital
+        coldStorages: Math.floor(Math.random() * 30) + 10,
+        activeAlerts: selectedHospital.alerts + selectedHospital.tempAlerts,
+        avgTemp: (3.2 + Math.random() * 0.8).toFixed(1)
+    } : {
+        totalBloodBags: transfusionData.summary.totalBloodBags,
+        departments: 35,
+        coldStorages: 128,
+        activeAlerts: transfusionData.summary.activeAlerts,
+        avgTemp: '3.6'
+    }
 
     // Data preparation
     const bloodTypeData = transfusionData.bloodTypes.map(type => ({
@@ -160,27 +181,269 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         </div>
 
 
-                        {/* KPI Summary Cards */}
-                        <div className="grid grid-cols-5 gap-4 mb-6">
-                            {[
-                                { label: 'Inventory Accuracy', value: '97.8%', icon: CheckCircle2, color: 'text-emerald-600' },
-                                { label: 'Chain of Custody', value: '96.2%', icon: Activity, color: 'text-emerald-600' },
-                                { label: 'Wastage Reduction', value: '92%', icon: TrendingUp, color: 'text-emerald-600' },
-                                { label: 'Temp Compliance', value: '98.5%', icon: Thermometer, color: 'text-blue-600' },
-                                { label: 'Critical Alerts', value: '48', icon: AlertTriangle, color: 'text-red-600' },
-                            ].map((metric) => (
-                                <div key={metric.label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                    <div className="flex items-start justify-between mb-2">
-                                        <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {metric.label}
-                                        </span>
-                                        {metric.icon && (
-                                            <metric.icon className={`w-4 h-4 ${metric.color || 'text-gray-400'}`} />
-                                        )}
+                        {/* Comprehensive KPI Grid */}
+                        <div className="grid grid-cols-4 gap-4 mb-6">
+                            {/* Row 1 */}
+                            {/* Contamination Prevention */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-orange-100 rounded-lg">
+                                        <AlertTriangle className="w-5 h-5 text-orange-600" />
                                     </div>
-                                    <div className="text-3xl font-semibold text-gray-900">{metric.value}</div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Contamination Prevention
+                                    </span>
                                 </div>
-                            ))}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">24</div>
+                                        <div className="text-xs text-gray-500 mt-1">Alerts</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">55</div>
+                                        <div className="text-xs text-gray-500 mt-1">Expired</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Chain of Custody */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Activity className="w-5 h-5 text-gray-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Chain of Custody
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">84.9%</div>
+                                        <div className="text-xs text-gray-500 mt-1">Compliance</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">52.1%</div>
+                                        <div className="text-xs text-gray-500 mt-1">Traceability</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Inventory Management */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-teal-100 rounded-lg">
+                                        <CheckCircle2 className="w-5 h-5 text-teal-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Inventory Management
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">41</div>
+                                        <div className="text-xs text-gray-500 mt-1">Available</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">95.2%</div>
+                                        <div className="text-xs text-gray-500 mt-1">Accuracy</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Cost Savings */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-purple-100 rounded-lg">
+                                        <DollarSign className="w-5 h-5 text-purple-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Cost Savings
+                                    </span>
+                                </div>
+                                <div className="flex flex-col items-center justify-center py-2">
+                                    <div className="text-4xl font-semibold text-purple-600">$127K</div>
+                                    <div className="text-xs text-gray-500 mt-2">This Month</div>
+
+                                </div>
+                            </div>
+
+                            {/* Row 2 */}
+                            {/* Response Time */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Clock className="w-5 h-5 text-gray-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Response Time
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Avg Mins</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Emergency</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Return Rate */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-teal-100 rounded-lg">
+                                        <TrendingUp className="w-5 h-5 text-teal-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Return Rate
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">56.2%</div>
+                                        <div className="text-xs text-gray-500 mt-1">Unused Units</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">59</div>
+                                        <div className="text-xs text-gray-500 mt-1">Missed Scans</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Expiration Alert */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-orange-100 rounded-lg">
+                                        <AlertCircle className="w-5 h-5 text-orange-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Expiration Alert
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Nearing Expiry</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">24</div>
+                                        <div className="text-xs text-gray-500 mt-1">Alerts</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Department Usage */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Activity className="w-5 h-5 text-gray-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Department Usage
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">2</div>
+                                        <div className="text-xs text-gray-500 mt-1">Total Used</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">15</div>
+                                        <div className="text-xs text-gray-500 mt-1">Departments</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Row 3 */}
+                            {/* Blood Components */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-purple-100 rounded-lg">
+                                        <Droplet className="w-5 h-5 text-purple-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Blood Components
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">2</div>
+                                        <div className="text-xs text-gray-500 mt-1">Units</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">7</div>
+                                        <div className="text-xs text-gray-500 mt-1">Types</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Most Used */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-teal-100 rounded-lg">
+                                        <TrendingUp className="w-5 h-5 text-teal-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Most Used
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">2</div>
+                                        <div className="text-xs text-gray-500 mt-1">Units</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-teal-600">RBC</div>
+                                        <div className="text-xs text-gray-500 mt-1">Component</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Most Expiring */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-orange-100 rounded-lg">
+                                        <AlertTriangle className="w-5 h-5 text-orange-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Most Expiring
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Units</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-orange-600">RBC</div>
+                                        <div className="text-xs text-gray-500 mt-1">Component</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Storage Time */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Clock className="w-5 h-5 text-gray-600" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Storage Time
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-900">0</div>
+                                        <div className="text-xs text-gray-500 mt-1">Expiring</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-semibold text-gray-400">2</div>
+                                        <div className="text-xs text-gray-500 mt-1">Available</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Analysis Charts */}
@@ -237,39 +500,133 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                             </div>
                         </div>
 
-                        {/* Inventory by Hospital Table */}
+                        {/* Hospital Network & Map */}
                         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                            <h3 className="text-sm font-semibold text-gray-900 mb-4">Inventory Status by Hospital</h3>
-                            <div className="overflow-hidden">
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="border-b border-gray-200">
-                                            <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Hospital</th>
-                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Blood Bags</th>
-                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Active Alerts</th>
-                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Temp Alerts</th>
-                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {transfusionData.hospitals.slice(0, 5).map((hosp) => (
-                                            <tr key={hosp.id} className="border-b border-gray-100 hover:bg-gray-50">
-                                                <td className="text-sm text-gray-900 py-3 px-4">{hosp.name}</td>
-                                                <td className="text-sm text-center text-gray-900 py-3 px-4">{hosp.bags}</td>
-                                                <td className="text-sm text-center font-semibold py-3 px-4 text-orange-600">{hosp.alerts}</td>
-                                                <td className="text-sm text-center font-semibold py-3 px-4 text-red-600">{hosp.tempAlerts}</td>
-                                                <td className="text-sm text-center py-3 px-4">
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${hosp.alerts > 3 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}`}>
-                                                        {hosp.alerts > 3 ? 'Attention' : 'Normal'}
-                                                    </span>
-                                                </td>
-                                            </tr>
+                            <div className="grid grid-cols-[30%_70%] gap-6">
+                                {/* Left: Hospital Network List */}
+                                <div>
+                                    <div className="mb-4">
+                                        <h3 className="text-sm font-semibold text-gray-900">Hospital Network</h3>
+                                        <p className="text-xs text-gray-500 mt-1">18 Locations</p>
+                                    </div>
+
+                                    <div className="space-y-1 pr-2 max-h-[400px] overflow-y-auto">
+                                        <div
+                                            onClick={() => setSelectedHospitalId(null)}
+                                            className={`py-2 px-3 rounded-lg font-medium text-xs cursor-pointer transition-colors ${selectedHospitalId === null ? 'bg-blue-100 text-blue-700' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                                                }`}
+                                        >
+                                            All Hospitals
+                                        </div>
+
+                                        {transfusionData.hospitals.map((hospital) => (
+                                            <div
+                                                key={hospital.id}
+                                                onClick={() => setSelectedHospitalId(hospital.id)}
+                                                className={`py-2 px-3 rounded-lg flex items-center justify-between cursor-pointer transition-colors ${selectedHospitalId === hospital.id ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                <span className={`text-sm ${selectedHospitalId === hospital.id ? 'text-blue-900 font-medium' : 'text-gray-700'
+                                                    }`}>
+                                                    {hospital.name}
+                                                </span>
+                                                <div className="w-2 h-2 rounded-full bg-red-500" />
+                                            </div>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </div>
+                                </div>
+
+                                {/* Right: Map Visualization */}
+                                <div className="relative bg-gray-100 rounded-2xl overflow-hidden" style={{ minHeight: '450px' }}>
+                                    {/* Map background image */}
+                                    <div className="absolute inset-0">
+                                        <img src="/map.png" alt="Hospital Network Map" className="w-full h-full object-cover opacity-40" />
+                                    </div>
+
+                                    {/* Hospital location markers */}
+                                    <div className="absolute inset-0">
+                                        {/* Top cluster */}
+                                        <div className="absolute top-[15%] left-[55%] w-3 h-3 rounded-full bg-red-500 shadow-lg animate-pulse" />
+                                        <div className="absolute top-[18%] left-[58%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[12%] left-[62%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+
+                                        {/* Middle-left cluster */}
+                                        <div className="absolute top-[40%] left-[35%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[42%] left-[38%] w-3 h-3 rounded-full bg-red-500 shadow-lg animate-pulse" />
+                                        <div className="absolute top-[45%] left-[33%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+
+                                        {/* Center cluster */}
+                                        <div className="absolute top-[50%] left-[50%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[48%] left-[52%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[53%] left-[48%] w-3 h-3 rounded-full bg-red-500 shadow-lg animate-pulse" />
+                                        <div className="absolute top-[52%] left-[54%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+
+                                        {/* Right cluster */}
+                                        <div className="absolute top-[35%] left-[70%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[38%] left-[72%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[40%] left-[75%] w-3 h-3 rounded-full bg-red-500 shadow-lg animate-pulse" />
+
+                                        {/* Bottom cluster */}
+                                        <div className="absolute top-[65%] left-[45%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[68%] left-[48%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[70%] left-[52%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+
+                                        {/* Additional scattered markers */}
+                                        <div className="absolute top-[25%] left-[45%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                        <div className="absolute top-[60%] left-[65%] w-3 h-3 rounded-full bg-red-500 shadow-lg" />
+                                    </div>
+
+                                    {/* Map overlay info */}
+                                    <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+                                        <div className="text-xs text-gray-600">Total Coverage</div>
+                                        <div className="text-lg font-semibold text-gray-900">18 Hospitals</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="text-xs text-gray-500 mt-3">
-                                Total inventory across network: <span className="font-semibold text-gray-900">{transfusionData.summary.totalBloodBags.toLocaleString()} units</span>
+
+                            {/* Summary Statistics Cards */}
+                            <div className="grid grid-cols-5 gap-4 mt-6">
+                                {/* Total Blood Bags */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Total Blood Bags</div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.totalBloodBags.toLocaleString()}</div>
+                                </div>
+
+                                {/* Departments */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider">Departments</div>
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                    </div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.departments}</div>
+                                </div>
+
+                                {/* Cold Storages */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider">Cold Storages</div>
+                                        <div className="w-2 h-2 rounded-full bg-orange-500" />
+                                    </div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.coldStorages}</div>
+                                </div>
+
+                                {/* Active Alerts */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider">Active Alerts</div>
+                                        <AlertTriangle className="w-3 h-3 text-red-500" />
+                                    </div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.activeAlerts}</div>
+                                </div>
+
+                                {/* Avg Temp */}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider">Avg Temp</div>
+                                        <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                    </div>
+                                    <div className="text-3xl font-semibold text-gray-900">{hospitalStats.avgTemp}°C</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -307,6 +664,52 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         </button>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Hospital-wise Statistics Table */}
+                    <div className="mb-8">
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                            <h3 className="text-sm font-semibold text-gray-900 mb-4">Hospital Inventory Statistics</h3>
+                            <div className="overflow-hidden">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b border-gray-200">
+                                            <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Hospital</th>
+                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Blood Bags</th>
+                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Stock Alerts</th>
+                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Temp Alerts</th>
+                                            <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {transfusionData.hospitals.map((hosp) => (
+                                            <tr key={hosp.id} className="border-b border-gray-100 hover:bg-gray-50">
+                                                <td className="text-sm text-gray-900 py-3 px-4">{hosp.name}</td>
+                                                <td className="text-sm text-center text-gray-900 py-3 px-4">{hosp.bags}</td>
+                                                <td className="text-sm text-center py-3 px-4">
+                                                    <span className={`font-semibold ${hosp.alerts > 5 ? 'text-red-600' : hosp.alerts > 2 ? 'text-orange-600' : 'text-gray-900'}`}>
+                                                        {hosp.alerts}
+                                                    </span>
+                                                </td>
+                                                <td className="text-sm text-center py-3 px-4">
+                                                    <span className={`font-semibold ${hosp.tempAlerts > 3 ? 'text-red-600' : hosp.tempAlerts > 0 ? 'text-orange-600' : 'text-gray-900'}`}>
+                                                        {hosp.tempAlerts}
+                                                    </span>
+                                                </td>
+                                                <td className="text-sm text-center py-3 px-4">
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${hosp.alerts > 5 || hosp.tempAlerts > 3 ? 'bg-red-100 text-red-700' : hosp.alerts > 2 || hosp.tempAlerts > 0 ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                                                        {hosp.alerts > 5 || hosp.tempAlerts > 3 ? 'Critical' : hosp.alerts > 2 || hosp.tempAlerts > 0 ? 'Warning' : 'Normal'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="text-xs text-gray-500 mt-3">
+                                Total inventory across network: <span className="font-semibold text-gray-900">{transfusionData.summary.totalBloodBags.toLocaleString()} units</span>
                             </div>
                         </div>
                     </div>
