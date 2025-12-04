@@ -2,6 +2,7 @@
 
 import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, MapPin } from 'lucide-react'
 import { labMedicineData } from '@/lib/data'
+import { RiskLevel } from '@/lib/taxonomies'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { LabMedicineTier3 } from './lab-medicine-tier-3'
@@ -95,7 +96,7 @@ export function LabMedicineDetail({ isOpen, onClose }: LabMedicineDetailProps) {
                                             </div>
                                             <div className="w-full bg-gray-100 rounded-full h-2">
                                                 <div
-                                                    className={`${item.risk === 'high' ? 'bg-red-500' : item.risk === 'medium' ? 'bg-orange-500' : 'bg-emerald-500'} h-2 rounded-full transition-all duration-500`}
+                                                    className={`${item.risk === RiskLevel.HIGH || item.risk === RiskLevel.CRITICAL ? 'bg-red-500' : item.risk === RiskLevel.MEDIUM ? 'bg-orange-500' : 'bg-emerald-500'} h-2 rounded-full transition-all duration-500`}
                                                     style={{ width: `${item.coverage}%` }}
                                                 />
                                             </div>

@@ -6,7 +6,6 @@ import { AISummaryBanner } from '@/components/ai-summary-banner'
 import { DigitizationTiles } from '@/components/digitization-tiles'
 import { AnalyzeTiles } from '@/components/analyze-tiles'
 import { FinancialImpactTiles } from '@/components/financial-impact-tiles'
-import { AIRecommendationsPanel } from '@/components/ai-recommendations-panel'
 import { FacilityMap } from '@/components/facility-map'
 import { Footer } from '@/components/footer'
 import { BiomedicalAssetsDetail } from '@/components/biomedical-assets-detail'
@@ -187,12 +186,6 @@ export default function Dashboard() {
           </section>
         )}
 
-        {/* Tier 4: AI Recommendations */}
-        <section className="px-8 py-12 bg-secondary/30">
-          <div className="max-w-7xl mx-auto">
-            <AIRecommendationsPanel />
-          </div>
-        </section>
 
         {/* Tier 5: Facility Digital Twin */}
         <section className="px-8 py-12">

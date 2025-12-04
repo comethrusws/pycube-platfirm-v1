@@ -1,10 +1,11 @@
 'use client'
 
-import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Thermometer, Droplet } from 'lucide-react'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Thermometer, Droplet, Sparkles, ArrowRight } from 'lucide-react'
 import { transfusionData } from '@/lib/data'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { TransfusionTier3 } from './transfusion-tier-3'
+import { AISidePanel, AIContextType } from './ai-side-panel'
 
 interface TransfusionDetailProps {
     isOpen: boolean
@@ -14,6 +15,23 @@ interface TransfusionDetailProps {
 export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
     const [tier3Category, setTier3Category] = useState<string | null>(null)
     const [selectedHospitalId, setSelectedHospitalId] = useState<number | null>(null)
+    const [aiPanelOpen, setAiPanelOpen] = useState(false)
+    const [aiContext, setAiContext] = useState<{ title: string, value: string, type: AIContextType }>({
+        title: '',
+        value: '',
+        type: 'blood-wastage'
+    })
+
+    const handleKPIClick = (label: string, value: string) => {
+        let type: AIContextType = 'blood-wastage'
+        if (label.includes('Stock') || label.includes('Inventory')) type = 'stockout'
+        if (label.includes('Temp') || label.includes('Cold')) type = 'blood-wastage'
+        if (label.includes('Expiry') || label.includes('Expired')) type = 'expiration'
+        if (label.includes('Custody') || label.includes('Traceability')) type = 'custody'
+
+        setAiContext({ title: label, value, type })
+        setAiPanelOpen(true)
+    }
 
     if (!isOpen) return null
 
@@ -585,12 +603,19 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                             </div>
 
                             {/* Summary Statistics Cards */}
+                            {/* Summary Statistics Cards */}
                             <div className="grid grid-cols-5 gap-4 mt-6">
                                 {/* Total Blood Bags */}
-                                <div className="bg-gray-50 rounded-xl p-4">
+                                <button
+                                    onClick={() => handleKPIClick('Total Blood Bags', hospitalStats.totalBloodBags.toLocaleString())}
+                                    className="bg-gray-50 rounded-xl p-4 hover:bg-white hover:shadow-md transition-all text-left group relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
                                     <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Total Blood Bags</div>
                                     <div className="text-3xl font-semibold text-gray-900">{hospitalStats.totalBloodBags.toLocaleString()}</div>
-                                </div>
+                                </button>
 
                                 {/* Departments */}
                                 <div className="bg-gray-50 rounded-xl p-4">
@@ -602,31 +627,49 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                 </div>
 
                                 {/* Cold Storages */}
-                                <div className="bg-gray-50 rounded-xl p-4">
+                                <button
+                                    onClick={() => handleKPIClick('Cold Storages', hospitalStats.coldStorages.toString())}
+                                    className="bg-gray-50 rounded-xl p-4 hover:bg-white hover:shadow-md transition-all text-left group relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
                                     <div className="flex items-center gap-2 mb-2">
                                         <div className="text-xs text-gray-500 uppercase tracking-wider">Cold Storages</div>
                                         <div className="w-2 h-2 rounded-full bg-orange-500" />
                                     </div>
                                     <div className="text-3xl font-semibold text-gray-900">{hospitalStats.coldStorages}</div>
-                                </div>
+                                </button>
 
                                 {/* Active Alerts */}
-                                <div className="bg-gray-50 rounded-xl p-4">
+                                <button
+                                    onClick={() => handleKPIClick('Active Alerts', hospitalStats.activeAlerts.toString())}
+                                    className="bg-gray-50 rounded-xl p-4 hover:bg-white hover:shadow-md transition-all text-left group relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
                                     <div className="flex items-center gap-2 mb-2">
                                         <div className="text-xs text-gray-500 uppercase tracking-wider">Active Alerts</div>
                                         <AlertTriangle className="w-3 h-3 text-red-500" />
                                     </div>
                                     <div className="text-3xl font-semibold text-gray-900">{hospitalStats.activeAlerts}</div>
-                                </div>
+                                </button>
 
                                 {/* Avg Temp */}
-                                <div className="bg-gray-50 rounded-xl p-4">
+                                <button
+                                    onClick={() => handleKPIClick('Avg Temp', `${hospitalStats.avgTemp}°C`)}
+                                    className="bg-gray-50 rounded-xl p-4 hover:bg-white hover:shadow-md transition-all text-left group relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
                                     <div className="flex items-center gap-2 mb-2">
                                         <div className="text-xs text-gray-500 uppercase tracking-wider">Avg Temp</div>
                                         <div className="w-2 h-2 rounded-full bg-blue-500" />
                                     </div>
                                     <div className="text-3xl font-semibold text-gray-900">{hospitalStats.avgTemp}°C</div>
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -752,6 +795,15 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                     onClose={() => setTier3Category(null)}
                 />
             )}
+
+            {/* AI Side Panel */}
+            <AISidePanel
+                isOpen={aiPanelOpen}
+                onClose={() => setAiPanelOpen(false)}
+                title={aiContext.title}
+                metricValue={aiContext.value}
+                context={aiContext.type}
+            />
         </>
     )
 }

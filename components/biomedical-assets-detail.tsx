@@ -1,12 +1,14 @@
 'use client'
 
-import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity } from 'lucide-react'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, ArrowRight, MapPin, Sparkles } from 'lucide-react'
 import { biomedicalAssetsData } from '@/lib/data'
 import { getCustomerConfig } from '@/lib/customer-config'
 import { AssetStatus, ASSET_STATUS_FLOW } from '@/lib/taxonomies'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { BiomedicalAssetsTier3 } from './biomedical-assets-tier-3'
+
+import { AISidePanel, AIContextType } from './ai-side-panel'
 
 interface BiomedicalAssetsDetailProps {
     isOpen: boolean
@@ -16,6 +18,13 @@ interface BiomedicalAssetsDetailProps {
 
 export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: BiomedicalAssetsDetailProps) {
     const [tier3Category, setTier3Category] = useState<string | null>(null)
+    const [aiPanelOpen, setAiPanelOpen] = useState(false)
+    const [aiContext, setAiContext] = useState<{ title: string, value: string, type: AIContextType }>({
+        title: '',
+        value: '',
+        type: 'utilization'
+    })
+
     const config = getCustomerConfig(customerId)
     const biomedConfig = config.biomed
 
@@ -44,6 +53,16 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
         { location: 'Emergency Department', idle30: 15, idle60: 8, idle90: 2 },
         { location: 'ICU', idle30: 8, idle60: 3, idle90: 1 },
     ]
+
+    const handleKPIClick = (label: string, value: string) => {
+        let type: AIContextType = 'utilization'
+        if (label.includes('Repair') || label.includes('Maint')) type = 'maintenance'
+        if (label.includes('Lost')) type = 'lost'
+        if (label.includes('Clean')) type = 'clean'
+
+        setAiContext({ title: label, value, type })
+        setAiPanelOpen(true)
+    }
 
     return (
         <>
@@ -165,7 +184,16 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                                 { label: 'Lost Assets', value: biomedConfig.lostAssets.toLocaleString(), icon: AlertTriangle, color: 'text-red-600' },
                                 { label: 'Maint. Overdue', value: biomedConfig.maintenanceOverdue.toLocaleString(), icon: Clock, color: 'text-orange-600' },
                             ].map((metric) => (
-                                <div key={metric.label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <button
+                                    key={metric.label}
+                                    onClick={() => handleKPIClick(metric.label, metric.value)}
+                                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="bg-purple-100 p-1.5 rounded-lg">
+                                            <Sparkles className="w-3 h-3 text-purple-600" />
+                                        </div>
+                                    </div>
                                     <div className="flex items-start justify-between mb-2">
                                         <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {metric.label}
@@ -174,8 +202,11 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                                             <metric.icon className={`w-4 h-4 ${metric.color || 'text-gray-400'}`} />
                                         )}
                                     </div>
-                                    <div className="text-3xl font-semibold text-gray-900">{metric.value}</div>
-                                </div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">{metric.value}</div>
+                                    <div className="text-[10px] text-purple-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                        Ask AI Analysis <ArrowRight className="w-3 h-3" />
+                                    </div>
+                                </button>
                             ))}
                         </div>
 
@@ -230,6 +261,56 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                                         <div className="w-3 h-3 rounded-full bg-red-500" />
                                         <span className="text-gray-600">Overdue</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* NEW: Asset Lifecycle Timeline (R2.3) */}
+                        <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-sm font-semibold text-gray-900">Asset Lifecycle Timeline: Infusion Pump #IP-492</h3>
+                                <span className="text-xs font-medium text-orange-600 bg-orange-100 px-2 py-1 rounded-full">Bottleneck Detected</span>
+                            </div>
+
+                            <div className="relative">
+                                {/* Timeline Line */}
+                                <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -translate-y-1/2" />
+
+                                {/* Timeline Points */}
+                                <div className="relative flex justify-between">
+                                    {[
+                                        { status: 'Clean', location: 'Central Sterile', time: '2h', color: 'bg-emerald-500', active: false },
+                                        { status: 'In Use', location: 'ICU Room 302', time: '48h', color: 'bg-blue-500', active: false },
+                                        { status: 'Soiled', location: 'ICU Soiled Utility', time: '4h', color: 'bg-yellow-500', active: true, alert: 'Exceeded 2h limit' },
+                                        { status: 'Needs Repair', location: 'Biomed Shop', time: '12h', color: 'bg-red-500', active: false },
+                                        { status: 'Repaired', location: 'Biomed Shop', time: '1h', color: 'bg-purple-500', active: false },
+                                        { status: 'Sanitized', location: 'Central Sterile', time: '30m', color: 'bg-teal-500', active: false },
+                                    ].map((step, idx) => (
+                                        <div key={idx} className="flex flex-col items-center relative group">
+                                            {/* Alert Badge */}
+                                            {step.alert && (
+                                                <div className="absolute -top-12 bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-lg border border-red-200 shadow-sm animate-bounce">
+                                                    {step.alert}
+                                                </div>
+                                            )}
+
+                                            {/* Node */}
+                                            <div className={`w-4 h-4 rounded-full ${step.color} border-4 border-white shadow-sm z-10`} />
+
+                                            {/* Details */}
+                                            <div className="mt-4 text-center">
+                                                <div className="text-xs font-bold text-gray-900">{step.status}</div>
+                                                <div className="flex items-center justify-center gap-1 text-[10px] text-gray-500 mt-1">
+                                                    <MapPin className="w-3 h-3" />
+                                                    {step.location}
+                                                </div>
+                                                <div className="flex items-center justify-center gap-1 text-[10px] font-medium text-gray-700 mt-1 bg-gray-100 px-2 py-0.5 rounded-full">
+                                                    <Clock className="w-3 h-3" />
+                                                    {step.time}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -348,6 +429,15 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
             <BiomedicalAssetsTier3
                 category={tier3Category}
                 onClose={() => setTier3Category(null)}
+            />
+
+            {/* AI Side Panel */}
+            <AISidePanel
+                isOpen={aiPanelOpen}
+                onClose={() => setAiPanelOpen(false)}
+                title={aiContext.title}
+                metricValue={aiContext.value}
+                context={aiContext.type}
             />
         </>
     )
