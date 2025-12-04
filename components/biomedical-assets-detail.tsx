@@ -210,6 +210,81 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                             ))}
                         </div>
 
+                        {/* Coverage Status Cards */}
+                        <div className="grid grid-cols-2 gap-6 mb-6">
+                            {/* Status of Assets Expected Today */}
+                            <button
+                                onClick={() => handleKPIClick('Asset Tracking Status', '9090 assets tracked')}
+                                className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="bg-purple-100 p-1.5 rounded-lg">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
+                                </div>
+                                <h3 className="text-base font-semibold text-gray-900 mb-6">Status of Assets Expected Today</h3>
+                                <div className="space-y-4">
+                                    {[
+                                        { label: 'Collected', count: 1240, color: 'bg-blue-500' },
+                                        { label: 'Ready for Pick-up', count: 980, color: 'bg-blue-400' },
+                                        { label: 'Picked-up', count: 1180, color: 'bg-blue-500' },
+                                        { label: 'In Transit', count: 840, color: 'bg-blue-500' },
+                                        { label: 'Reached Destination', count: 5005, color: 'bg-blue-500' },
+                                        { label: 'Unknown', count: 185, color: 'bg-gray-400' },
+                                    ].map((status) => (
+                                        <div key={status.label} className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${status.color}`} />
+                                                <span className="text-sm text-gray-700">{status.label}</span>
+                                            </div>
+                                            <span className="text-sm font-semibold text-gray-900">{status.count} assets</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-4 text-xs text-purple-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                    Ask AI Analysis <ArrowRight className="w-3 h-3" />
+                                </div>
+                            </button>
+
+                            {/* Yesterday's Pending Assets */}
+                            <button
+                                onClick={() => handleKPIClick('Yesterdays Pending Assets', '95 assets pending')}
+                                className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="bg-purple-100 p-1.5 rounded-lg">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
+                                </div>
+                                <h3 className="text-base font-semibold text-gray-900 mb-6">Yesterday's Pending Assets</h3>
+                                <div className="text-center mb-6">
+                                    <div className="text-6xl font-bold text-gray-900 mb-2">95</div>
+                                    <div className="text-sm text-gray-500">Total Pending</div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-3 mb-4">
+                                    <div className="bg-blue-500 text-white rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-bold">42</div>
+                                        <div className="text-xs mt-1 opacity-90">Collected</div>
+                                    </div>
+                                    <div className="bg-blue-400 text-white rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-bold">28</div>
+                                        <div className="text-xs mt-1 opacity-90">Ready</div>
+                                    </div>
+                                    <div className="bg-orange-500 text-white rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-bold">25</div>
+                                        <div className="text-xs mt-1 opacity-90">Picked up</div>
+                                    </div>
+                                </div>
+                                <div className="bg-yellow-400 text-gray-900 rounded-2xl p-4 text-center">
+                                    <div className="text-3xl font-bold">0</div>
+                                    <div className="text-xs mt-1 font-medium">In Transit</div>
+                                </div>
+                                <div className="mt-4 text-xs text-purple-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                    Ask AI Analysis <ArrowRight className="w-3 h-3" />
+                                </div>
+                            </button>
+                        </div>
+
                         {/* Analysis Charts */}
                         <div className="grid grid-cols-2 gap-6 mb-6">
                             {/* Asset Utilization by Category */}
@@ -261,56 +336,6 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                                         <div className="w-3 h-3 rounded-full bg-red-500" />
                                         <span className="text-gray-600">Overdue</span>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* NEW: Asset Lifecycle Timeline (R2.3) */}
-                        <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6">
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-sm font-semibold text-gray-900">Asset Lifecycle Timeline: Infusion Pump #IP-492</h3>
-                                <span className="text-xs font-medium text-orange-600 bg-orange-100 px-2 py-1 rounded-full">Bottleneck Detected</span>
-                            </div>
-
-                            <div className="relative">
-                                {/* Timeline Line */}
-                                <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -translate-y-1/2" />
-
-                                {/* Timeline Points */}
-                                <div className="relative flex justify-between">
-                                    {[
-                                        { status: 'Clean', location: 'Central Sterile', time: '2h', color: 'bg-emerald-500', active: false },
-                                        { status: 'In Use', location: 'ICU Room 302', time: '48h', color: 'bg-blue-500', active: false },
-                                        { status: 'Soiled', location: 'ICU Soiled Utility', time: '4h', color: 'bg-yellow-500', active: true, alert: 'Exceeded 2h limit' },
-                                        { status: 'Needs Repair', location: 'Biomed Shop', time: '12h', color: 'bg-red-500', active: false },
-                                        { status: 'Repaired', location: 'Biomed Shop', time: '1h', color: 'bg-purple-500', active: false },
-                                        { status: 'Sanitized', location: 'Central Sterile', time: '30m', color: 'bg-teal-500', active: false },
-                                    ].map((step, idx) => (
-                                        <div key={idx} className="flex flex-col items-center relative group">
-                                            {/* Alert Badge */}
-                                            {step.alert && (
-                                                <div className="absolute -top-12 bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-lg border border-red-200 shadow-sm animate-bounce">
-                                                    {step.alert}
-                                                </div>
-                                            )}
-
-                                            {/* Node */}
-                                            <div className={`w-4 h-4 rounded-full ${step.color} border-4 border-white shadow-sm z-10`} />
-
-                                            {/* Details */}
-                                            <div className="mt-4 text-center">
-                                                <div className="text-xs font-bold text-gray-900">{step.status}</div>
-                                                <div className="flex items-center justify-center gap-1 text-[10px] text-gray-500 mt-1">
-                                                    <MapPin className="w-3 h-3" />
-                                                    {step.location}
-                                                </div>
-                                                <div className="flex items-center justify-center gap-1 text-[10px] font-medium text-gray-700 mt-1 bg-gray-100 px-2 py-0.5 rounded-full">
-                                                    <Clock className="w-3 h-3" />
-                                                    {step.time}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
                                 </div>
                             </div>
                         </div>

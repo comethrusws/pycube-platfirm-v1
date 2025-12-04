@@ -2,6 +2,9 @@
 
 import { X, TrendingUp, Clock, DollarSign, Activity, AlertTriangle, ArrowRight, Search, Filter } from 'lucide-react'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { useState } from 'react'
+import { AssetLifecycleModal } from './asset-lifecycle-modal'
+import { AssetLifecycleData, getAssetLifecycleData } from '@/lib/asset-lifecycle'
 
 interface BiomedicalAssetsTier3Props {
     category: string | null
@@ -46,6 +49,15 @@ export function BiomedicalAssetsTier3({ category, onClose }: BiomedicalAssetsTie
 
 // Asset Utilization Content
 function AssetUtilizationContent() {
+    const [selectedAsset, setSelectedAsset] = useState<AssetLifecycleData | null>(null)
+
+    const handleAssetClick = (assetId: string) => {
+        const lifecycleData = getAssetLifecycleData(assetId)
+        if (lifecycleData) {
+            setSelectedAsset(lifecycleData)
+        }
+    }
+
     const underutilizedAssets = [
         { category: 'Surgical Equipment', count: 385, avgUtilization: 42, potentialSavings: '$2.8M', location: 'Main Hospital - West Wing' },
         { category: 'Imaging Devices', count: 124, avgUtilization: 38, potentialSavings: '$1.2M', location: 'Surgical Center' },
@@ -57,16 +69,16 @@ function AssetUtilizationContent() {
     ]
 
     const topUnderutilizedAssets = [
-        { id: 'IP-992', type: 'Infusion Pump', util: 12, location: 'ED Storage', reason: 'Forgotten in storage', action: 'Return to Central Supply' },
-        { id: 'VENT-102', type: 'Ventilator', util: 5, location: 'West Wing', reason: 'Surplus unit', action: 'Decommission' },
-        { id: 'MON-441', type: 'Patient Monitor', util: 18, location: 'ICU Overflow', reason: 'Backup unit overuse', action: 'Redeploy to ED' },
-        { id: 'IMG-003', type: 'Portable X-Ray', util: 22, location: 'Radiology Hall B', reason: 'Scheduling inefficiency', action: 'Update scheduling rules' },
-        { id: 'SURG-882', type: 'Electrosurgical Unit', util: 8, location: 'OR 4 (Closed)', reason: 'Room under renovation', action: 'Move to OR 2' },
-        { id: 'WCH-112', type: 'Wheelchair', util: 2, location: 'Lobby Closet', reason: 'Damaged / Unreported', action: 'Send to Biomed Shop' },
-        { id: 'DEF-331', type: 'Defibrillator', util: 0, location: 'East Wing Nurse Stn', reason: 'Battery expired', action: 'Replace Battery' },
-        { id: 'PUMP-771', type: 'Feeding Pump', util: 15, location: 'Pediatrics', reason: 'Seasonal low census', action: 'Loan to NICU' },
-        { id: 'BED-229', type: 'Smart Bed', util: 35, location: 'Ward 3B', reason: 'Patient preference', action: 'Staff training' },
-        { id: 'EKG-554', type: 'EKG Machine', util: 28, location: 'Cardiology Clinic', reason: 'Duplicate equipment', action: 'Transfer to Satellite Clinic' },
+        { id: 'IP-492', type: 'Infusion Pump', util: 12, location: 'ED Storage', reason: 'Forgotten in storage', action: 'Return to Central Supply', hasLifecycle: true },
+        { id: 'VENT-102', type: 'Ventilator', util: 5, location: 'West Wing', reason: 'Surplus unit', action: 'Decommission', hasLifecycle: false },
+        { id: 'MON-441', type: 'Patient Monitor', util: 18, location: 'ICU Overflow', reason: 'Backup unit overuse', action: 'Redeploy to ED', hasLifecycle: false },
+        { id: 'IMG-003', type: 'Portable X-Ray', util: 22, location: 'Radiology Hall B', reason: 'Scheduling inefficiency', action: 'Update scheduling rules', hasLifecycle: false },
+        { id: 'SURG-882', type: 'Electrosurgical Unit', util: 8, location: 'OR 4 (Closed)', reason: 'Room under renovation', action: 'Move to OR 2', hasLifecycle: false },
+        { id: 'WC-234', type: 'Wheelchair', util: 2, location: 'Lobby Closet', reason: 'Damaged / Unreported', action: 'Send to Biomed Shop', hasLifecycle: true },
+        { id: 'DEF-331', type: 'Defibrillator', util: 0, location: 'East Wing Nurse Stn', reason: 'Battery expired', action: 'Replace Battery', hasLifecycle: false },
+        { id: 'PUMP-771', type: 'Feeding Pump', util: 15, location: 'Pediatrics', reason: 'Seasonal low census', action: 'Loan to NICU', hasLifecycle: false },
+        { id: 'BED-229', type: 'Smart Bed', util: 35, location: 'Ward 3B', reason: 'Patient preference', action: 'Staff training', hasLifecycle: false },
+        { id: 'VT-892', type: 'Ventilator', util: 28, location: 'Cardiology Clinic', reason: 'Duplicate equipment', action: 'Transfer to Satellite Clinic', hasLifecycle: true },
     ]
 
     const utilizationTrend = [
@@ -203,7 +215,19 @@ function AssetUtilizationContent() {
                         <tbody>
                             {topUnderutilizedAssets.map((asset, idx) => (
                                 <tr key={idx} className="border-t border-gray-100 hover:bg-gray-50 group">
-                                    <td className="text-sm font-medium text-gray-900 py-3 px-4">{asset.id}</td>
+                                    <td className="text-sm font-medium py-3 px-4">
+                                        {asset.hasLifecycle ? (
+                                            <button
+                                                onClick={() => handleAssetClick(asset.id)}
+                                                className="text-blue-600 hover:text-blue-800 hover:underline font-semibold flex items-center gap-1"
+                                            >
+                                                {asset.id}
+                                                <span className="text-xs text-gray-500">(view lifecycle)</span>
+                                            </button>
+                                        ) : (
+                                            <span className="text-gray-900">{asset.id}</span>
+                                        )}
+                                    </td>
                                     <td className="text-sm text-gray-700 py-3 px-4">{asset.type}</td>
                                     <td className="text-sm text-center py-3 px-4">
                                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${asset.util < 10 ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'
@@ -262,8 +286,8 @@ function AssetUtilizationContent() {
                         <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
                                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${rec.priority === 'High' ? 'bg-red-100 text-red-700' :
-                                        rec.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                                            'bg-blue-100 text-blue-700'
+                                    rec.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
+                                        'bg-blue-100 text-blue-700'
                                     }`}>
                                     {rec.priority} Priority
                                 </span>
@@ -286,6 +310,12 @@ function AssetUtilizationContent() {
                     ))}
                 </div>
             </div>
+
+            {/* Asset Lifecycle Modal */}
+            <AssetLifecycleModal
+                assetData={selectedAsset}
+                onClose={() => setSelectedAsset(null)}
+            />
         </div>
     )
 }
@@ -435,8 +465,8 @@ function MaintenanceBacklogContent() {
                         <div key={idx} className="bg-white rounded-2xl border-2 border-red-200 p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
                                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${rec.priority === 'Critical' ? 'bg-red-600 text-white' :
-                                        rec.priority === 'High' ? 'bg-red-100 text-red-700' :
-                                            'bg-orange-100 text-orange-700'
+                                    rec.priority === 'High' ? 'bg-red-100 text-red-700' :
+                                        'bg-orange-100 text-orange-700'
                                     }`}>
                                     {rec.priority}
                                 </span>
@@ -586,8 +616,8 @@ function HighValueTrackingContent() {
                         <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
                                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${rec.priority === 'High' ? 'bg-blue-100 text-blue-700' :
-                                        rec.priority === 'Medium' ? 'bg-indigo-100 text-indigo-700' :
-                                            'bg-gray-100 text-gray-700'
+                                    rec.priority === 'Medium' ? 'bg-indigo-100 text-indigo-700' :
+                                        'bg-gray-100 text-gray-700'
                                     }`}>
                                     {rec.priority} Priority
                                 </span>
@@ -667,8 +697,8 @@ function WorkflowBottlenecksContent() {
                                     <td className="text-sm text-center text-gray-900 py-3 px-4">{route.occurrences}</td>
                                     <td className="text-sm text-center py-3 px-4">
                                         <span className={`text-xs font-semibold px-3 py-1 rounded-full ${route.impact === 'Critical' ? 'bg-red-100 text-red-700' :
-                                                route.impact === 'High' ? 'bg-orange-100 text-orange-700' :
-                                                    'bg-yellow-100 text-yellow-700'
+                                            route.impact === 'High' ? 'bg-orange-100 text-orange-700' :
+                                                'bg-yellow-100 text-yellow-700'
                                             }`}>
                                             {route.impact}
                                         </span>
@@ -758,8 +788,8 @@ function WorkflowBottlenecksContent() {
                         <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
                                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${rec.priority === 'High' ? 'bg-yellow-100 text-yellow-700' :
-                                        rec.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                                            'bg-blue-100 text-blue-700'
+                                    rec.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
+                                        'bg-blue-100 text-blue-700'
                                     }`}>
                                     {rec.priority} Priority
                                 </span>
