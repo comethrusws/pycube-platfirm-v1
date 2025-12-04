@@ -106,8 +106,8 @@ export const customerConfigs: Record<string, CustomerConfig> = {
       }
     },
     biomed: {
-      totalAssets: 15420,
-      digitizedAssets: 14200,
+      totalAssets: 5050,
+      digitizedAssets: 5005,
       utilizationRate: 68,
       lostAssets: 42,
       maintenanceOverdue: 128,

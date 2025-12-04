@@ -18,6 +18,8 @@ export interface DigitizationTile {
   icon: string;
   description: string;
   href: string;
+  denominator?: string; // R4.1: e.g., '5,005/5,050'
+  statusLabel?: string; // R4.1: e.g., 'Availability', 'Tracked samples'
 }
 
 export interface Hospital {
@@ -160,6 +162,8 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'Package',
     description: 'Workflow digitization across all facilities',
     href: '/biomedical-assets',
+    denominator: '5,005/5,050',
+    statusLabel: 'Availability',
   },
   {
     label: 'Lab Medicine',
@@ -168,6 +172,8 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'TestTube',
     description: 'Specimen tracking & traceability',
     href: '/lab-medicine',
+    denominator: '34670/37000',
+    statusLabel: 'Tracked samples',
   },
   {
     label: 'Transfusion Medicine',
@@ -176,6 +182,8 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'Droplet',
     description: 'Blood product lifecycle management',
     href: '/transfusion',
+    denominator: '3,910/4,250',
+    statusLabel: 'Visibility',
   },
   {
     label: 'Supply chain',
@@ -184,6 +192,8 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'Truck',
     description: 'Inventory & procurement workflows',
     href: '/supply-chain',
+    denominator: '61,070/62,000',
+    statusLabel: 'Tracked items',
   },
   {
     label: 'Infra Health',
@@ -192,6 +202,8 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'Settings',
     description: 'Gateway & RFID infrastructure status',
     href: '/infra-health',
+    denominator: '475/485',
+    statusLabel: 'Gateway status',
   },
 ];
 
@@ -378,7 +390,7 @@ export const labMedicineData = {
   // Tier 2 Summary
   summary: {
     digitizationCoverage: 96,
-    totalSpecimens7Days: 125000, // Enterprise scale: 15-25K daily
+    totalSpecimens7Days: 37000, // Enterprise scale: 15-25K daily
     dailyAverage: 17850,
     fullyTracked: 96,
     gapsPercentage: 4,
@@ -389,18 +401,18 @@ export const labMedicineData = {
 
   // Weekly trend data (12 weeks)
   trendData: [
-    { week: 'W1', value: 86, specimens: 108000 },
-    { week: 'W2', value: 88, specimens: 112000 },
-    { week: 'W3', value: 89, specimens: 114500 },
-    { week: 'W4', value: 90, specimens: 116000 },
-    { week: 'W5', value: 91, specimens: 118500 },
-    { week: 'W6', value: 92, specimens: 120000 },
-    { week: 'W7', value: 92, specimens: 121000 },
-    { week: 'W8', value: 93, specimens: 122500 },
-    { week: 'W9', value: 94, specimens: 123500 },
-    { week: 'W10', value: 95, specimens: 124000 },
-    { week: 'W11', value: 95, specimens: 124500 },
-    { week: 'W12', value: 96, specimens: 125000 },
+    { week: 'W1', value: 86, specimens: 31700 },
+    { week: 'W2', value: 88, specimens: 32500 },
+    { week: 'W3', value: 89, specimens: 33200 },
+    { week: 'W4', value: 90, specimens: 33800 },
+    { week: 'W5', value: 91, specimens: 34300 },
+    { week: 'W6', value: 92, specimens: 34800 },
+    { week: 'W7', value: 92, specimens: 35200 },
+    { week: 'W8', value: 93, specimens: 35600 },
+    { week: 'W9', value: 94, specimens: 36000 },
+    { week: 'W10', value: 95, specimens: 36400 },
+    { week: 'W11', value: 95, specimens: 36700 },
+    { week: 'W12', value: 96, specimens: 37000 },
   ],
 
   // Coverage by Facility (18 major facilities)
@@ -486,7 +498,7 @@ export const supplyChainData = {
     criticalAvailability: 98.5,
     wastageIndex: 1.5,
     wastageTarget: 1.0,
-    totalSKUs: 62000,
+    totalSKUs: 58000,
     activeVendors: 285,
   },
 
@@ -563,6 +575,120 @@ export const supplyChainData = {
       temperatureExcursions: 18,
     },
   } as const,
+};
+
+// ============================================================================
+// R4.3/R4.4: PLATFORM-LEVEL EXPIRY & WASTAGE POLICY DATA
+// ============================================================================
+
+export interface ExpiryPolicyCategory {
+  category: string;
+  shelfLifeDays: number;
+  wastageBaselinePercent: number;
+  currentWastagePercent: number;
+  avgUnitValue: number;
+  unitsExpiringSoon: number; // Within alert window
+  alertWindowDays: number;
+  totalValue: number;
+  preventionProtocols: string[];
+  monthlyPreventedWastage: number; // $ value
+}
+
+export const expiryPolicyData: ExpiryPolicyCategory[] = [
+  {
+    category: 'RBC (Red Blood Cells)',
+    shelfLifeDays: 42,
+    wastageBaselinePercent: 2.5,
+    currentWastagePercent: 1.8,
+    avgUnitValue: 350,
+    unitsExpiringSoon: 24,
+    alertWindowDays: 7,
+    totalValue: 8400,
+    preventionProtocols: [
+      'FIFO enforcement via RTLS',
+      'Auto-transfer to partner hospitals',
+      'Predictive demand modeling',
+      'Real-time expiry dashboard',
+    ],
+    monthlyPreventedWastage: 47000,
+  },
+  {
+    category: 'Platelets',
+    shelfLifeDays: 5,
+    wastageBaselinePercent: 8.0,
+    currentWastagePercent: 5.2,
+    avgUnitValue: 600,
+    unitsExpiringSoon: 82,
+    alertWindowDays: 2,
+    totalValue: 49200,
+    preventionProtocols: [
+      'Regional hospital network coordination',
+      '24h expiry alerts to clinicians',
+      'Automated cross-matching prioritization',
+      'Weekend demand forecasting',
+    ],
+    monthlyPreventedWastage: 118000,
+  },
+  {
+    category: 'Surgical Supplies',
+    shelfLifeDays: 180,
+    wastageBaselinePercent: 1.2,
+    currentWastagePercent: 0.9,
+    avgUnitValue: 450,
+    unitsExpiringSoon: 1850,
+    alertWindowDays: 30,
+    totalValue: 832500,
+    preventionProtocols: [
+      'OR case scheduling integration',
+      'Vendor-managed inventory (VMI)',
+      'Automated reorder point optimization',
+      'Quarterly expiry audits',
+    ],
+    monthlyPreventedWastage: 28000,
+  },
+  {
+    category: 'Pharmaceuticals',
+    shelfLifeDays: 365, // Average across all drug classes
+    wastageBaselinePercent: 2.8,
+    currentWastagePercent: 2.1,
+    avgUnitValue: 320,
+    unitsExpiringSoon: 1420,
+    alertWindowDays: 60,
+    totalValue: 454400,
+    preventionProtocols: [
+      'Pharmacy-driven FEFO protocols',
+      'ADC integration for usage tracking',
+      'Therapeutic substitution programs',
+      'Donation programs for near-expiry meds',
+    ],
+    monthlyPreventedWastage: 85000,
+  },
+  {
+    category: 'Implants & Devices',
+    shelfLifeDays: 730, // 2 years avg
+    wastageBaselinePercent: 0.5,
+    currentWastagePercent: 0.3,
+    avgUnitValue: 8500,
+    unitsExpiringSoon: 48,
+    alertWindowDays: 90,
+    totalValue: 408000,
+    preventionProtocols: [
+      'High-value item alerts (>$5K)',
+      'Consignment inventory programs',
+      'Surgeon preference card optimization',
+      'Quarterly utilization reviews',
+    ],
+    monthlyPreventedWastage: 62000,
+  },
+];
+
+// Platform-level summary for R4.3
+export const platformExpiryAlert = {
+  totalUnitsExpiringSoon: expiryPolicyData.reduce((sum, cat) => sum + cat.unitsExpiringSoon, 0),
+  totalValueAtRisk: expiryPolicyData.reduce((sum, cat) => sum + cat.totalValue, 0),
+  totalMonthlyPreventedWastage: expiryPolicyData.reduce((sum, cat) => sum + cat.monthlyPreventedWastage, 0),
+  criticalCategories: expiryPolicyData.filter(cat => cat.unitsExpiringSoon > 50).map(cat => cat.category),
+  activeProtocolsCount: expiryPolicyData.reduce((sum, cat) => sum + cat.preventionProtocols.length, 0),
 };
 
 // ============================================================================

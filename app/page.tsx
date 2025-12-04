@@ -13,6 +13,7 @@ import { TransfusionDetail } from '@/components/transfusion-detail'
 import { LabMedicineDetail } from '@/components/lab-medicine-detail'
 import { InfraHealthDetail } from '@/components/infra-health-detail'
 import { SupplyChainDetail } from '@/components/supply-chain-detail'
+import { InventoryExpiryBanner } from '@/components/inventory-expiry-banner'
 import { DEFAULT_CUSTOMER } from '@/lib/customer-config'
 
 export default function Dashboard() {
@@ -127,9 +128,25 @@ export default function Dashboard() {
         <section className="px-8 py-12">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-2xl font-semibold text-foreground mb-8 tracking-tight">
-              {viewMode === 'executive' ? 'Enterprise Overview' : 'Operational Workflows'}
+              {viewMode === 'executive' ? 'Digitized Overview' : 'Operational Workflows'}
             </h2>
             <DigitizationTiles onCardClick={handleCardClick} />
+          </div>
+        </section>
+
+        {/* R4.3: Platform-Level Inventory Expiration Alert */}
+        <section className="px-8 pb-12">
+          <div className="max-w-7xl mx-auto">
+            <InventoryExpiryBanner
+              onCategoryClick={(category) => {
+                // Navigate to supply chain detail with category filter
+                setShowSupplyChainDetail(true)
+                setExpandedWorkflow(null)
+                setShowTransfusionDetail(false)
+                setShowSpecimenDetail(false)
+                setShowInfraHealthDetail(false)
+              }}
+            />
           </div>
         </section>
 
