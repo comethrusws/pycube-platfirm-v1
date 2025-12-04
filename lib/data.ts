@@ -177,12 +177,12 @@ export const digitizationTiles: DigitizationTile[] = [
   },
   {
     label: 'Transfusion Medicine',
-    value: 92,
+    value: 100,
     secondary: 'Blood bank',
     icon: 'Droplet',
     description: 'Blood product lifecycle management',
     href: '/transfusion',
-    denominator: '3,910/4,250',
+    denominator: '4,250',
     statusLabel: 'Visibility',
   },
   {
