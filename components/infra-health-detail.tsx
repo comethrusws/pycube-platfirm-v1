@@ -1,10 +1,11 @@
 'use client'
 
-import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Radio, Zap, Wifi, Battery, MapPin, Network, Server, Signal } from 'lucide-react'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Radio, Zap, Wifi, Battery, MapPin, Network, Server, Signal, Sparkles, ArrowRight } from 'lucide-react'
 import { infraHealthData } from '@/lib/data'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend } from 'recharts'
 import { useState } from 'react'
 import { InfraHealthTier3 } from './infra-health-tier-3'
+import { AISidePanel, AIContextType } from './ai-side-panel'
 
 interface InfraHealthDetailProps {
     isOpen: boolean
@@ -31,6 +32,22 @@ const tagHealthData = [
 
 export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
     const [tier3Category, setTier3Category] = useState<string | null>(null)
+    const [aiPanelOpen, setAiPanelOpen] = useState(false)
+    const [aiContext, setAiContext] = useState<{ title: string, value: string, type: AIContextType }>({
+        title: '',
+        value: '',
+        type: 'network-health'
+    })
+
+    const handleKPIClick = (label: string, value: string) => {
+        let type: AIContextType = 'network-health'
+        if (label.includes('Tag') || label.includes('Battery')) type = 'tag-health'
+        if (label.includes('Network') || label.includes('Gateway')) type = 'network-health'
+        if (label.includes('Coverage')) type = 'network-health'
+
+        setAiContext({ title: label, value, type })
+        setAiPanelOpen(true)
+    }
 
     if (!isOpen) return null
 
@@ -172,7 +189,14 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                 { label: 'Real-time Visibility', value: `${infraHealthData.summary.realTimeVisibility}%`, icon: MapPin, color: 'text-blue-600' },
                                 { label: 'Read Success', value: `${infraHealthData.readSuccess.overallRate}%`, icon: Signal, color: 'text-emerald-600' },
                             ].map((metric) => (
-                                <div key={metric.label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <button
+                                    key={metric.label}
+                                    onClick={() => handleKPIClick(metric.label, metric.value)}
+                                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
                                     <div className="flex items-start justify-between mb-2">
                                         <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {metric.label}
@@ -182,7 +206,7 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                                         )}
                                     </div>
                                     <div className="text-3xl font-semibold text-gray-900">{metric.value}</div>
-                                </div>
+                                </button>
                             ))}
                         </div>
 
@@ -400,6 +424,15 @@ export function InfraHealthDetail({ isOpen, onClose }: InfraHealthDetailProps) {
                     onClose={() => setTier3Category(null)}
                 />
             )}
+
+            {/* AI Side Panel */}
+            <AISidePanel
+                isOpen={aiPanelOpen}
+                onClose={() => setAiPanelOpen(false)}
+                title={aiContext.title}
+                metricValue={aiContext.value}
+                context={aiContext.type}
+            />
         </>
     )
 }

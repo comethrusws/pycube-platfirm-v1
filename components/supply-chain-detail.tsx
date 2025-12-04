@@ -1,10 +1,11 @@
 'use client'
 
-import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Package, Truck, Thermometer } from 'lucide-react'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Package, Truck, Thermometer, Sparkles, ArrowRight } from 'lucide-react'
 import { supplyChainData } from '@/lib/data'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { SupplyChainTier3 } from './supply-chain-tier-3'
+import { AISidePanel, AIContextType } from './ai-side-panel'
 
 interface SupplyChainDetailProps {
     isOpen: boolean
@@ -38,6 +39,23 @@ const costTrendData = [
 
 export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
     const [tier3Category, setTier3Category] = useState<string | null>(null)
+    const [aiPanelOpen, setAiPanelOpen] = useState(false)
+    const [aiContext, setAiContext] = useState<{ title: string, value: string, type: AIContextType }>({
+        title: '',
+        value: '',
+        type: 'stockout'
+    })
+
+    const handleKPIClick = (label: string, value: string) => {
+        let type: AIContextType = 'stockout'
+        if (label.includes('Wastage')) type = 'expiration'
+        if (label.includes('Temp')) type = 'environmental'
+        if (label.includes('Availability')) type = 'stockout'
+        if (label.includes('Vendor')) type = 'variance'
+
+        setAiContext({ title: label, value, type })
+        setAiPanelOpen(true)
+    }
 
     if (!isOpen) return null
 
@@ -180,7 +198,14 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                                 { label: 'Active Vendors', value: supplyChainData.summary.activeVendors.toString(), icon: Truck, color: 'text-blue-600' },
                                 { label: 'Temp Alerts', value: supplyChainData.temperatureAlerts.length.toString(), icon: Thermometer, color: 'text-orange-600' },
                             ].map((metric) => (
-                                <div key={metric.label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <button
+                                    key={metric.label}
+                                    onClick={() => handleKPIClick(metric.label, metric.value)}
+                                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
                                     <div className="flex items-start justify-between mb-2">
                                         <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {metric.label}
@@ -190,7 +215,7 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                                         )}
                                     </div>
                                     <div className="text-3xl font-semibold text-gray-900">{metric.value}</div>
-                                </div>
+                                </button>
                             ))}
                         </div>
 
@@ -397,6 +422,15 @@ export function SupplyChainDetail({ isOpen, onClose }: SupplyChainDetailProps) {
                     onClose={() => setTier3Category(null)}
                 />
             )}
+
+            {/* AI Side Panel */}
+            <AISidePanel
+                isOpen={aiPanelOpen}
+                onClose={() => setAiPanelOpen(false)}
+                title={aiContext.title}
+                metricValue={aiContext.value}
+                context={aiContext.type}
+            />
         </>
     )
 }
