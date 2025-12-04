@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Settings, X, User, Building2, Zap, GalleryVerticalIcon } from 'lucide-react'
+import { Settings, X, User, Building2, Zap, GalleryVerticalIcon, PlayCircle, StopCircle } from 'lucide-react'
 import { PersonaSelector, PersonaInsightsPanel } from './persona-selector'
 import { type Persona } from '@/lib/demo-mode'
 import { getCustomerConfig } from '@/lib/customer-config'
+import { startFeedbackSession, endFeedbackSession, getCurrentSession } from '@/lib/feedback-capture'
 
 interface DemoControlPanelProps {
     onPersonaChange?: (persona: Persona) => void
@@ -40,7 +41,7 @@ export function DemoControlPanel({ onPersonaChange, onCustomerChange }: DemoCont
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full shadow-2xl hover:shadow-blue-500/50 hover:scale-110 transition-all group"
+                className="fixed bottom-6 right-6 z-50 p-4 bg-indigo-600 text-white rounded-full shadow-2xl hover:shadow-indigo-500/50 hover:scale-110 transition-all group"
                 title="Open Demo Controls"
             >
                 <GalleryVerticalIcon className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
@@ -49,9 +50,9 @@ export function DemoControlPanel({ onPersonaChange, onCustomerChange }: DemoCont
     }
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 w-96 bg-white rounded-2xl shadow-2xl border-2 border-blue-200 overflow-hidden animate-in slide-in-from-bottom duration-300">
+        <div className="fixed bottom-6 right-6 z-50 w-96 bg-white rounded-2xl shadow-2xl border-2 border-indigo-200 overflow-hidden animate-in slide-in-from-bottom duration-300">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-4 flex items-center justify-between">
+            <div className="bg-indigo-600 px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                         <Zap className="w-5 h-5 text-white" />
@@ -71,6 +72,12 @@ export function DemoControlPanel({ onPersonaChange, onCustomerChange }: DemoCont
 
             {/* Content */}
             <div className="p-6 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+                {/* Session Control (R6.6) */}
+                <SessionControl 
+                    selectedCustomer={selectedCustomer}
+                    selectedPersona={selectedPersona}
+                />
+
                 {/* Customer Selector */}
                 <div>
                     <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2 block">
@@ -136,6 +143,68 @@ export function DemoControlPanel({ onPersonaChange, onCustomerChange }: DemoCont
                     </div>
                 )}
             </div>
+        </div>
+    )
+}
+
+// Session Control Component (R6.6)
+function SessionControl({ selectedCustomer, selectedPersona }: { selectedCustomer: string; selectedPersona: Persona | null }) {
+    const session = getCurrentSession()
+
+    const handleStartSession = () => {
+        if (!selectedPersona) return
+        const config = getCustomerConfig(selectedCustomer)
+        startFeedbackSession(config.name, [
+            {
+                name: 'Unknown', // Would be populated from form in production
+                role: selectedPersona.replace('-', ' '),
+                persona: selectedPersona
+            }
+        ])
+    }
+
+    const handleEndSession = () => {
+        endFeedbackSession('in-progress')
+    }
+
+    if (session) {
+        return (
+            <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse" />
+                        <span className="text-xs font-semibold text-emerald-900">Session Active</span>
+                    </div>
+                    <span className="text-xs text-emerald-700">{session.feedbackItems.length} items</span>
+                </div>
+                <button
+                    onClick={handleEndSession}
+                    className="w-full py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+                >
+                    <StopCircle className="w-4 h-4" />
+                    End Session
+                </button>
+            </div>
+        )
+    }
+
+    return (
+        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+            <div className="mb-3">
+                <span className="text-xs font-semibold text-blue-900 block mb-1">Feedback Capture</span>
+                <span className="text-xs text-blue-700">Start a session to capture feedback</span>
+            </div>
+            <button
+                onClick={handleStartSession}
+                disabled={!selectedPersona}
+                className="w-full py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            >
+                <PlayCircle className="w-4 h-4" />
+                Start Session
+            </button>
+            {!selectedPersona && (
+                <p className="text-xs text-gray-500 mt-2 text-center">Select a persona first</p>
+            )}
         </div>
     )
 }

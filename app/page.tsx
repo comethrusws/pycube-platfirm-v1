@@ -15,6 +15,7 @@ import { InfraHealthDetail } from '@/components/infra-health-detail'
 import { SupplyChainDetail } from '@/components/supply-chain-detail'
 import { InventoryExpiryBanner } from '@/components/inventory-expiry-banner'
 import { DemoControlPanel } from '@/components/demo-control-panel'
+import { QuickCaptureButton } from '@/components/feedback-capture'
 import { DEFAULT_CUSTOMER } from '@/lib/customer-config'
 import { type Persona } from '@/lib/demo-mode'
 
@@ -205,6 +206,9 @@ export default function Dashboard() {
         onPersonaChange={setSelectedPersona}
         onCustomerChange={setSelectedCustomer}
       />
+
+      {/* Quick Capture Button (R6.6) */}
+      <QuickCaptureButton />
     </div>
   )
 }
