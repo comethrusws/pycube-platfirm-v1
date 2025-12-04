@@ -203,7 +203,13 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         <div className="grid grid-cols-4 gap-4 mb-6">
                             {/* Row 1 */}
                             {/* Contamination Prevention */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Contamination Prevention', '24 Alerts')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-orange-100 rounded-lg">
                                         <AlertTriangle className="w-5 h-5 text-orange-600" />
@@ -222,10 +228,16 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Expired</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Chain of Custody */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Chain of Custody', '84.9% Compliance')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-gray-100 rounded-lg">
                                         <Activity className="w-5 h-5 text-gray-600" />
@@ -244,10 +256,16 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Traceability</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Inventory Management */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Inventory Management', '41 Available')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-teal-100 rounded-lg">
                                         <CheckCircle2 className="w-5 h-5 text-teal-600" />
@@ -266,10 +284,16 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Accuracy</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Cost Savings */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Cost Savings', '$127K')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-purple-100 rounded-lg">
                                         <DollarSign className="w-5 h-5 text-purple-600" />
@@ -283,11 +307,17 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                     <div className="text-xs text-gray-500 mt-2">This Month</div>
 
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Row 2 */}
                             {/* Response Time */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Response Time', '0 Avg Mins')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-gray-100 rounded-lg">
                                         <Clock className="w-5 h-5 text-gray-600" />
@@ -306,10 +336,16 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Emergency</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Return Rate */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Return Rate', '56.2%')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-teal-100 rounded-lg">
                                         <TrendingUp className="w-5 h-5 text-teal-600" />
@@ -328,10 +364,16 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Missed Scans</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Expiration Alert */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Expiration Alert', '24 Alerts')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-orange-100 rounded-lg">
                                         <AlertCircle className="w-5 h-5 text-orange-600" />
@@ -350,10 +392,16 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Alerts</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Department Usage */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Department Usage', '2 Total Used')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-gray-100 rounded-lg">
                                         <Activity className="w-5 h-5 text-gray-600" />
@@ -372,11 +420,17 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Departments</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Row 3 */}
                             {/* Blood Components */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Blood Components', '2 Units')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-purple-100 rounded-lg">
                                         <Droplet className="w-5 h-5 text-purple-600" />
@@ -395,10 +449,16 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Types</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Most Used */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Most Used', 'RBC Component')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-teal-100 rounded-lg">
                                         <TrendingUp className="w-5 h-5 text-teal-600" />
@@ -417,10 +477,16 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Component</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Most Expiring */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Most Expiring', 'RBC Component')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-orange-100 rounded-lg">
                                         <AlertTriangle className="w-5 h-5 text-orange-600" />
@@ -439,10 +505,16 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Component</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
 
                             {/* Storage Time */}
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <button
+                                onClick={() => handleKPIClick('Storage Time', '0 Expiring')}
+                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden w-full"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-3 h-3 text-purple-600" />
+                                </div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-gray-100 rounded-lg">
                                         <Clock className="w-5 h-5 text-gray-600" />
@@ -461,7 +533,7 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                         <div className="text-xs text-gray-500 mt-1">Available</div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         </div>
 
                         {/* Analysis Charts */}
