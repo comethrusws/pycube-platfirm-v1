@@ -1,12 +1,13 @@
 'use client'
 
-import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Thermometer, Droplet, Sparkles, ArrowRight } from 'lucide-react'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, Thermometer, Droplet, Sparkles, ArrowRight, HelpCircle } from 'lucide-react'
 import { transfusionData } from '@/lib/data'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { TransfusionTier3 } from './transfusion-tier-3'
 import { DataDriver } from './data-driver'
 import { AISidePanel, AIContextType } from './ai-side-panel'
+import { EducationOverlay } from './education-overlay'
 
 interface TransfusionDetailProps {
     isOpen: boolean
@@ -22,6 +23,8 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
         value: '',
         type: 'blood-wastage'
     })
+    const [educationOpen, setEducationOpen] = useState(false)
+    const [educationTopicId, setEducationTopicId] = useState('')
 
     const handleKPIClick = (label: string, value: string) => {
         let type: AIContextType = 'blood-wastage'
@@ -642,11 +645,25 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         </div>
 
                         {/* Data Driver: Chain of Custody */}
-                        <DataDriver
-                            kpiId="transfusion.chain_of_custody"
-                            currentValue={96.2}
-                            className="mb-6"
-                        />
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-sm font-semibold text-gray-700">Understanding This Metric</h4>
+                                <button
+                                    onClick={() => {
+                                        setEducationTopicId('chain-of-custody')
+                                        setEducationOpen(true)
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                >
+                                    <HelpCircle className="w-4 h-4" />
+                                    How Chain of Custody Works
+                                </button>
+                            </div>
+                            <DataDriver
+                                kpiId="transfusion.chain_of_custody"
+                                currentValue={96.2}
+                            />
+                        </div>
 
                         {/* Data Driver: Wastage Rate */}
                         <DataDriver
@@ -1158,6 +1175,13 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                 title={aiContext.title}
                 metricValue={aiContext.value}
                 context={aiContext.type}
+            />
+
+            {/* Education Overlay */}
+            <EducationOverlay
+                topicId={educationTopicId}
+                isOpen={educationOpen}
+                onClose={() => setEducationOpen(false)}
             />
         </>
     )
