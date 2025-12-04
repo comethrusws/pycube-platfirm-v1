@@ -24,10 +24,21 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
 
     const handleKPIClick = (label: string, value: string) => {
         let type: AIContextType = 'blood-wastage'
-        if (label.includes('Stock') || label.includes('Inventory')) type = 'stockout'
-        if (label.includes('Temp') || label.includes('Cold')) type = 'blood-wastage'
-        if (label.includes('Expiry') || label.includes('Expired')) type = 'expiration'
-        if (label.includes('Custody') || label.includes('Traceability')) type = 'custody'
+
+        // Map labels to specific contexts
+        if (label.includes('Contamination')) type = 'contamination'
+        else if (label.includes('Chain of Custody')) type = 'chain-of-custody'
+        else if (label.includes('Inventory')) type = 'inventory-mgmt'
+        else if (label.includes('Cost Savings') || label.includes('Cost Saving')) type = 'cost-savings'
+        else if (label.includes('Response Time')) type = 'response-time'
+        else if (label.includes('Return Rate')) type = 'return-rate'
+        else if (label.includes('Expiration Alert') || label.includes('Expiring')) type = 'expiration-alert'
+        else if (label.includes('Department Usage')) type = 'dept-usage'
+        else if (label.includes('Blood Components') || label.includes('Component')) type = 'blood-components'
+        else if (label.includes('Storage Time')) type = 'storage-time'
+        else if (label.includes('Wastage') || label.includes('Temp') || label.includes('Cold')) type = 'blood-wastage'
+        else if (label.includes('Crossmatch')) type = 'crossmatch'
+        else if (label.includes('Reaction')) type = 'transfusion-reaction'
 
         setAiContext({ title: label, value, type })
         setAiPanelOpen(true)

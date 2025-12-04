@@ -5,10 +5,10 @@ import { useState, useEffect } from 'react'
 
 export type AIContextType =
     | 'utilization' | 'maintenance' | 'lost' | 'clean' | 'repair' // Biomed
-    | 'blood-wastage' | 'crossmatch' | 'transfusion-reaction' // Transfusion
+    | 'blood-wastage' | 'crossmatch' | 'transfusion-reaction' | 'contamination' | 'chain-of-custody' | 'inventory-mgmt' | 'cost-savings' | 'response-time' | 'return-rate' | 'expiration-alert' | 'dept-usage' | 'blood-components' | 'storage-time' // Transfusion
     | 'specimen-tracking' | 'tat' | 'custody' // Lab
     | 'stockout' | 'expiration' | 'variance' // Supply Chain
-    | 'network-health' | 'tag-health' | 'environmental' // Infra
+    | 'network-health' | 'tag-health' | 'environmental' | 'asset-tracking' | 'pending-assets' // Infra
 
 interface AISidePanelProps {
     isOpen: boolean
@@ -97,6 +97,104 @@ export function AISidePanel({ isOpen, onClose, title, metricValue, context }: AI
                     impact: { financial: "Overtime costs", operational: "Delay in OR start times" },
                     action: "Assign float tech to Blood Bank for next 4 hours"
                 }
+            case 'cost-savings':
+                return {
+                    why: "Temperature excursions in OR Refrigerator 2 caused 12 units to spoil. Door sensor reported 'Open' for 45 mins.",
+                    assets: [
+                        { id: 'RBC-102', name: 'O Pos RBC', loc: 'OR Fridge 2', status: 'Spoiled' },
+                        { id: 'RBC-103', name: 'O Pos RBC', loc: 'OR Fridge 2', status: 'Spoiled' },
+                        { id: 'FFP-992', name: 'AB Neg FFP', loc: 'OR Fridge 2', status: 'Spoiled' },
+                        { id: 'PLT-331', name: 'Platelets', loc: 'OR Fridge 2', status: 'Spoiled' },
+                        { id: 'RBC-104', name: 'A Pos RBC', loc: 'OR Fridge 2', status: 'Spoiled' },
+                    ],
+                    impact: { financial: "$127K total monthly savings opportunity", operational: "Reduce wastage by 35%" },
+                    action: "Schedule immediate service call for OR Fridge 2 door latch"
+                }
+            case 'contamination':
+                return {
+                    why: "Improper handling protocol in Central Blood Bank led to 24 units flagged for contamination risk.",
+                    assets: [
+                        { id: 'RBC-221', name: 'A Pos RBC', loc: 'Central BB', status: 'Quarantined' },
+                        { id: 'PLT-442', name: 'Platelets', loc: 'Central BB', status: 'Quarantined' },
+                        { id: 'FFP-883', name: 'AB Pos FFP', loc: 'Central BB', status: 'Quarantined' },
+                    ],
+                    impact: { financial: "$8.4K product loss", operational: "15% inventory reduction" },
+                    action: "Retrain staff on aseptic technique and implement double-check protocol"
+                }
+            case 'chain-of-custody':
+                return {
+                    why: "Handover scans are being missed between Blood Bank and OR during shift changes (06:00-06:30 and 18:00-18:30).",
+                    assets: [
+                        { id: 'RBC-551', name: 'O Neg RBC', loc: 'In Transit', status: 'Missing scan' },
+                        { id: 'PLT-663', name: 'Platelets', loc: 'In Transit', status: 'Missing scan' },
+                    ],
+                    impact: { financial: "Regulatory compliance risk", operational: "Traceability gap" },
+                    action: "Implement mandatory supervisor scan verification during shift changes"
+                }
+            case 'inventory-mgmt':
+                return {
+                    why: "O Negative blood stock dropped below safety threshold due to unexpected trauma cases in ED.",
+                    assets: [
+                        { id: 'RBC-O-NEG', name: 'O Neg RBC', loc: 'Central BB', status: 'Critical Low' },
+                    ],
+                    impact: { financial: "Emergency procurement fees", operational: "Cannot support 2+ traumas" },
+                    action: "Contact regional blood center for emergency delivery within 2 hours"
+                }
+            case 'response-time':
+                return {
+                    why: "Pneumatic tube system in West Tower is down, forcing manual courier transport from Blood Bank to OR.",
+                    assets: [],
+                    impact: { financial: "N/A", operational: "15-20 min delay per request" },
+                    action: "Dispatch facilities to repair tube system ASAP and assign dedicated courier"
+                }
+            case 'return-rate':
+                return {
+                    why: "56.2% of blood products issued to OR are being returned unused, indicating over-ordering patterns.",
+                    assets: [
+                        { id: 'RBC-772', name: 'A Pos RBC', loc: 'Returned from OR 3', status: 'Unused' },
+                        { id: 'FFP-881', name: 'AB Neg FFP', loc: 'Returned from OR 5', status: 'Unused' },
+                        { id: 'PLT-992', name: 'Platelets', loc: 'Returned from OR 2', status: 'Unused' },
+                    ],
+                    impact: { financial: "Inventory churn inefficiency", operational: "59 missed scans" },
+                    action: "Review OR ordering protocols with anesthesiology department"
+                }
+            case 'expiration-alert':
+                return {
+                    why: "Platelets have 5-day shelf life and 24 units are approaching expiration due to low OR volume this week.",
+                    assets: [
+                        { id: 'PLT-101', name: 'Platelets', loc: 'Central BB', status: 'Expires in 8h' },
+                        { id: 'PLT-102', name: 'Platelets', loc: 'Central BB', status: 'Expires in 10h' },
+                        { id: 'PLT-103', name: 'Platelets', loc: 'Central BB', status: 'Expires in 12h' },
+                    ],
+                    impact: { financial: "$14K potential wastage", operational: "Stock shortage tomorrow" },
+                    action: "Coordinate with regional hospitals for platelet transfer today"
+                }
+            case 'dept-usage':
+                return {
+                    why: "Only 2 departments (ICU, OR) are using 85% of total blood products, indicating underutilization in other areas.",
+                    assets: [],
+                    impact: { financial: "Inventory imbalance", operational: "Delayed care in ED" },
+                    action: "Train ED staff on blood product protocols and streamline ordering process"
+                }
+            case 'blood-components':
+                return {
+                    why: "RBC inventory is at 92% of PAR level but FFP and Platelets are at 45%, creating type imbalance.",
+                    assets: [
+                        { id: 'FFP-ALL', name: 'Fresh Frozen Plasma', loc: 'Central BB', status: 'Low 45%' },
+                        { id: 'PLT-ALL', name: 'Platelets', loc: 'Central BB', status: 'Low 45%' },
+                    ],
+                    impact: { financial: "Emergency order costs", operational: "Cannot support major surgery" },
+                    action: "Place priority order for FFP and Platelets from blood center"
+                }
+            case 'storage-time':
+                return {
+                    why: "Average storage duration has increased from 3.2 to 5.8 days due to reduced surgical volume.",
+                    assets: [
+                        { id: 'RBC-AGED', name: 'RBC Units >21 days', loc: 'Central BB', status: '18 units' },
+                    ],
+                    impact: { financial: "Aging inventory risk", operational: "Reduced product quality" },
+                    action: "Use older units first (FIFO enforcement) and coordinate transfers"
+                }
 
             // --- LAB MEDICINE ---
             case 'specimen-tracking':
@@ -162,6 +260,29 @@ export function AISidePanel({ isOpen, onClose, title, metricValue, context }: AI
                     assets: [],
                     impact: { financial: "Sterility compromise risk", operational: "Regulatory finding" },
                     action: "Deploy portable humidifiers and call facilities"
+                }
+            case 'asset-tracking':
+                return {
+                    why: "9,090 assets are currently tracked across all facilities with 98.5% real-time visibility.",
+                    assets: [
+                        { id: 'ZONE-ICU', name: 'ICU Coverage', loc: 'Main Hospital', status: '99.8% visible' },
+                        { id: 'ZONE-ED', name: 'ED Coverage', loc: 'Main Hospital', status: '98.2% visible' },
+                        { id: 'ZONE-OR', name: 'OR Coverage', loc: 'Surgical Center', status: '99.1% visible' },
+                        { id: 'ZONE-LAB', name: 'Lab Coverage', loc: 'Main Hospital', status: '97.5% visible' },
+                    ],
+                    impact: { financial: "$2.8M asset protection", operational: "15min avg search time reduction" },
+                    action: "Deploy 3 additional gateways in Lab area to improve coverage to 99%"
+                }
+            case 'pending-assets':
+                return {
+                    why: "95 assets from yesterday remain in pending status due to incomplete workflow transitions.",
+                    assets: [
+                        { id: 'IP-772', name: 'Infusion Pump', loc: 'In Transit', status: 'Pending 18h' },
+                        { id: 'VENT-331', name: 'Ventilator', loc: 'Biomed Shop', status: 'Pending 22h' },
+                        { id: 'WCH-442', name: 'Wheelchair', loc: 'Unknown', status: 'Pending 26h' },
+                    ],
+                    impact: { financial: "Inventory accuracy risk", operational: "Asset availability unknown" },
+                    action: "Dispatch staff to physically locate and scan all pending items before end of shift"
                 }
 
             default:

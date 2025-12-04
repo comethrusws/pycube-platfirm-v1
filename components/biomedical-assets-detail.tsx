@@ -57,8 +57,10 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
     const handleKPIClick = (label: string, value: string) => {
         let type: AIContextType = 'utilization'
         if (label.includes('Repair') || label.includes('Maint')) type = 'maintenance'
-        if (label.includes('Lost')) type = 'lost'
-        if (label.includes('Clean')) type = 'clean'
+        else if (label.includes('Lost')) type = 'lost'
+        else if (label.includes('Clean')) type = 'clean'
+        else if (label.includes('Tracking') || label.includes('Expected Today')) type = 'asset-tracking'
+        else if (label.includes('Pending')) type = 'pending-assets'
 
         setAiContext({ title: label, value, type })
         setAiPanelOpen(true)
