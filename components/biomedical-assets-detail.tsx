@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, ArrowRight, MapPin, Sparkles } from 'lucide-react'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, ArrowRight, MapPin, Sparkles, HelpCircle } from 'lucide-react'
 import { biomedicalAssetsData } from '@/lib/data'
 import { getCustomerConfig } from '@/lib/customer-config'
 import { AssetStatus, ASSET_STATUS_FLOW } from '@/lib/taxonomies'
@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { BiomedicalAssetsTier3 } from './biomedical-assets-tier-3'
 import { DataDriver } from './data-driver'
 import { AISidePanel, AIContextType } from './ai-side-panel'
+import { EducationOverlay } from './education-overlay'
 
 interface BiomedicalAssetsDetailProps {
     isOpen: boolean
@@ -24,6 +25,8 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
         value: '',
         type: 'utilization'
     })
+    const [educationOpen, setEducationOpen] = useState(false)
+    const [educationTopicId, setEducationTopicId] = useState('')
 
     const config = getCustomerConfig(customerId)
     const biomedConfig = config.biomed
@@ -213,11 +216,25 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                         </div>
 
                         {/* Data Driver: Utilization Rate */}
-                        <DataDriver
-                            kpiId="biomed.utilization_rate"
-                            currentValue={biomedConfig.utilizationRate}
-                            className="mb-6"
-                        />
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-sm font-semibold text-gray-700">Understanding This Metric</h4>
+                                <button
+                                    onClick={() => {
+                                        setEducationTopicId('asset-utilization')
+                                        setEducationOpen(true)
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                >
+                                    <HelpCircle className="w-4 h-4" />
+                                    How Utilization Works
+                                </button>
+                            </div>
+                            <DataDriver
+                                kpiId="biomed.utilization_rate"
+                                currentValue={biomedConfig.utilizationRate}
+                            />
+                        </div>
 
                         {/* Coverage Status Cards */}
                         <div className="grid grid-cols-2 gap-6 mb-6">
@@ -577,6 +594,13 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                 title={aiContext.title}
                 metricValue={aiContext.value}
                 context={aiContext.type}
+            />
+
+            {/* Education Overlay */}
+            <EducationOverlay
+                topicId={educationTopicId}
+                isOpen={educationOpen}
+                onClose={() => setEducationOpen(false)}
             />
         </>
     )
