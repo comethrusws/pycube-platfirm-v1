@@ -14,13 +14,21 @@ import { TransfusionDetail } from '@/components/transfusion-detail'
 import { LabMedicineDetail } from '@/components/lab-medicine-detail'
 import { InfraHealthDetail } from '@/components/infra-health-detail'
 import { SupplyChainDetail } from '@/components/supply-chain-detail'
+import { DEFAULT_CUSTOMER } from '@/lib/customer-config'
 
 export default function Dashboard() {
+  // Global State
+  const [viewMode, setViewMode] = useState<'executive' | 'operational'>('executive')
+  const [selectedCustomer, setSelectedCustomer] = useState<string>(DEFAULT_CUSTOMER)
+
+  // Navigation State
   const [expandedWorkflow, setExpandedWorkflow] = useState<string | null>(null)
   const [showTransfusionDetail, setShowTransfusionDetail] = useState(false)
   const [showSpecimenDetail, setShowSpecimenDetail] = useState(false)
   const [showInfraHealthDetail, setShowInfraHealthDetail] = useState(false)
   const [showSupplyChainDetail, setShowSupplyChainDetail] = useState(false)
+
+  // Refs for scrolling
   const detailRef = useRef<HTMLDivElement>(null)
   const transfusionRef = useRef<HTMLDivElement>(null)
   const specimenRef = useRef<HTMLDivElement>(null)
@@ -103,15 +111,25 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <TopBar />
+      <TopBar
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        selectedCustomer={selectedCustomer}
+        onCustomerChange={setSelectedCustomer}
+      />
 
       <main className="flex-1">
-        <AISummaryBanner onCardClick={handleCardClick} />
+        <AISummaryBanner
+          onCardClick={handleCardClick}
+        // TODO: Pass customer-specific AI insights here
+        />
 
         {/* Tier 1: Digitization KPIs */}
         <section className="px-8 py-12">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-2xl font-semibold text-foreground mb-8 tracking-tight">Digized workflows</h2>
+            <h2 className="text-2xl font-semibold text-foreground mb-8 tracking-tight">
+              {viewMode === 'executive' ? 'Enterprise Overview' : 'Operational Workflows'}
+            </h2>
             <DigitizationTiles onCardClick={handleCardClick} />
           </div>
         </section>
@@ -121,6 +139,8 @@ export default function Dashboard() {
           <BiomedicalAssetsDetail
             isOpen={!!expandedWorkflow}
             onClose={() => setExpandedWorkflow(null)}
+            // @ts-ignore - Prop will be added in next step
+            customerId={selectedCustomer}
           />
         </div>
 
@@ -157,13 +177,15 @@ export default function Dashboard() {
         </div>
 
 
-        {/* Tier 3: Financial Impact */}
-        <section className="px-8 py-12">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-2xl font-semibold text-foreground mb-8 tracking-tight">Optimize</h2>
-            <FinancialImpactTiles />
-          </div>
-        </section>
+        {/* Tier 3: Financial Impact - Only show in Executive Mode */}
+        {viewMode === 'executive' && (
+          <section className="px-8 py-12">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-2xl font-semibold text-foreground mb-8 tracking-tight">Financial Impact</h2>
+              <FinancialImpactTiles />
+            </div>
+          </section>
+        )}
 
         {/* Tier 4: AI Recommendations */}
         <section className="px-8 py-12 bg-secondary/30">

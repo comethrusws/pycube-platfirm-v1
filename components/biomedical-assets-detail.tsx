@@ -2,6 +2,8 @@
 
 import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity } from 'lucide-react'
 import { biomedicalAssetsData } from '@/lib/data'
+import { getCustomerConfig } from '@/lib/customer-config'
+import { AssetStatus, ASSET_STATUS_FLOW } from '@/lib/taxonomies'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { BiomedicalAssetsTier3 } from './biomedical-assets-tier-3'
@@ -9,18 +11,21 @@ import { BiomedicalAssetsTier3 } from './biomedical-assets-tier-3'
 interface BiomedicalAssetsDetailProps {
     isOpen: boolean
     onClose: () => void
+    customerId?: string
 }
 
-export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDetailProps) {
+export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: BiomedicalAssetsDetailProps) {
     const [tier3Category, setTier3Category] = useState<string | null>(null)
+    const config = getCustomerConfig(customerId)
+    const biomedConfig = config.biomed
 
     if (!isOpen) return null
 
-    // Mock data for analyze section
+    // Mock data for analyze section (still needed for charts until we move charts to config)
     const utilizationData = biomedicalAssetsData.categories.map(cat => ({
         category: cat.category.split(' ')[0],
-        utilization: Math.floor(45 + Math.random() * 35), // 45-80% range
-        target: 70
+        utilization: Math.floor(biomedConfig.utilizationRate + (Math.random() * 10 - 5)),
+        target: 75
     }))
 
     const maintenanceTrend = [
@@ -29,7 +34,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
         { month: 'Sep', scheduled: 410, completed: 385, overdue: 35 },
         { month: 'Oct', scheduled: 445, completed: 405, overdue: 48 },
         { month: 'Nov', scheduled: 460, completed: 412, overdue: 52 },
-        { month: 'Dec', scheduled: 428, completed: 380, overdue: 68 },
+        { month: 'Dec', scheduled: 428, completed: 380, overdue: biomedConfig.maintenanceOverdue },
     ]
 
     const idleAssetsByLocation = [
@@ -62,26 +67,26 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                     <div className="mb-8">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
-                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Coverage Status</h3>
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Asset Lifecycle Status</h3>
                             <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
                         </div>
 
                         <div className="grid grid-cols-3 gap-6">
                             {/* Today's Overview - Donut Chart */}
                             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Today's Overview</h3>
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Asset Coverage</h3>
                                 <div className="flex items-center justify-center mb-6">
                                     <div className="relative w-48 h-48">
                                         <div className="w-full h-full rounded-full" style={{
                                             background: `conic-gradient(
-                                                #10b981 0deg ${(biomedicalAssetsData.summary.assetsDigitized / biomedicalAssetsData.summary.totalAssets * 360)}deg,
-                                                #f59e0b ${(biomedicalAssetsData.summary.assetsDigitized / biomedicalAssetsData.summary.totalAssets * 360)}deg 360deg
+                                                #10b981 0deg ${(biomedConfig.digitizedAssets / biomedConfig.totalAssets * 360)}deg,
+                                                #f59e0b ${(biomedConfig.digitizedAssets / biomedConfig.totalAssets * 360)}deg 360deg
                                             )`
                                         }}>
                                             <div className="absolute inset-0 flex items-center justify-center">
                                                 <div className="bg-white rounded-full w-32 h-32 flex flex-col items-center justify-center">
-                                                    <div className="text-4xl font-semibold text-gray-900">{biomedicalAssetsData.summary.totalAssets.toLocaleString()}</div>
-                                                    <div className="text-sm text-gray-500">assets</div>
+                                                    <div className="text-4xl font-semibold text-gray-900">{biomedConfig.totalAssets.toLocaleString()}</div>
+                                                    <div className="text-sm text-gray-500">total assets</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -90,77 +95,53 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-600">Assets Digitized</span>
-                                        <span className="text-lg font-semibold text-gray-900">{biomedicalAssetsData.summary.assetsDigitized.toLocaleString()}</span>
+                                        <span className="text-lg font-semibold text-gray-900">{biomedConfig.digitizedAssets.toLocaleString()}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-600">Pending Digitization</span>
-                                        <span className="text-lg font-semibold text-gray-900">{biomedicalAssetsData.summary.pendingDigitization.toLocaleString()}</span>
+                                        <span className="text-lg font-semibold text-gray-900">{(biomedConfig.totalAssets - biomedConfig.digitizedAssets).toLocaleString()}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Status of Assets Expected Today */}
-                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Status of Assets Expected Today</h3>
-                                <div className="space-y-4">
-                                    {biomedicalAssetsData.statusBreakdown.map((item, idx) => {
-                                        const colors = ['bg-blue-500', 'bg-blue-400', 'bg-blue-500', 'bg-blue-500', 'bg-blue-500', 'bg-gray-400']
-                                        return {
-                                            label: item.label,
-                                            value: item.current,
-                                            total: item.total,
-                                            color: colors[idx] || 'bg-blue-500'
-                                        }
-                                    }).map((item) => (
-                                        <div key={item.label} className="space-y-1">
-                                            <div className="flex items-center justify-between text-sm">
-                                                <span className="text-gray-700">{item.label}</span>
-                                                <span className="font-semibold text-gray-900">{item.value} assets</span>
-                                            </div>
-                                            <div className="w-full bg-gray-100 rounded-full h-2">
-                                                <div
-                                                    className={`${item.color} h-2 rounded-full transition-all duration-500`}
-                                                    style={{ width: `${(item.value / item.total) * 100}%` }}
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                            {/* Lifecycle Status Flow */}
+                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 col-span-2">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Current Lifecycle Distribution</h3>
+                                <div className="space-y-6">
+                                    {ASSET_STATUS_FLOW.map((status, idx) => {
+                                        const count = biomedConfig.statusBreakdown[status] || 0
+                                        const percentage = (count / biomedConfig.digitizedAssets) * 100
 
-                            {/* Yesterday's Pending Assets */}
-                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Yesterday's Pending Assets</h3>
-                                <div className="text-center mb-6">
-                                    <div className="text-6xl font-semibold text-gray-900">{biomedicalAssetsData.yesterdayPending.total}</div>
-                                </div>
-                                <div className="grid grid-cols-3 gap-3 mb-4">
-                                    <div className="bg-blue-500 rounded-2xl p-4 text-center">
-                                        <div className="text-2xl font-semibold text-white">{biomedicalAssetsData.yesterdayPending.collected}</div>
-                                    </div>
-                                    <div className="bg-blue-400 rounded-2xl p-4 text-center">
-                                        <div className="text-2xl font-semibold text-white">{biomedicalAssetsData.yesterdayPending.readyForPickup}</div>
-                                    </div>
-                                    <div className="bg-orange-500 rounded-2xl p-4 text-center">
-                                        <div className="text-2xl font-semibold text-white">{biomedicalAssetsData.yesterdayPending.inTransit}</div>
-                                    </div>
-                                </div>
-                                <div className="bg-yellow-400 rounded-2xl p-4 text-center mb-4">
-                                    <div className="text-2xl font-semibold text-white">{biomedicalAssetsData.yesterdayPending.unknown}</div>
-                                </div>
-                                <div className="space-y-2 text-xs">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-blue-500" />
-                                        <span className="text-gray-600">Collected</span>
-                                        <div className="ml-auto w-3 h-3 rounded-full bg-orange-500" />
-                                        <span className="text-gray-600">In Transit</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-blue-400" />
-                                        <span className="text-gray-600">Ready for Pick-up</span>
-                                        <div className="ml-auto w-3 h-3 rounded-full bg-orange-400" />
-                                        <span className="text-gray-600">Picked up</span>
-                                    </div>
+                                        // Color logic based on status
+                                        let colorClass = 'bg-blue-500'
+                                        if (status === AssetStatus.CLEAN) colorClass = 'bg-emerald-500'
+                                        if (status === AssetStatus.IN_USE) colorClass = 'bg-blue-500'
+                                        if (status === AssetStatus.SOILED) colorClass = 'bg-yellow-500'
+                                        if (status === AssetStatus.NEEDS_REPAIR) colorClass = 'bg-red-500'
+                                        if (status === AssetStatus.REPAIRED) colorClass = 'bg-purple-500'
+                                        if (status === AssetStatus.SANITIZED) colorClass = 'bg-teal-500'
+
+                                        return (
+                                            <div key={status} className="relative">
+                                                <div className="flex items-center justify-between text-sm mb-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className={`w-2 h-2 rounded-full ${colorClass}`} />
+                                                        <span className="font-medium text-gray-700">{status}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        <span className="text-gray-500 text-xs">{percentage.toFixed(1)}%</span>
+                                                        <span className="font-semibold text-gray-900">{count.toLocaleString()}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="w-full bg-gray-100 rounded-full h-2">
+                                                    <div
+                                                        className={`h-2 rounded-full transition-all duration-500 ${colorClass}`}
+                                                        style={{ width: `${percentage}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -178,11 +159,11 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                         {/* KPI Summary Cards */}
                         <div className="grid grid-cols-5 gap-4 mb-6">
                             {[
-                                { label: 'Overall Collected', value: biomedicalAssetsData.metrics.overallCollected.toLocaleString(), icon: null },
-                                { label: 'Assets Digitized', value: biomedicalAssetsData.metrics.assetsDigitized.toLocaleString(), icon: CheckCircle2, color: 'text-emerald-600' },
-                                { label: 'Assets Unknown', value: biomedicalAssetsData.metrics.assetsUnknown.toLocaleString(), icon: AlertCircle, color: 'text-yellow-600' },
-                                { label: 'Assets Missing', value: biomedicalAssetsData.metrics.assetsMissing.toLocaleString(), icon: AlertTriangle, color: 'text-red-600' },
-                                { label: 'Assets Damaged', value: biomedicalAssetsData.metrics.assetsDamaged.toLocaleString(), icon: XCircle, color: 'text-red-600' },
+                                { label: 'Utilization Rate', value: `${biomedConfig.utilizationRate}%`, icon: Activity, color: 'text-blue-600' },
+                                { label: 'Assets Clean', value: biomedConfig.statusBreakdown[AssetStatus.CLEAN].toLocaleString(), icon: CheckCircle2, color: 'text-emerald-600' },
+                                { label: 'Needs Repair', value: biomedConfig.statusBreakdown[AssetStatus.NEEDS_REPAIR].toLocaleString(), icon: AlertCircle, color: 'text-red-600' },
+                                { label: 'Lost Assets', value: biomedConfig.lostAssets.toLocaleString(), icon: AlertTriangle, color: 'text-red-600' },
+                                { label: 'Maint. Overdue', value: biomedConfig.maintenanceOverdue.toLocaleString(), icon: Clock, color: 'text-orange-600' },
                             ].map((metric) => (
                                 <div key={metric.label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                                     <div className="flex items-start justify-between mb-2">
@@ -218,7 +199,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                     </BarChart>
                                 </ResponsiveContainer>
                                 <div className="text-xs text-gray-500 mt-2 text-center">
-                                    Target: 70% utilization | Current average: {Math.round(utilizationData.reduce((acc, d) => acc + d.utilization, 0) / utilizationData.length)}%
+                                    Target: 75% utilization | Current average: {biomedConfig.utilizationRate}%
                                 </div>
                             </div>
 
@@ -322,7 +303,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                     </div>
                                     <span className="text-xs font-semibold text-red-600 bg-red-100 px-2 py-1 rounded-full">Critical</span>
                                 </div>
-                                <div className="text-3xl font-semibold text-gray-900 mb-1">68</div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">{biomedConfig.maintenanceOverdue}</div>
                                 <div className="text-sm font-medium text-gray-700 mb-2">Overdue Maintenance</div>
                                 <div className="text-xs text-gray-500">Assets requiring immediate maintenance. Click to view impact analysis.</div>
                             </button>
@@ -356,7 +337,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                 </div>
                                 <div className="text-3xl font-semibold text-gray-900 mb-1">142</div>
                                 <div className="text-sm font-medium text-gray-700 mb-2">Movement Delays</div>
-                                <div className="text-xs text-gray-500">Asset transit delays &gt;2 hours. Click for efficiency recommendations.</div>
+                                <div className="text-xs text-gray-500">{biomedConfig.narrative.bottleneck}</div>
                             </button>
                         </div>
                     </div>
