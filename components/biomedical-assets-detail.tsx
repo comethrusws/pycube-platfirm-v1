@@ -7,7 +7,7 @@ import { AssetStatus, ASSET_STATUS_FLOW } from '@/lib/taxonomies'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { BiomedicalAssetsTier3 } from './biomedical-assets-tier-3'
-
+import { DataDriver } from './data-driver'
 import { AISidePanel, AIContextType } from './ai-side-panel'
 
 interface BiomedicalAssetsDetailProps {
@@ -211,6 +211,13 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                                 </button>
                             ))}
                         </div>
+
+                        {/* Data Driver: Utilization Rate */}
+                        <DataDriver
+                            kpiId="biomed.utilization_rate"
+                            currentValue={biomedConfig.utilizationRate}
+                            className="mb-6"
+                        />
 
                         {/* Coverage Status Cards */}
                         <div className="grid grid-cols-2 gap-6 mb-6">

@@ -96,8 +96,98 @@ export enum RiskLevel {
     CRITICAL = 'Critical',
 }
 
+export enum SupplyLocation {
+    CENTRAL_STORAGE = 'Central Storage',
+    PHARMACY = 'Pharmacy',
+    OR_STOCK = 'OR Stock Room',
+    FLOOR_STOCK = 'Floor Stock',
+    LOADING_DOCK = 'Loading Dock',
+    QUARANTINE = 'Quarantine',
+    EXPIRED_HOLD = 'Expired Hold',
+}
+
+export enum SupplyTransitState {
+    RECEIVED = 'Received',
+    IN_STORAGE = 'In Storage',
+    PICKED = 'Picked',
+    IN_TRANSIT = 'In Transit',
+    DELIVERED = 'Delivered',
+    IN_USE = 'In Use',
+    CONSUMED = 'Consumed',
+    EXPIRED = 'Expired',
+    RECALLED = 'Recalled',
+}
+
+export enum UsageEventType {
+    ISSUED = 'Issued',
+    RETURNED = 'Returned',
+    WASTED = 'Wasted',
+    EXPIRED = 'Expired',
+    DAMAGED = 'Damaged',
+    RECALLED = 'Recalled',
+    TRANSFERRED = 'Transferred',
+}
+
 // ============================================================================
-// 5. INFRASTRUCTURE
+// 5. LAB MEDICINE / SPECIMEN TRACKING
+// ============================================================================
+
+export enum SpecimenStatus {
+    COLLECTED = 'Collected',
+    LABELED = 'Labeled',
+    READY_FOR_PICKUP = 'Ready for Pickup',
+    PICKED_UP = 'Picked Up',
+    IN_TRANSIT = 'In Transit',
+    RECEIVED_AT_LAB = 'Received at Lab',
+    ACCESSIONED = 'Accessioned',
+    IN_ANALYSIS = 'In Analysis',
+    ANALYSIS_COMPLETE = 'Analysis Complete',
+    RESULTED = 'Resulted',
+    ARCHIVED = 'Archived',
+}
+
+export const SPECIMEN_WORKFLOW_STAGES = [
+    SpecimenStatus.COLLECTED,
+    SpecimenStatus.LABELED,
+    SpecimenStatus.READY_FOR_PICKUP,
+    SpecimenStatus.PICKED_UP,
+    SpecimenStatus.IN_TRANSIT,
+    SpecimenStatus.RECEIVED_AT_LAB,
+    SpecimenStatus.ACCESSIONED,
+    SpecimenStatus.IN_ANALYSIS,
+    SpecimenStatus.ANALYSIS_COMPLETE,
+    SpecimenStatus.RESULTED,
+    SpecimenStatus.ARCHIVED,
+];
+
+export enum CollectionPoint {
+    INPATIENT_FLOOR = 'Inpatient Floor',
+    ED = 'Emergency Department',
+    OUTPATIENT_CLINIC = 'Outpatient Clinic',
+    ICU = 'Intensive Care Unit',
+    OR = 'Operating Room',
+    DIALYSIS = 'Dialysis Unit',
+    ONCOLOGY = 'Oncology Unit',
+}
+
+export enum CourierStage {
+    AWAITING_PICKUP = 'Awaiting Pickup',
+    EN_ROUTE_TO_LAB = 'En Route to Lab',
+    DELIVERED_TO_LAB = 'Delivered to Lab',
+    DELAYED = 'Delayed',
+}
+
+export enum LabProcessingStage {
+    RECEIVING = 'Receiving',
+    SPECIMEN_PREP = 'Specimen Prep',
+    TESTING = 'Testing',
+    QUALITY_CHECK = 'Quality Check',
+    REPORTING = 'Reporting',
+    COMPLETE = 'Complete',
+}
+
+// ============================================================================
+// 6. INFRASTRUCTURE
 // ============================================================================
 
 export enum GatewayStatus {

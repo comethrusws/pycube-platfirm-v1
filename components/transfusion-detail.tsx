@@ -5,6 +5,7 @@ import { transfusionData } from '@/lib/data'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { TransfusionTier3 } from './transfusion-tier-3'
+import { DataDriver } from './data-driver'
 import { AISidePanel, AIContextType } from './ai-side-panel'
 
 interface TransfusionDetailProps {
@@ -639,6 +640,20 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                 </div>
                             </button>
                         </div>
+
+                        {/* Data Driver: Chain of Custody */}
+                        <DataDriver
+                            kpiId="transfusion.chain_of_custody"
+                            currentValue={96.2}
+                            className="mb-6"
+                        />
+
+                        {/* Data Driver: Wastage Rate */}
+                        <DataDriver
+                            kpiId="transfusion.wastage_rate"
+                            currentValue={2.1}
+                            className="mb-6"
+                        />
 
                         {/* Analysis Charts */}
                         <div className="grid grid-cols-2 gap-6 mb-6">

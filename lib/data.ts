@@ -5,7 +5,7 @@
  * (~3,000+ beds, 6M+ annual patients)
  */
 
-import { AssetStatus, BloodType, BloodComponent, SupplyCategory, RiskLevel, GatewayStatus, ServerStatus } from './taxonomies'
+import { AssetStatus, BloodType, BloodComponent, SupplyCategory, RiskLevel, GatewayStatus, ServerStatus, SpecimenStatus, SupplyLocation, SupplyTransitState } from './taxonomies'
 
 // ============================================================================
 // TYPE DEFINITIONS
