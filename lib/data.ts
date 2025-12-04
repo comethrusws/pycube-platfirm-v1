@@ -5,6 +5,8 @@
  * (~3,000+ beds, 6M+ annual patients)
  */
 
+import { AssetStatus, BloodType, BloodComponent, SupplyCategory, RiskLevel, GatewayStatus, ServerStatus, SpecimenStatus, SupplyLocation, SupplyTransitState } from './taxonomies'
+
 // ============================================================================
 // TYPE DEFINITIONS
 // ============================================================================
@@ -16,6 +18,8 @@ export interface DigitizationTile {
   icon: string;
   description: string;
   href: string;
+  denominator?: string; // R4.1: e.g., '5,005/5,050'
+  statusLabel?: string; // R4.1: e.g., 'Availability', 'Tracked samples'
 }
 
 export interface Hospital {
@@ -36,7 +40,7 @@ export interface BloodInventory {
 }
 
 export interface BloodTypeData {
-  type: string;
+  type: BloodType;
   current: number;
   target: number;
   status: 'healthy' | 'low' | 'critical';
@@ -91,7 +95,7 @@ export interface SpecimenTypeData {
   total: number;
   traceable: number;
   coverage: number;
-  risk: 'low' | 'medium' | 'high';
+  risk: RiskLevel;
 }
 
 export interface SupplyChainKPI {
@@ -125,7 +129,7 @@ export interface GatewayData {
   id: string;
   name: string;
   zone: string;
-  status: 'online' | 'offline' | 'warning';
+  status: GatewayStatus;
   uptime: number;
   lastPing: string;
   tagsInRange: number;
@@ -134,14 +138,14 @@ export interface GatewayData {
 export interface ServerData {
   id: string;
   name: string;
-  status: 'healthy' | 'warning' | 'critical';
+  status: ServerStatus;
   cpu: number;
   memory: number;
   uptime: string;
 }
 
-export interface AssetStatus {
-  label: string;
+export interface AssetStatusData {
+  label: AssetStatus;
   current: number;
   total: number;
 }
@@ -154,10 +158,12 @@ export const digitizationTiles: DigitizationTile[] = [
   {
     label: 'Biomedical assets',
     value: 99,
-    secondary: '5005 Tagged items',
+    secondary: 'Total Tagged items',
     icon: 'Package',
     description: 'Workflow digitization across all facilities',
     href: '/biomedical-assets',
+    denominator: '5,005/5,050',
+    statusLabel: 'Availability',
   },
   {
     label: 'Lab Medicine',
@@ -166,6 +172,8 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'TestTube',
     description: 'Specimen tracking & traceability',
     href: '/lab-medicine',
+    denominator: '34670/37000',
+    statusLabel: 'Tracked samples',
   },
   {
     label: 'Transfusion Medicine',
@@ -174,6 +182,8 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'Droplet',
     description: 'Blood product lifecycle management',
     href: '/transfusion',
+    denominator: '3,910/4,250',
+    statusLabel: 'Visibility',
   },
   {
     label: 'Supply chain',
@@ -182,6 +192,8 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'Truck',
     description: 'Inventory & procurement workflows',
     href: '/supply-chain',
+    denominator: '61,070/62,000',
+    statusLabel: 'Tracked items',
   },
   {
     label: 'Infra Health',
@@ -190,6 +202,8 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'Settings',
     description: 'Gateway & RFID infrastructure status',
     href: '/infra-health',
+    denominator: '475/485',
+    statusLabel: 'Gateway status',
   },
 ];
 
@@ -233,14 +247,14 @@ export const transfusionData = {
 
   // Blood Type Distribution (Total: 4,250 units)
   bloodTypes: [
-    { type: 'A+', current: 1275, target: 1200, status: 'healthy' as const },
-    { type: 'O+', current: 1105, target: 1100, status: 'healthy' as const },
-    { type: 'B+', current: 680, target: 650, status: 'healthy' as const },
-    { type: 'AB+', current: 510, target: 500, status: 'healthy' as const },
-    { type: 'A-', current: 280, target: 300, status: 'low' as const },
-    { type: 'O-', current: 225, target: 250, status: 'low' as const },
-    { type: 'B-', current: 115, target: 120, status: 'healthy' as const },
-    { type: 'AB-', current: 60, target: 55, status: 'healthy' as const },
+    { type: BloodType.A_POS, current: 1275, target: 1200, status: 'healthy' as const },
+    { type: BloodType.O_POS, current: 1105, target: 1100, status: 'healthy' as const },
+    { type: BloodType.B_POS, current: 680, target: 650, status: 'healthy' as const },
+    { type: BloodType.AB_POS, current: 510, target: 500, status: 'healthy' as const },
+    { type: BloodType.A_NEG, current: 280, target: 300, status: 'low' as const },
+    { type: BloodType.O_NEG, current: 225, target: 250, status: 'low' as const },
+    { type: BloodType.B_NEG, current: 115, target: 120, status: 'healthy' as const },
+    { type: BloodType.AB_NEG, current: 60, target: 55, status: 'healthy' as const },
   ] as BloodTypeData[],
 
   // Tier 3: KPI Cards (Scaled for enterprise)
@@ -360,11 +374,11 @@ export const transfusionData = {
 
   // Blood Components Breakdown
   components: [
-    { type: 'RBC (Red Blood Cells)', units: 2550, percentage: 60, usage: 'High', priority: 1 },
-    { type: 'FFP (Fresh Frozen Plasma)', units: 850, percentage: 20, usage: 'Medium', priority: 2 },
-    { type: 'Platelets', units: 510, percentage: 12, usage: 'Medium', priority: 3 },
-    { type: 'Cryoprecipitate', units: 255, percentage: 6, usage: 'Low', priority: 4 },
-    { type: 'Whole Blood', units: 85, percentage: 2, usage: 'Low', priority: 5 },
+    { type: BloodComponent.RBC, units: 2550, percentage: 60, usage: 'High', priority: 1 },
+    { type: BloodComponent.FFP, units: 850, percentage: 20, usage: 'Medium', priority: 2 },
+    { type: BloodComponent.PLATELETS, units: 510, percentage: 12, usage: 'Medium', priority: 3 },
+    { type: BloodComponent.CRYOPRECIPITATE, units: 255, percentage: 6, usage: 'Low', priority: 4 },
+    { type: BloodComponent.WHOLE_BLOOD, units: 85, percentage: 2, usage: 'Low', priority: 5 },
   ],
 };
 
@@ -376,7 +390,7 @@ export const labMedicineData = {
   // Tier 2 Summary
   summary: {
     digitizationCoverage: 96,
-    totalSpecimens7Days: 125000, // Enterprise scale: 15-25K daily
+    totalSpecimens7Days: 37000, // Enterprise scale: 15-25K daily
     dailyAverage: 17850,
     fullyTracked: 96,
     gapsPercentage: 4,
@@ -387,18 +401,18 @@ export const labMedicineData = {
 
   // Weekly trend data (12 weeks)
   trendData: [
-    { week: 'W1', value: 86, specimens: 108000 },
-    { week: 'W2', value: 88, specimens: 112000 },
-    { week: 'W3', value: 89, specimens: 114500 },
-    { week: 'W4', value: 90, specimens: 116000 },
-    { week: 'W5', value: 91, specimens: 118500 },
-    { week: 'W6', value: 92, specimens: 120000 },
-    { week: 'W7', value: 92, specimens: 121000 },
-    { week: 'W8', value: 93, specimens: 122500 },
-    { week: 'W9', value: 94, specimens: 123500 },
-    { week: 'W10', value: 95, specimens: 124000 },
-    { week: 'W11', value: 95, specimens: 124500 },
-    { week: 'W12', value: 96, specimens: 125000 },
+    { week: 'W1', value: 86, specimens: 31700 },
+    { week: 'W2', value: 88, specimens: 32500 },
+    { week: 'W3', value: 89, specimens: 33200 },
+    { week: 'W4', value: 90, specimens: 33800 },
+    { week: 'W5', value: 91, specimens: 34300 },
+    { week: 'W6', value: 92, specimens: 34800 },
+    { week: 'W7', value: 92, specimens: 35200 },
+    { week: 'W8', value: 93, specimens: 35600 },
+    { week: 'W9', value: 94, specimens: 36000 },
+    { week: 'W10', value: 95, specimens: 36400 },
+    { week: 'W11', value: 95, specimens: 36700 },
+    { week: 'W12', value: 96, specimens: 37000 },
   ],
 
   // Coverage by Facility (18 major facilities)
@@ -433,13 +447,13 @@ export const labMedicineData = {
 
   // Coverage by Specimen Type
   specimenTypes: [
-    { type: 'Blood Draw', total: 52500, traceable: 47775, coverage: 91, risk: 'medium' as const },
-    { type: 'Tissue Biopsy', total: 18750, traceable: 16688, coverage: 89, risk: 'medium' as const },
-    { type: 'Pathology Block', total: 15625, traceable: 14688, coverage: 94, risk: 'low' as const },
-    { type: 'Frozen Section', total: 12500, traceable: 10875, coverage: 87, risk: 'high' as const },
-    { type: 'Urine Sample', total: 11250, traceable: 10463, coverage: 93, risk: 'low' as const },
-    { type: 'Microbiology Culture', total: 8125, traceable: 7719, coverage: 95, risk: 'low' as const },
-    { type: 'Cytology', total: 6250, traceable: 5938, coverage: 95, risk: 'low' as const },
+    { type: 'Blood Draw', total: 52500, traceable: 47775, coverage: 91, risk: RiskLevel.MEDIUM },
+    { type: 'Tissue Biopsy', total: 18750, traceable: 16688, coverage: 89, risk: RiskLevel.MEDIUM },
+    { type: 'Pathology Block', total: 15625, traceable: 14688, coverage: 94, risk: RiskLevel.LOW },
+    { type: 'Frozen Section', total: 12500, traceable: 10875, coverage: 87, risk: RiskLevel.HIGH },
+    { type: 'Urine Sample', total: 11250, traceable: 10463, coverage: 93, risk: RiskLevel.LOW },
+    { type: 'Microbiology Culture', total: 8125, traceable: 7719, coverage: 95, risk: RiskLevel.LOW },
+    { type: 'Cytology', total: 6250, traceable: 5938, coverage: 95, risk: RiskLevel.LOW },
   ] as SpecimenTypeData[],
 
   // Custody Breaks (last 30 days)
@@ -484,17 +498,17 @@ export const supplyChainData = {
     criticalAvailability: 98.5,
     wastageIndex: 1.5,
     wastageTarget: 1.0,
-    totalSKUs: 62000,
+    totalSKUs: 58000,
     activeVendors: 285,
   },
 
   // High Risk Items (650 items tracked)
   highRiskItems: [
-    { id: 'MED-8821', name: 'Surgical Mesh Implant - Large', category: 'Surgical', status: 'critical' as const, daysUntilExpiry: 4, value: 8500, location: 'OR-Main' },
+    { id: 'MED-8821', name: 'Surgical Mesh Implant - Large', category: SupplyCategory.SURGICAL, status: 'critical' as const, daysUntilExpiry: 4, value: 8500, location: 'OR-Main' },
     { id: 'MED-8822', name: 'Cardiac Stent Set - Premium', category: 'Cardiac', status: 'critical' as const, daysUntilExpiry: 5, value: 12400, location: 'Cath Lab' },
     { id: 'MED-7743', name: 'Orthopedic Plate System', category: 'Orthopedic', status: 'warning' as const, daysUntilExpiry: 12, value: 6800, location: 'OR-Ortho' },
     { id: 'MED-6654', name: 'Neurosurgery Drill Bits', category: 'Neurosurgery', status: 'warning' as const, daysUntilExpiry: 14, value: 4200, location: 'OR-Neuro' },
-    { id: 'MED-5565', name: 'Specialty Sutures - 2/0', category: 'Surgical', status: 'warning' as const, daysUntilExpiry: 18, value: 2800, location: 'Central Supply' },
+    { id: 'MED-5565', name: 'Specialty Sutures - 2/0', category: SupplyCategory.SURGICAL, status: 'warning' as const, daysUntilExpiry: 18, value: 2800, location: 'Central Supply' },
     { id: 'MED-4476', name: 'IV Contrast Agent - 500ml', category: 'Radiology', status: 'normal' as const, daysUntilExpiry: 22, value: 1850, location: 'Radiology' },
   ] as HighRiskItem[],
 
@@ -505,12 +519,12 @@ export const supplyChainData = {
     urgent: 48, // ≤7 days
     urgentValue: 420000,
     byCategory: [
-      { category: 'Surgical Supplies', units: 1850, value: 920000 },
-      { category: 'Pharmaceuticals', units: 1420, value: 680000 },
-      { category: 'Implants & Devices', units: 980, value: 540000 },
-      { category: 'Diagnostic Supplies', units: 820, value: 310000 },
-      { category: 'Patient Care Items', units: 680, value: 240000 },
-      { category: 'Lab Reagents', units: 450, value: 160000 },
+      { category: SupplyCategory.SURGICAL, units: 1850, value: 920000 },
+      { category: SupplyCategory.PHARMA, units: 1420, value: 680000 },
+      { category: SupplyCategory.IMPLANTS, units: 980, value: 540000 },
+      { category: SupplyCategory.DIAGNOSTIC, units: 820, value: 310000 },
+      { category: SupplyCategory.PATIENT_CARE, units: 680, value: 240000 },
+      { category: SupplyCategory.LAB_REAGENTS, units: 450, value: 160000 },
     ],
   },
 
@@ -564,6 +578,120 @@ export const supplyChainData = {
 };
 
 // ============================================================================
+// R4.3/R4.4: PLATFORM-LEVEL EXPIRY & WASTAGE POLICY DATA
+// ============================================================================
+
+export interface ExpiryPolicyCategory {
+  category: string;
+  shelfLifeDays: number;
+  wastageBaselinePercent: number;
+  currentWastagePercent: number;
+  avgUnitValue: number;
+  unitsExpiringSoon: number; // Within alert window
+  alertWindowDays: number;
+  totalValue: number;
+  preventionProtocols: string[];
+  monthlyPreventedWastage: number; // $ value
+}
+
+export const expiryPolicyData: ExpiryPolicyCategory[] = [
+  {
+    category: 'RBC (Red Blood Cells)',
+    shelfLifeDays: 42,
+    wastageBaselinePercent: 2.5,
+    currentWastagePercent: 1.8,
+    avgUnitValue: 350,
+    unitsExpiringSoon: 24,
+    alertWindowDays: 7,
+    totalValue: 8400,
+    preventionProtocols: [
+      'FIFO enforcement via RTLS',
+      'Auto-transfer to partner hospitals',
+      'Predictive demand modeling',
+      'Real-time expiry dashboard',
+    ],
+    monthlyPreventedWastage: 47000,
+  },
+  {
+    category: 'Platelets',
+    shelfLifeDays: 5,
+    wastageBaselinePercent: 8.0,
+    currentWastagePercent: 5.2,
+    avgUnitValue: 600,
+    unitsExpiringSoon: 82,
+    alertWindowDays: 2,
+    totalValue: 49200,
+    preventionProtocols: [
+      'Regional hospital network coordination',
+      '24h expiry alerts to clinicians',
+      'Automated cross-matching prioritization',
+      'Weekend demand forecasting',
+    ],
+    monthlyPreventedWastage: 118000,
+  },
+  {
+    category: 'Surgical Supplies',
+    shelfLifeDays: 180,
+    wastageBaselinePercent: 1.2,
+    currentWastagePercent: 0.9,
+    avgUnitValue: 450,
+    unitsExpiringSoon: 1850,
+    alertWindowDays: 30,
+    totalValue: 832500,
+    preventionProtocols: [
+      'OR case scheduling integration',
+      'Vendor-managed inventory (VMI)',
+      'Automated reorder point optimization',
+      'Quarterly expiry audits',
+    ],
+    monthlyPreventedWastage: 28000,
+  },
+  {
+    category: 'Pharmaceuticals',
+    shelfLifeDays: 365, // Average across all drug classes
+    wastageBaselinePercent: 2.8,
+    currentWastagePercent: 2.1,
+    avgUnitValue: 320,
+    unitsExpiringSoon: 1420,
+    alertWindowDays: 60,
+    totalValue: 454400,
+    preventionProtocols: [
+      'Pharmacy-driven FEFO protocols',
+      'ADC integration for usage tracking',
+      'Therapeutic substitution programs',
+      'Donation programs for near-expiry meds',
+    ],
+    monthlyPreventedWastage: 85000,
+  },
+  {
+    category: 'Implants & Devices',
+    shelfLifeDays: 730, // 2 years avg
+    wastageBaselinePercent: 0.5,
+    currentWastagePercent: 0.3,
+    avgUnitValue: 8500,
+    unitsExpiringSoon: 48,
+    alertWindowDays: 90,
+    totalValue: 408000,
+    preventionProtocols: [
+      'High-value item alerts (>$5K)',
+      'Consignment inventory programs',
+      'Surgeon preference card optimization',
+      'Quarterly utilization reviews',
+    ],
+    monthlyPreventedWastage: 62000,
+  },
+];
+
+// Platform-level summary for R4.3
+export const platformExpiryAlert = {
+  totalUnitsExpiringSoon: expiryPolicyData.reduce((sum, cat) => sum + cat.unitsExpiringSoon, 0),
+  totalValueAtRisk: expiryPolicyData.reduce((sum, cat) => sum + cat.totalValue, 0),
+  totalMonthlyPreventedWastage: expiryPolicyData.reduce((sum, cat) => sum + cat.monthlyPreventedWastage, 0),
+  criticalCategories: expiryPolicyData.filter(cat => cat.unitsExpiringSoon > 50).map(cat => cat.category),
+  activeProtocolsCount: expiryPolicyData.reduce((sum, cat) => sum + cat.preventionProtocols.length, 0),
+};
+
+// ============================================================================
 // INFRASTRUCTURE HEALTH DATA (96% Digitized)
 // ============================================================================
 
@@ -586,16 +714,16 @@ export const infraHealthData = {
 
   // Gateway Network (485 gateways across campus)
   gateways: [
-    { id: 'GW-MAIN-01', name: 'Main Hospital - Lobby', zone: 'Main Entrance', status: 'online' as const, uptime: 99.8, lastPing: '2 sec ago', tagsInRange: 145 },
-    { id: 'GW-MAIN-02', name: 'Main Hospital - ER Entry', zone: 'Emergency', status: 'online' as const, uptime: 99.5, lastPing: '1 sec ago', tagsInRange: 198 },
-    { id: 'GW-ED-01', name: 'Emergency Dept - Zone 1', zone: 'Emergency', status: 'offline' as const, uptime: 0, lastPing: '2 hours ago', tagsInRange: 0 },
-    { id: 'GW-ED-02', name: 'Emergency Dept - Zone 2', zone: 'Emergency', status: 'online' as const, uptime: 98.2, lastPing: '3 sec ago', tagsInRange: 176 },
-    { id: 'GW-OR-01', name: 'OR Suite - Level 3', zone: 'Operating Rooms', status: 'online' as const, uptime: 99.9, lastPing: '1 sec ago', tagsInRange: 224 },
-    { id: 'GW-OR-02', name: 'OR Suite - Level 4', zone: 'Operating Rooms', status: 'online' as const, uptime: 99.7, lastPing: '2 sec ago', tagsInRange: 212 },
-    { id: 'GW-ICU-01', name: 'ICU - North Wing', zone: 'Intensive Care', status: 'online' as const, uptime: 99.6, lastPing: '1 sec ago', tagsInRange: 168 },
-    { id: 'GW-ICU-02', name: 'ICU - South Wing', zone: 'Intensive Care', status: 'online' as const, uptime: 99.4, lastPing: '2 sec ago', tagsInRange: 154 },
-    { id: 'GW-LAB-01', name: 'Central Lab - Processing', zone: 'Laboratory', status: 'online' as const, uptime: 99.8, lastPing: '1 sec ago', tagsInRange: 189 },
-    { id: 'GW-LAB-02', name: 'Central Lab - Storage', zone: 'Laboratory', status: 'online' as const, uptime: 99.5, lastPing: '3 sec ago', tagsInRange: 142 },
+    { id: 'GW-MAIN-01', name: 'Main Hospital - Lobby', zone: 'Main Entrance', status: GatewayStatus.ONLINE, uptime: 99.8, lastPing: '2 sec ago', tagsInRange: 145 },
+    { id: 'GW-MAIN-02', name: 'Main Hospital - ER Entry', zone: 'Emergency', status: GatewayStatus.ONLINE, uptime: 99.5, lastPing: '1 sec ago', tagsInRange: 198 },
+    { id: 'GW-ED-01', name: 'Emergency Dept - Zone 1', zone: 'Emergency', status: GatewayStatus.OFFLINE, uptime: 0, lastPing: '2 hours ago', tagsInRange: 0 },
+    { id: 'GW-ED-02', name: 'Emergency Dept - Zone 2', zone: 'Emergency', status: GatewayStatus.ONLINE, uptime: 98.2, lastPing: '3 sec ago', tagsInRange: 176 },
+    { id: 'GW-OR-01', name: 'OR Suite - Level 3', zone: 'Operating Rooms', status: GatewayStatus.ONLINE, uptime: 99.9, lastPing: '1 sec ago', tagsInRange: 224 },
+    { id: 'GW-OR-02', name: 'OR Suite - Level 4', zone: 'Operating Rooms', status: GatewayStatus.ONLINE, uptime: 99.7, lastPing: '2 sec ago', tagsInRange: 212 },
+    { id: 'GW-ICU-01', name: 'ICU - North Wing', zone: 'Intensive Care', status: GatewayStatus.ONLINE, uptime: 99.6, lastPing: '1 sec ago', tagsInRange: 168 },
+    { id: 'GW-ICU-02', name: 'ICU - South Wing', zone: 'Intensive Care', status: GatewayStatus.ONLINE, uptime: 99.4, lastPing: '2 sec ago', tagsInRange: 154 },
+    { id: 'GW-LAB-01', name: 'Central Lab - Processing', zone: 'Laboratory', status: GatewayStatus.ONLINE, uptime: 99.8, lastPing: '1 sec ago', tagsInRange: 189 },
+    { id: 'GW-LAB-02', name: 'Central Lab - Storage', zone: 'Laboratory', status: GatewayStatus.ONLINE, uptime: 99.5, lastPing: '3 sec ago', tagsInRange: 142 },
   ] as GatewayData[],
 
   // Tag Battery Status (42,840 active tags)
@@ -633,14 +761,14 @@ export const infraHealthData = {
 
   // Server Health (12 servers)
   servers: [
-    { id: 'SRV-DB-01', name: 'Database Primary', status: 'healthy' as const, cpu: 45, memory: 68, uptime: '99.9%' },
-    { id: 'SRV-DB-02', name: 'Database Replica', status: 'healthy' as const, cpu: 38, memory: 62, uptime: '99.8%' },
-    { id: 'SRV-APP-01', name: 'Application Server 1', status: 'healthy' as const, cpu: 52, memory: 71, uptime: '99.7%' },
-    { id: 'SRV-APP-02', name: 'Application Server 2', status: 'healthy' as const, cpu: 48, memory: 69, uptime: '99.9%' },
-    { id: 'SRV-API-01', name: 'API Gateway', status: 'healthy' as const, cpu: 42, memory: 58, uptime: '99.9%' },
-    { id: 'SRV-CACHE-01', name: 'Cache Server', status: 'healthy' as const, cpu: 28, memory: 84, uptime: '99.8%' },
-    { id: 'SRV-QUEUE-01', name: 'Message Queue', status: 'healthy' as const, cpu: 35, memory: 54, uptime: '99.9%' },
-    { id: 'SRV-ANALYTICS-01', name: 'Analytics Engine', status: 'healthy' as const, cpu: 64, memory: 76, uptime: '99.6%' },
+    { id: 'SRV-DB-01', name: 'Database Primary', status: ServerStatus.HEALTHY, cpu: 45, memory: 68, uptime: '99.9%' },
+    { id: 'SRV-DB-02', name: 'Database Replica', status: ServerStatus.HEALTHY, cpu: 38, memory: 62, uptime: '99.8%' },
+    { id: 'SRV-APP-01', name: 'Application Server 1', status: ServerStatus.HEALTHY, cpu: 52, memory: 71, uptime: '99.7%' },
+    { id: 'SRV-APP-02', name: 'Application Server 2', status: ServerStatus.HEALTHY, cpu: 48, memory: 69, uptime: '99.9%' },
+    { id: 'SRV-API-01', name: 'API Gateway', status: ServerStatus.HEALTHY, cpu: 42, memory: 58, uptime: '99.9%' },
+    { id: 'SRV-CACHE-01', name: 'Cache Server', status: ServerStatus.HEALTHY, cpu: 28, memory: 84, uptime: '99.8%' },
+    { id: 'SRV-QUEUE-01', name: 'Message Queue', status: ServerStatus.HEALTHY, cpu: 35, memory: 54, uptime: '99.9%' },
+    { id: 'SRV-ANALYTICS-01', name: 'Analytics Engine', status: ServerStatus.HEALTHY, cpu: 64, memory: 76, uptime: '99.6%' },
   ] as ServerData[],
 
   // Zone Coverage (150+ zones)
@@ -672,13 +800,13 @@ export const biomedicalAssetsData = {
 
   // Status Breakdown (Workflow States)
   statusBreakdown: [
-    { label: 'Collected', current: 1240, total: 1350 },
-    { label: 'Ready for Pick-up', current: 980, total: 1100 },
-    { label: 'Picked-up', current: 1180, total: 1250 },
-    { label: 'In Transit', current: 840, total: 950 },
-    { label: 'Reached Destination', current: 5005, total: 5500 },
-    { label: 'Unknown', current: 185, total: 350 },
-  ] as AssetStatus[],
+    { label: AssetStatus.CLEAN, current: 1240, total: 1350 },
+    { label: AssetStatus.IN_USE, current: 980, total: 1100 },
+    { label: AssetStatus.SOILED, current: 1180, total: 1250 },
+    { label: AssetStatus.NEEDS_REPAIR, current: 840, total: 950 },
+    { label: AssetStatus.REPAIRED, current: 5005, total: 5500 },
+    { label: AssetStatus.SANITIZED, current: 185, total: 350 },
+  ] as AssetStatusData[],
 
   // Yesterday's Pending (Comparison)
   yesterdayPending: {

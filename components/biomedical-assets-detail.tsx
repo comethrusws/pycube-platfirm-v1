@@ -1,26 +1,40 @@
 'use client'
 
-import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity } from 'lucide-react'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, ArrowRight, MapPin, Sparkles } from 'lucide-react'
 import { biomedicalAssetsData } from '@/lib/data'
+import { getCustomerConfig } from '@/lib/customer-config'
+import { AssetStatus, ASSET_STATUS_FLOW } from '@/lib/taxonomies'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { BiomedicalAssetsTier3 } from './biomedical-assets-tier-3'
+import { DataDriver } from './data-driver'
+import { AISidePanel, AIContextType } from './ai-side-panel'
 
 interface BiomedicalAssetsDetailProps {
     isOpen: boolean
     onClose: () => void
+    customerId?: string
 }
 
-export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDetailProps) {
+export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: BiomedicalAssetsDetailProps) {
     const [tier3Category, setTier3Category] = useState<string | null>(null)
+    const [aiPanelOpen, setAiPanelOpen] = useState(false)
+    const [aiContext, setAiContext] = useState<{ title: string, value: string, type: AIContextType }>({
+        title: '',
+        value: '',
+        type: 'utilization'
+    })
+
+    const config = getCustomerConfig(customerId)
+    const biomedConfig = config.biomed
 
     if (!isOpen) return null
 
-    // Mock data for analyze section
+    // Mock data for analyze section (still needed for charts until we move charts to config)
     const utilizationData = biomedicalAssetsData.categories.map(cat => ({
         category: cat.category.split(' ')[0],
-        utilization: Math.floor(45 + Math.random() * 35), // 45-80% range
-        target: 70
+        utilization: Math.floor(biomedConfig.utilizationRate + (Math.random() * 10 - 5)),
+        target: 75
     }))
 
     const maintenanceTrend = [
@@ -29,7 +43,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
         { month: 'Sep', scheduled: 410, completed: 385, overdue: 35 },
         { month: 'Oct', scheduled: 445, completed: 405, overdue: 48 },
         { month: 'Nov', scheduled: 460, completed: 412, overdue: 52 },
-        { month: 'Dec', scheduled: 428, completed: 380, overdue: 68 },
+        { month: 'Dec', scheduled: 428, completed: 380, overdue: biomedConfig.maintenanceOverdue },
     ]
 
     const idleAssetsByLocation = [
@@ -39,6 +53,18 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
         { location: 'Emergency Department', idle30: 15, idle60: 8, idle90: 2 },
         { location: 'ICU', idle30: 8, idle60: 3, idle90: 1 },
     ]
+
+    const handleKPIClick = (label: string, value: string) => {
+        let type: AIContextType = 'utilization'
+        if (label.includes('Repair') || label.includes('Maint')) type = 'maintenance'
+        else if (label.includes('Lost')) type = 'lost'
+        else if (label.includes('Clean')) type = 'clean'
+        else if (label.includes('Tracking') || label.includes('Expected Today')) type = 'asset-tracking'
+        else if (label.includes('Pending')) type = 'pending-assets'
+
+        setAiContext({ title: label, value, type })
+        setAiPanelOpen(true)
+    }
 
     return (
         <>
@@ -62,26 +88,26 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                     <div className="mb-8">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="h-px bg-gradient-to-r from-transparent to-emerald-500 flex-1" />
-                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Coverage Status</h3>
+                            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">Asset Lifecycle Status</h3>
                             <div className="h-px bg-gradient-to-l from-emerald-500 to-transparent flex-1" />
                         </div>
 
                         <div className="grid grid-cols-3 gap-6">
                             {/* Today's Overview - Donut Chart */}
                             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Today's Overview</h3>
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Asset Coverage</h3>
                                 <div className="flex items-center justify-center mb-6">
                                     <div className="relative w-48 h-48">
                                         <div className="w-full h-full rounded-full" style={{
                                             background: `conic-gradient(
-                                                #10b981 0deg ${(biomedicalAssetsData.summary.assetsDigitized / biomedicalAssetsData.summary.totalAssets * 360)}deg,
-                                                #f59e0b ${(biomedicalAssetsData.summary.assetsDigitized / biomedicalAssetsData.summary.totalAssets * 360)}deg 360deg
+                                                #10b981 0deg ${(biomedConfig.digitizedAssets / biomedConfig.totalAssets * 360)}deg,
+                                                #f59e0b ${(biomedConfig.digitizedAssets / biomedConfig.totalAssets * 360)}deg 360deg
                                             )`
                                         }}>
                                             <div className="absolute inset-0 flex items-center justify-center">
                                                 <div className="bg-white rounded-full w-32 h-32 flex flex-col items-center justify-center">
-                                                    <div className="text-4xl font-semibold text-gray-900">{biomedicalAssetsData.summary.totalAssets.toLocaleString()}</div>
-                                                    <div className="text-sm text-gray-500">assets</div>
+                                                    <div className="text-4xl font-semibold text-gray-900">{biomedConfig.totalAssets.toLocaleString()}</div>
+                                                    <div className="text-sm text-gray-500">total assets</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -90,77 +116,53 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-600">Assets Digitized</span>
-                                        <span className="text-lg font-semibold text-gray-900">{biomedicalAssetsData.summary.assetsDigitized.toLocaleString()}</span>
+                                        <span className="text-lg font-semibold text-gray-900">{biomedConfig.digitizedAssets.toLocaleString()}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-600">Pending Digitization</span>
-                                        <span className="text-lg font-semibold text-gray-900">{biomedicalAssetsData.summary.pendingDigitization.toLocaleString()}</span>
+                                        <span className="text-lg font-semibold text-gray-900">{(biomedConfig.totalAssets - biomedConfig.digitizedAssets).toLocaleString()}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Status of Assets Expected Today */}
-                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Status of Assets Expected Today</h3>
-                                <div className="space-y-4">
-                                    {biomedicalAssetsData.statusBreakdown.map((item, idx) => {
-                                        const colors = ['bg-blue-500', 'bg-blue-400', 'bg-blue-500', 'bg-blue-500', 'bg-blue-500', 'bg-gray-400']
-                                        return {
-                                            label: item.label,
-                                            value: item.current,
-                                            total: item.total,
-                                            color: colors[idx] || 'bg-blue-500'
-                                        }
-                                    }).map((item) => (
-                                        <div key={item.label} className="space-y-1">
-                                            <div className="flex items-center justify-between text-sm">
-                                                <span className="text-gray-700">{item.label}</span>
-                                                <span className="font-semibold text-gray-900">{item.value} assets</span>
-                                            </div>
-                                            <div className="w-full bg-gray-100 rounded-full h-2">
-                                                <div
-                                                    className={`${item.color} h-2 rounded-full transition-all duration-500`}
-                                                    style={{ width: `${(item.value / item.total) * 100}%` }}
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                            {/* Lifecycle Status Flow */}
+                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 col-span-2">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Current Lifecycle Distribution</h3>
+                                <div className="space-y-6">
+                                    {ASSET_STATUS_FLOW.map((status, idx) => {
+                                        const count = biomedConfig.statusBreakdown[status] || 0
+                                        const percentage = (count / biomedConfig.digitizedAssets) * 100
 
-                            {/* Yesterday's Pending Assets */}
-                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-6">Yesterday's Pending Assets</h3>
-                                <div className="text-center mb-6">
-                                    <div className="text-6xl font-semibold text-gray-900">{biomedicalAssetsData.yesterdayPending.total}</div>
-                                </div>
-                                <div className="grid grid-cols-3 gap-3 mb-4">
-                                    <div className="bg-blue-500 rounded-2xl p-4 text-center">
-                                        <div className="text-2xl font-semibold text-white">{biomedicalAssetsData.yesterdayPending.collected}</div>
-                                    </div>
-                                    <div className="bg-blue-400 rounded-2xl p-4 text-center">
-                                        <div className="text-2xl font-semibold text-white">{biomedicalAssetsData.yesterdayPending.readyForPickup}</div>
-                                    </div>
-                                    <div className="bg-orange-500 rounded-2xl p-4 text-center">
-                                        <div className="text-2xl font-semibold text-white">{biomedicalAssetsData.yesterdayPending.inTransit}</div>
-                                    </div>
-                                </div>
-                                <div className="bg-yellow-400 rounded-2xl p-4 text-center mb-4">
-                                    <div className="text-2xl font-semibold text-white">{biomedicalAssetsData.yesterdayPending.unknown}</div>
-                                </div>
-                                <div className="space-y-2 text-xs">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-blue-500" />
-                                        <span className="text-gray-600">Collected</span>
-                                        <div className="ml-auto w-3 h-3 rounded-full bg-orange-500" />
-                                        <span className="text-gray-600">In Transit</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-blue-400" />
-                                        <span className="text-gray-600">Ready for Pick-up</span>
-                                        <div className="ml-auto w-3 h-3 rounded-full bg-orange-400" />
-                                        <span className="text-gray-600">Picked up</span>
-                                    </div>
+                                        // Color logic based on status
+                                        let colorClass = 'bg-blue-500'
+                                        if (status === AssetStatus.CLEAN) colorClass = 'bg-emerald-500'
+                                        if (status === AssetStatus.IN_USE) colorClass = 'bg-blue-500'
+                                        if (status === AssetStatus.SOILED) colorClass = 'bg-yellow-500'
+                                        if (status === AssetStatus.NEEDS_REPAIR) colorClass = 'bg-red-500'
+                                        if (status === AssetStatus.REPAIRED) colorClass = 'bg-purple-500'
+                                        if (status === AssetStatus.SANITIZED) colorClass = 'bg-teal-500'
+
+                                        return (
+                                            <div key={status} className="relative">
+                                                <div className="flex items-center justify-between text-sm mb-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className={`w-2 h-2 rounded-full ${colorClass}`} />
+                                                        <span className="font-medium text-gray-700">{status}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        <span className="text-gray-500 text-xs">{percentage.toFixed(1)}%</span>
+                                                        <span className="font-semibold text-gray-900">{count.toLocaleString()}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="w-full bg-gray-100 rounded-full h-2">
+                                                    <div
+                                                        className={`h-2 rounded-full transition-all duration-500 ${colorClass}`}
+                                                        style={{ width: `${percentage}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -178,13 +180,22 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                         {/* KPI Summary Cards */}
                         <div className="grid grid-cols-5 gap-4 mb-6">
                             {[
-                                { label: 'Overall Collected', value: biomedicalAssetsData.metrics.overallCollected.toLocaleString(), icon: null },
-                                { label: 'Assets Digitized', value: biomedicalAssetsData.metrics.assetsDigitized.toLocaleString(), icon: CheckCircle2, color: 'text-emerald-600' },
-                                { label: 'Assets Unknown', value: biomedicalAssetsData.metrics.assetsUnknown.toLocaleString(), icon: AlertCircle, color: 'text-yellow-600' },
-                                { label: 'Assets Missing', value: biomedicalAssetsData.metrics.assetsMissing.toLocaleString(), icon: AlertTriangle, color: 'text-red-600' },
-                                { label: 'Assets Damaged', value: biomedicalAssetsData.metrics.assetsDamaged.toLocaleString(), icon: XCircle, color: 'text-red-600' },
+                                { label: 'Utilization Rate', value: `${biomedConfig.utilizationRate}%`, icon: Activity, color: 'text-blue-600' },
+                                { label: 'Assets Clean', value: biomedConfig.statusBreakdown[AssetStatus.CLEAN].toLocaleString(), icon: CheckCircle2, color: 'text-emerald-600' },
+                                { label: 'Needs Repair', value: biomedConfig.statusBreakdown[AssetStatus.NEEDS_REPAIR].toLocaleString(), icon: AlertCircle, color: 'text-red-600' },
+                                { label: 'Lost Assets', value: biomedConfig.lostAssets.toLocaleString(), icon: AlertTriangle, color: 'text-red-600' },
+                                { label: 'Maint. Overdue', value: biomedConfig.maintenanceOverdue.toLocaleString(), icon: Clock, color: 'text-orange-600' },
                             ].map((metric) => (
-                                <div key={metric.label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <button
+                                    key={metric.label}
+                                    onClick={() => handleKPIClick(metric.label, metric.value)}
+                                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="bg-purple-100 p-1.5 rounded-lg">
+                                            <Sparkles className="w-3 h-3 text-purple-600" />
+                                        </div>
+                                    </div>
                                     <div className="flex items-start justify-between mb-2">
                                         <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {metric.label}
@@ -193,9 +204,94 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                             <metric.icon className={`w-4 h-4 ${metric.color || 'text-gray-400'}`} />
                                         )}
                                     </div>
-                                    <div className="text-3xl font-semibold text-gray-900">{metric.value}</div>
-                                </div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">{metric.value}</div>
+                                    <div className="text-[10px] text-purple-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                        Ask AI Analysis <ArrowRight className="w-3 h-3" />
+                                    </div>
+                                </button>
                             ))}
+                        </div>
+
+                        {/* Data Driver: Utilization Rate */}
+                        <DataDriver
+                            kpiId="biomed.utilization_rate"
+                            currentValue={biomedConfig.utilizationRate}
+                            className="mb-6"
+                        />
+
+                        {/* Coverage Status Cards */}
+                        <div className="grid grid-cols-2 gap-6 mb-6">
+                            {/* Status of Assets Expected Today */}
+                            <button
+                                onClick={() => handleKPIClick('Asset Tracking Status', '5005 assets tracked')}
+                                className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="bg-purple-100 p-1.5 rounded-lg">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
+                                </div>
+                                <h3 className="text-base font-semibold text-gray-900 mb-6">Status of Assets Expected Today</h3>
+                                <div className="space-y-4">
+                                    {[
+                                        { label: 'Collected', count: 124, color: 'bg-blue-500' },
+                                        { label: 'Ready for Pick-up', count: 98, color: 'bg-blue-400' },
+                                        { label: 'Picked-up', count: 118, color: 'bg-blue-500' },
+                                        { label: 'In Transit', count: 84, color: 'bg-blue-500' },
+                                        { label: 'Reached Destination', count: 385, color: 'bg-blue-500' },
+                                        { label: 'Unknown', count: 18, color: 'bg-gray-400' },
+                                    ].map((status) => (
+                                        <div key={status.label} className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${status.color}`} />
+                                                <span className="text-sm text-gray-700">{status.label}</span>
+                                            </div>
+                                            <span className="text-sm font-semibold text-gray-900">{status.count} assets</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-4 text-xs text-purple-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                    Ask AI Analysis <ArrowRight className="w-3 h-3" />
+                                </div>
+                            </button>
+
+                            {/* Yesterday's Pending Assets */}
+                            <button
+                                onClick={() => handleKPIClick('Yesterdays Pending Assets', '95 assets pending')}
+                                className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
+                            >
+                                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="bg-purple-100 p-1.5 rounded-lg">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
+                                </div>
+                                <h3 className="text-base font-semibold text-gray-900 mb-6">Yesterday's Pending Assets</h3>
+                                <div className="text-center mb-6">
+                                    <div className="text-6xl font-bold text-gray-900 mb-2">95</div>
+                                    <div className="text-sm text-gray-500">Total Pending</div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-3 mb-4">
+                                    <div className="bg-blue-500 text-white rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-bold">42</div>
+                                        <div className="text-xs mt-1 opacity-90">Collected</div>
+                                    </div>
+                                    <div className="bg-blue-400 text-white rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-bold">28</div>
+                                        <div className="text-xs mt-1 opacity-90">Ready</div>
+                                    </div>
+                                    <div className="bg-orange-500 text-white rounded-2xl p-4 text-center">
+                                        <div className="text-2xl font-bold">25</div>
+                                        <div className="text-xs mt-1 opacity-90">Picked up</div>
+                                    </div>
+                                </div>
+                                <div className="bg-yellow-400 text-gray-900 rounded-2xl p-4 text-center">
+                                    <div className="text-3xl font-bold">0</div>
+                                    <div className="text-xs mt-1 font-medium">In Transit</div>
+                                </div>
+                                <div className="mt-4 text-xs text-purple-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                    Ask AI Analysis <ArrowRight className="w-3 h-3" />
+                                </div>
+                            </button>
                         </div>
 
                         {/* Analysis Charts */}
@@ -218,7 +314,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                     </BarChart>
                                 </ResponsiveContainer>
                                 <div className="text-xs text-gray-500 mt-2 text-center">
-                                    Target: 70% utilization | Current average: {Math.round(utilizationData.reduce((acc, d) => acc + d.utilization, 0) / utilizationData.length)}%
+                                    Target: 75% utilization | Current average: {biomedConfig.utilizationRate}%
                                 </div>
                             </div>
 
@@ -248,6 +344,111 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                     <div className="flex items-center gap-1">
                                         <div className="w-3 h-3 rounded-full bg-red-500" />
                                         <span className="text-gray-600">Overdue</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* PM KPIs Section (R2.11) */}
+                        <div className="mb-8">
+
+                            {/* PM Summary Cards */}
+                            <div className="grid grid-cols-4 gap-4 mb-6">
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Avg Time to Locate</div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">3.5 <span className="text-lg text-gray-500">min</span></div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="flex items-center gap-1 text-emerald-600">
+                                            <TrendingUp className="w-3 h-3" />
+                                            <span className="font-medium">58% improvement</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-2">Target: &lt;5 min</div>
+                                </div>
+
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">PM Completion Rate</div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">89<span className="text-lg text-gray-500">%</span></div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="text-orange-600 font-medium">6% below target</div>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-2">Target: 95%</div>
+                                </div>
+
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Asset Uptime</div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">96.2<span className="text-lg text-gray-500">%</span></div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="flex items-center gap-1 text-emerald-600">
+                                            <TrendingUp className="w-3 h-3" />
+                                            <span className="font-medium">+2.1%</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-2">PM impact correlation</div>
+                                </div>
+
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Utilization Impact</div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">+{biomedConfig.utilizationRate - 66}<span className="text-lg text-gray-500">%</span></div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="flex items-center gap-1 text-emerald-600">
+                                            <TrendingUp className="w-3 h-3" />
+                                            <span className="font-medium">From PM program</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-2">Correlation with PM</div>
+                                </div>
+                            </div>
+
+                            {/* PM Trends Charts */}
+                            <div className="grid grid-cols-2 gap-6">
+                                {/* Time to Locate Trend */}
+                                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Time to Locate Assets for PM (6 Months)</h3>
+                                    <ResponsiveContainer width="100%" height={220}>
+                                        <LineChart data={[
+                                            { month: 'Jul', avgMinutes: 8.5, target: 5 },
+                                            { month: 'Aug', avgMinutes: 7.2, target: 5 },
+                                            { month: 'Sep', avgMinutes: 6.8, target: 5 },
+                                            { month: 'Oct', avgMinutes: 5.9, target: 5 },
+                                            { month: 'Nov', avgMinutes: 4.2, target: 5 },
+                                            { month: 'Dec', avgMinutes: 3.5, target: 5 },
+                                        ]}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                                            <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                                            <YAxis tick={{ fontSize: 11 }} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', style: { fontSize: 11 } }} />
+                                            <Tooltip />
+                                            <Line type="monotone" dataKey="avgMinutes" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 5, fill: '#8b5cf6' }} name="Avg Time" />
+                                            <Line type="monotone" dataKey="target" stroke="#e5e7eb" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Target" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                    <div className="text-xs text-gray-500 mt-2 text-center">
+                                        📍 RTLS implementation reduced locate time by 58% in 6 months
+                                    </div>
+                                </div>
+
+                                {/* PM Completion Rate Trend */}
+                                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-4">PM Completion Rate (6 Months)</h3>
+                                    <ResponsiveContainer width="100%" height={220}>
+                                        <LineChart data={[
+                                            { month: 'Jul', completionRate: 85, target: 95 },
+                                            { month: 'Aug', completionRate: 87, target: 95 },
+                                            { month: 'Sep', completionRate: 89, target: 95 },
+                                            { month: 'Oct', completionRate: 88, target: 95 },
+                                            { month: 'Nov', completionRate: 90, target: 95 },
+                                            { month: 'Dec', completionRate: 89, target: 95 },
+                                        ]}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                                            <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                                            <YAxis tick={{ fontSize: 11 }} label={{ value: 'Completion %', angle: -90, position: 'insideLeft', style: { fontSize: 11 } }} domain={[80, 100]} />
+                                            <Tooltip />
+                                            <Line type="monotone" dataKey="completionRate" stroke="#10b981" strokeWidth={3} dot={{ r: 5, fill: '#10b981' }} name="Completion Rate" />
+                                            <Line type="monotone" dataKey="target" stroke="#e5e7eb" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Target" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                    <div className="text-xs text-gray-500 mt-2 text-center">
+                                        ⚠️ December spike in overdue PMs due to holiday staffing
                                     </div>
                                 </div>
                             </div>
@@ -322,7 +523,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                     </div>
                                     <span className="text-xs font-semibold text-red-600 bg-red-100 px-2 py-1 rounded-full">Critical</span>
                                 </div>
-                                <div className="text-3xl font-semibold text-gray-900 mb-1">68</div>
+                                <div className="text-3xl font-semibold text-gray-900 mb-1">{biomedConfig.maintenanceOverdue}</div>
                                 <div className="text-sm font-medium text-gray-700 mb-2">Overdue Maintenance</div>
                                 <div className="text-xs text-gray-500">Assets requiring immediate maintenance. Click to view impact analysis.</div>
                             </button>
@@ -356,7 +557,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
                                 </div>
                                 <div className="text-3xl font-semibold text-gray-900 mb-1">142</div>
                                 <div className="text-sm font-medium text-gray-700 mb-2">Movement Delays</div>
-                                <div className="text-xs text-gray-500">Asset transit delays &gt;2 hours. Click for efficiency recommendations.</div>
+                                <div className="text-xs text-gray-500">{biomedConfig.narrative.bottleneck}</div>
                             </button>
                         </div>
                     </div>
@@ -367,6 +568,15 @@ export function BiomedicalAssetsDetail({ isOpen, onClose }: BiomedicalAssetsDeta
             <BiomedicalAssetsTier3
                 category={tier3Category}
                 onClose={() => setTier3Category(null)}
+            />
+
+            {/* AI Side Panel */}
+            <AISidePanel
+                isOpen={aiPanelOpen}
+                onClose={() => setAiPanelOpen(false)}
+                title={aiContext.title}
+                metricValue={aiContext.value}
+                context={aiContext.type}
             />
         </>
     )

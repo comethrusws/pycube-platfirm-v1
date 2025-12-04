@@ -76,6 +76,18 @@ export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
                 {tile.value}%
               </span>
             </div>
+            {/* R4.1: Status Label */}
+            {tile.statusLabel && (
+              <p className="text-xs font-bold text-gray-700 mt-2 uppercase tracking-wider">
+                {tile.statusLabel}
+              </p>
+            )}
+            {/* R4.1: Denominator */}
+            {tile.denominator && (
+              <p className="text-sm text-gray-500 mt-1 font-semibold">
+                {tile.denominator}
+              </p>
+            )}
             <p className="text-sm text-gray-400 mt-2 font-medium">
               {tile.secondary}
             </p>

@@ -1,10 +1,12 @@
 'use client'
 
-import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, MapPin } from 'lucide-react'
+import { ChevronDown, AlertCircle, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Clock, DollarSign, Activity, MapPin, Sparkles, ArrowRight } from 'lucide-react'
 import { labMedicineData } from '@/lib/data'
+import { RiskLevel } from '@/lib/taxonomies'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useState } from 'react'
 import { LabMedicineTier3 } from './lab-medicine-tier-3'
+import { AISidePanel, AIContextType } from './ai-side-panel'
 
 interface LabMedicineDetailProps {
     isOpen: boolean
@@ -13,6 +15,22 @@ interface LabMedicineDetailProps {
 
 export function LabMedicineDetail({ isOpen, onClose }: LabMedicineDetailProps) {
     const [tier3Category, setTier3Category] = useState<string | null>(null)
+    const [aiPanelOpen, setAiPanelOpen] = useState(false)
+    const [aiContext, setAiContext] = useState<{ title: string, value: string, type: AIContextType }>({
+        title: '',
+        value: '',
+        type: 'specimen-tracking'
+    })
+
+    const handleKPIClick = (label: string, value: string) => {
+        let type: AIContextType = 'specimen-tracking'
+        if (label.includes('Custody')) type = 'custody'
+        if (label.includes('Transit') || label.includes('TAT')) type = 'tat'
+        if (label.includes('Tracking')) type = 'specimen-tracking'
+
+        setAiContext({ title: label, value, type })
+        setAiPanelOpen(true)
+    }
 
     if (!isOpen) return null
 
@@ -95,7 +113,7 @@ export function LabMedicineDetail({ isOpen, onClose }: LabMedicineDetailProps) {
                                             </div>
                                             <div className="w-full bg-gray-100 rounded-full h-2">
                                                 <div
-                                                    className={`${item.risk === 'high' ? 'bg-red-500' : item.risk === 'medium' ? 'bg-orange-500' : 'bg-emerald-500'} h-2 rounded-full transition-all duration-500`}
+                                                    className={`${item.risk === RiskLevel.HIGH || item.risk === RiskLevel.CRITICAL ? 'bg-red-500' : item.risk === RiskLevel.MEDIUM ? 'bg-orange-500' : 'bg-emerald-500'} h-2 rounded-full transition-all duration-500`}
                                                     style={{ width: `${item.coverage}%` }}
                                                 />
                                             </div>
@@ -163,7 +181,14 @@ export function LabMedicineDetail({ isOpen, onClose }: LabMedicineDetailProps) {
                                 { label: 'Avg Transit Time', value: labMedicineData.transit.avgTransitTime, icon: Clock, color: 'text-blue-600' },
                                 { label: 'Courier Delays', value: labMedicineData.transit.courierDelays.toString(), icon: AlertCircle, color: 'text-orange-600' },
                             ].map((metric) => (
-                                <div key={metric.label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <button
+                                    key={metric.label}
+                                    onClick={() => handleKPIClick(metric.label, metric.value)}
+                                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Sparkles className="w-3 h-3 text-purple-600" />
+                                    </div>
                                     <div className="flex items-start justify-between mb-2">
                                         <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {metric.label}
@@ -173,7 +198,7 @@ export function LabMedicineDetail({ isOpen, onClose }: LabMedicineDetailProps) {
                                         )}
                                     </div>
                                     <div className="text-3xl font-semibold text-gray-900">{metric.value}</div>
-                                </div>
+                                </button>
                             ))}
                         </div>
 
@@ -393,6 +418,15 @@ export function LabMedicineDetail({ isOpen, onClose }: LabMedicineDetailProps) {
                     onClose={() => setTier3Category(null)}
                 />
             )}
+
+            {/* AI Side Panel */}
+            <AISidePanel
+                isOpen={aiPanelOpen}
+                onClose={() => setAiPanelOpen(false)}
+                title={aiContext.title}
+                metricValue={aiContext.value}
+                context={aiContext.type}
+            />
         </>
     )
 }

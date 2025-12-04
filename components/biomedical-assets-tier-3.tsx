@@ -1,7 +1,10 @@
 'use client'
 
-import { X, TrendingUp, Clock, DollarSign, Activity, AlertTriangle, ArrowRight } from 'lucide-react'
+import { X, TrendingUp, Clock, DollarSign, Activity, AlertTriangle, ArrowRight, Search, Filter } from 'lucide-react'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { useState } from 'react'
+import { AssetLifecycleModal } from './asset-lifecycle-modal'
+import { AssetLifecycleData, getAssetLifecycleData } from '@/lib/asset-lifecycle'
 
 interface BiomedicalAssetsTier3Props {
     category: string | null
@@ -12,9 +15,9 @@ export function BiomedicalAssetsTier3({ category, onClose }: BiomedicalAssetsTie
     if (!category) return null
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
             <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 rounded-t-3xl">
+                <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 rounded-t-3xl z-10">
                     <div className="flex items-center justify-between">
                         <div>
                             <h2 className="text-2xl font-semibold text-gray-900">
@@ -46,6 +49,15 @@ export function BiomedicalAssetsTier3({ category, onClose }: BiomedicalAssetsTie
 
 // Asset Utilization Content
 function AssetUtilizationContent() {
+    const [selectedAsset, setSelectedAsset] = useState<AssetLifecycleData | null>(null)
+
+    const handleAssetClick = (assetId: string) => {
+        const lifecycleData = getAssetLifecycleData(assetId)
+        if (lifecycleData) {
+            setSelectedAsset(lifecycleData)
+        }
+    }
+
     const underutilizedAssets = [
         { category: 'Surgical Equipment', count: 385, avgUtilization: 42, potentialSavings: '$2.8M', location: 'Main Hospital - West Wing' },
         { category: 'Imaging Devices', count: 124, avgUtilization: 38, potentialSavings: '$1.2M', location: 'Surgical Center' },
@@ -54,6 +66,19 @@ function AssetUtilizationContent() {
         { category: 'Ventilators', count: 89, avgUtilization: 48, potentialSavings: '$1.1M', location: 'Emergency Department' },
         { category: 'Lab Equipment', count: 192, avgUtilization: 44, potentialSavings: '$520K', location: 'Lab Services' },
         { category: 'Wheelchairs & Mobility', count: 361, avgUtilization: 39, potentialSavings: '$340K', location: 'Multiple Locations' },
+    ]
+
+    const topUnderutilizedAssets = [
+        { id: 'IP-492', type: 'Infusion Pump', util: 12, location: 'ED Storage', reason: 'Forgotten in storage', action: 'Return to Central Supply', hasLifecycle: true },
+        { id: 'VENT-102', type: 'Ventilator', util: 5, location: 'West Wing', reason: 'Surplus unit', action: 'Decommission', hasLifecycle: false },
+        { id: 'MON-441', type: 'Patient Monitor', util: 18, location: 'ICU Overflow', reason: 'Backup unit overuse', action: 'Redeploy to ED', hasLifecycle: false },
+        { id: 'IMG-003', type: 'Portable X-Ray', util: 22, location: 'Radiology Hall B', reason: 'Scheduling inefficiency', action: 'Update scheduling rules', hasLifecycle: false },
+        { id: 'SURG-882', type: 'Electrosurgical Unit', util: 8, location: 'OR 4 (Closed)', reason: 'Room under renovation', action: 'Move to OR 2', hasLifecycle: false },
+        { id: 'WC-234', type: 'Wheelchair', util: 2, location: 'Lobby Closet', reason: 'Damaged / Unreported', action: 'Send to Biomed Shop', hasLifecycle: true },
+        { id: 'DEF-331', type: 'Defibrillator', util: 0, location: 'East Wing Nurse Stn', reason: 'Battery expired', action: 'Replace Battery', hasLifecycle: false },
+        { id: 'PUMP-771', type: 'Feeding Pump', util: 15, location: 'Pediatrics', reason: 'Seasonal low census', action: 'Loan to NICU', hasLifecycle: false },
+        { id: 'BED-229', type: 'Smart Bed', util: 35, location: 'Ward 3B', reason: 'Patient preference', action: 'Staff training', hasLifecycle: false },
+        { id: 'VT-892', type: 'Ventilator', util: 28, location: 'Cardiology Clinic', reason: 'Duplicate equipment', action: 'Transfer to Satellite Clinic', hasLifecycle: true },
     ]
 
     const utilizationTrend = [
@@ -74,8 +99,8 @@ function AssetUtilizationContent() {
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">Problem Statement</h3>
                         <p className="text-sm text-gray-700 leading-relaxed">
-                            <span className="font-semibold">1,694 assets (3.8% of total inventory)</span> are operating below 50% utilization rate, 
-                            significantly under the target of 70%. This represents approximately <span className="font-semibold">$7.5M in tied-up capital</span> that 
+                            <span className="font-semibold">1,694 assets (3.8% of total inventory)</span> are operating below 50% utilization rate,
+                            significantly under the target of 70%. This represents approximately <span className="font-semibold">$7.5M in tied-up capital</span> that
                             could be redeployed to high-demand areas or decommissioned to reduce maintenance costs.
                         </p>
                     </div>
@@ -123,6 +148,47 @@ function AssetUtilizationContent() {
                 </div>
             </div>
 
+            {/* R2.4: Utilization by Department */}
+            <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Utilization Rate by Department</h3>
+                <div className="grid grid-cols-3 gap-4">
+                    {[
+                        { dept: 'Emergency Department', util: 85, assets: 1245, color: 'bg-emerald-500' },
+                        { dept: 'ICU', util: 82, assets: 892, color: 'bg-emerald-500' },
+                        { dept: 'Surgical Services', util: 78, assets: 1567, color: 'bg-emerald-500' },
+                        { dept: 'Medical-Surgical Units', util: 72, assets: 2134, color: 'bg-blue-500' },
+                        { dept: 'Outpatient Clinics', util: 68, assets: 1028, color: 'bg-yellow-500' },
+                        { dept: 'Radiology', util: 65, assets: 445, color: 'bg-yellow-500' },
+                        { dept: 'Cardiology', util: 58, assets: 623, color: 'bg-orange-500' },
+                        { dept: 'Rehabilitation', util: 52, assets: 387, color: 'bg-orange-500' },
+                        { dept: 'Long-term Care', util: 48, assets: 512, color: 'bg-red-500' },
+                        { dept: 'Administrative Areas', util: 35, assets: 245, color: 'bg-red-500' },
+                        { dept: 'Storage/Overflow', util: 22, assets: 892, color: 'bg-red-600' },
+                        { dept: 'Decommissioned Units', util: 8, assets: 156, color: 'bg-red-700' },
+                    ].map((dept, idx) => (
+                        <div key={idx} className="bg-white rounded-2xl p-5 border border-gray-200">
+                            <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-sm font-semibold text-gray-900">{dept.dept}</h4>
+                                <span className={`text-2xl font-bold ${
+                                    dept.util >= 70 ? 'text-emerald-600' :
+                                    dept.util >= 50 ? 'text-orange-600' :
+                                    'text-red-600'
+                                }`}>
+                                    {dept.util}%
+                                </span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-3 mb-2">
+                                <div
+                                    className={`h-3 rounded-full transition-all ${dept.color}`}
+                                    style={{ width: `${dept.util}%` }}
+                                />
+                            </div>
+                            <div className="text-xs text-gray-500">{dept.assets} assets in department</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
             {/* Detailed Breakdown */}
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Underutilized Assets by Category</h3>
@@ -156,6 +222,75 @@ function AssetUtilizationContent() {
                 </div>
             </div>
 
+            {/* NEW: Top 10 Underutilized Assets Drill-Down (R2.5) */}
+            <div>
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Top 10 Underutilized Assets (Drill-Down)</h3>
+                    <div className="flex items-center gap-2">
+                        <div className="relative">
+                            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder="Search assets..."
+                                className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+                            />
+                        </div>
+                        <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600">
+                            <Filter className="w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
+                <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+                    <table className="w-full">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Asset ID</th>
+                                <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Type</th>
+                                <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Utilization</th>
+                                <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Current Location</th>
+                                <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Reason</th>
+                                <th className="text-left text-xs font-semibold text-gray-600 py-3 px-4">Recommended Action</th>
+                                <th className="text-center text-xs font-semibold text-gray-600 py-3 px-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {topUnderutilizedAssets.map((asset, idx) => (
+                                <tr key={idx} className="border-t border-gray-100 hover:bg-gray-50 group">
+                                    <td className="text-sm font-medium py-3 px-4">
+                                        {asset.hasLifecycle ? (
+                                            <button
+                                                onClick={() => handleAssetClick(asset.id)}
+                                                className="text-blue-600 hover:text-blue-800 hover:underline font-semibold flex items-center gap-1"
+                                            >
+                                                {asset.id}
+                                                <span className="text-xs text-gray-500">(view lifecycle)</span>
+                                            </button>
+                                        ) : (
+                                            <span className="text-gray-900">{asset.id}</span>
+                                        )}
+                                    </td>
+                                    <td className="text-sm text-gray-700 py-3 px-4">{asset.type}</td>
+                                    <td className="text-sm text-center py-3 px-4">
+                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${asset.util < 10 ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'
+                                            }`}>
+                                            {asset.util}%
+                                        </span>
+                                    </td>
+                                    <td className="text-sm text-gray-700 py-3 px-4">{asset.location}</td>
+                                    <td className="text-sm text-gray-600 py-3 px-4 italic">{asset.reason}</td>
+                                    <td className="text-sm text-blue-700 font-medium py-3 px-4">{asset.action}</td>
+                                    <td className="text-center py-3 px-4">
+                                        <button className="text-xs bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg transition-colors shadow-sm">
+                                            Execute
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             {/* Financial Impact */}
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Financial Impact</h3>
@@ -180,7 +315,7 @@ function AssetUtilizationContent() {
 
             {/* Recommended Actions */}
             <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Recommended Actions</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Strategic Recommendations</h3>
                 <div className="space-y-3">
                     {[
                         { priority: 'High', action: 'Immediately redeploy 385 surgical equipment units from West Wing to Emergency Department', impact: '$850K annual savings', timeline: '2 weeks' },
@@ -191,11 +326,10 @@ function AssetUtilizationContent() {
                     ].map((rec, idx) => (
                         <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
-                                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                                    rec.priority === 'High' ? 'bg-red-100 text-red-700' :
+                                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${rec.priority === 'High' ? 'bg-red-100 text-red-700' :
                                     rec.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                                    'bg-blue-100 text-blue-700'
-                                }`}>
+                                        'bg-blue-100 text-blue-700'
+                                    }`}>
                                     {rec.priority} Priority
                                 </span>
                                 <div className="flex-1">
@@ -217,6 +351,12 @@ function AssetUtilizationContent() {
                     ))}
                 </div>
             </div>
+
+            {/* Asset Lifecycle Modal */}
+            <AssetLifecycleModal
+                assetData={selectedAsset}
+                onClose={() => setSelectedAsset(null)}
+            />
         </div>
     )
 }
@@ -241,8 +381,8 @@ function MaintenanceBacklogContent() {
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">Problem Statement</h3>
                         <p className="text-sm text-gray-700 leading-relaxed">
-                            <span className="font-semibold">68 critical assets</span> have overdue maintenance, including <span className="font-semibold">28 units in ICU and Emergency Department</span>. 
-                            This creates immediate patient safety risks, potential compliance violations, and increases the likelihood of unexpected equipment failures 
+                            <span className="font-semibold">68 critical assets</span> have overdue maintenance, including <span className="font-semibold">28 units in ICU and Emergency Department</span>.
+                            This creates immediate patient safety risks, potential compliance violations, and increases the likelihood of unexpected equipment failures
                             during critical procedures. Combined asset value: <span className="font-semibold">$7.2M</span>.
                         </p>
                     </div>
@@ -365,11 +505,10 @@ function MaintenanceBacklogContent() {
                     ].map((rec, idx) => (
                         <div key={idx} className="bg-white rounded-2xl border-2 border-red-200 p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
-                                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                                    rec.priority === 'Critical' ? 'bg-red-600 text-white' :
+                                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${rec.priority === 'Critical' ? 'bg-red-600 text-white' :
                                     rec.priority === 'High' ? 'bg-red-100 text-red-700' :
-                                    'bg-orange-100 text-orange-700'
-                                }`}>
+                                        'bg-orange-100 text-orange-700'
+                                    }`}>
                                     {rec.priority}
                                 </span>
                                 <div className="flex-1">
@@ -414,8 +553,8 @@ function HighValueTrackingContent() {
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">High-Value Asset Monitoring</h3>
                         <p className="text-sm text-gray-700 leading-relaxed">
-                            <span className="font-semibold">8,400 high-value assets</span> representing <span className="font-semibold">$120M+ in capital investment</span> require 
-                            enhanced monitoring protocols. These critical assets drive revenue-generating procedures and require 99.5%+ uptime to meet clinical demand 
+                            <span className="font-semibold">8,400 high-value assets</span> representing <span className="font-semibold">$120M+ in capital investment</span> require
+                            enhanced monitoring protocols. These critical assets drive revenue-generating procedures and require 99.5%+ uptime to meet clinical demand
                             and financial targets.
                         </p>
                     </div>
@@ -517,11 +656,10 @@ function HighValueTrackingContent() {
                     ].map((rec, idx) => (
                         <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
-                                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                                    rec.priority === 'High' ? 'bg-blue-100 text-blue-700' :
+                                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${rec.priority === 'High' ? 'bg-blue-100 text-blue-700' :
                                     rec.priority === 'Medium' ? 'bg-indigo-100 text-indigo-700' :
-                                    'bg-gray-100 text-gray-700'
-                                }`}>
+                                        'bg-gray-100 text-gray-700'
+                                    }`}>
                                     {rec.priority} Priority
                                 </span>
                                 <div className="flex-1">
@@ -566,9 +704,9 @@ function WorkflowBottlenecksContent() {
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">Problem Statement</h3>
                         <p className="text-sm text-gray-700 leading-relaxed">
-                            <span className="font-semibold">142 asset movements</span> experienced delays exceeding 2 hours in the past 30 days, 
-                            representing <span className="font-semibold">28% above baseline transit time</span>. These bottlenecks result in equipment 
-                            unavailability during critical periods, forcing staff to seek alternatives or delay procedures. Estimated impact: 
+                            <span className="font-semibold">142 asset movements</span> experienced delays exceeding 2 hours in the past 30 days,
+                            representing <span className="font-semibold">28% above baseline transit time</span>. These bottlenecks result in equipment
+                            unavailability during critical periods, forcing staff to seek alternatives or delay procedures. Estimated impact:
                             <span className="font-semibold"> $1.2M in lost productivity and delayed care</span>.
                         </p>
                     </div>
@@ -599,11 +737,10 @@ function WorkflowBottlenecksContent() {
                                     </td>
                                     <td className="text-sm text-center text-gray-900 py-3 px-4">{route.occurrences}</td>
                                     <td className="text-sm text-center py-3 px-4">
-                                        <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                                            route.impact === 'Critical' ? 'bg-red-100 text-red-700' :
+                                        <span className={`text-xs font-semibold px-3 py-1 rounded-full ${route.impact === 'Critical' ? 'bg-red-100 text-red-700' :
                                             route.impact === 'High' ? 'bg-orange-100 text-orange-700' :
-                                            'bg-yellow-100 text-yellow-700'
-                                        }`}>
+                                                'bg-yellow-100 text-yellow-700'
+                                            }`}>
                                             {route.impact}
                                         </span>
                                     </td>
@@ -691,11 +828,10 @@ function WorkflowBottlenecksContent() {
                     ].map((rec, idx) => (
                         <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
-                                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                                    rec.priority === 'High' ? 'bg-yellow-100 text-yellow-700' :
+                                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${rec.priority === 'High' ? 'bg-yellow-100 text-yellow-700' :
                                     rec.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                                    'bg-blue-100 text-blue-700'
-                                }`}>
+                                        'bg-blue-100 text-blue-700'
+                                    }`}>
                                     {rec.priority} Priority
                                 </span>
                                 <div className="flex-1">

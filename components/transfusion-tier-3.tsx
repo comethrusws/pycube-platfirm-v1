@@ -20,6 +20,7 @@ export function TransfusionTier3({ category, onClose }: TransfusionTier3Props) {
                                 {category === 'departments' && 'Department Usage Patterns - Demand Forecasting'}
                                 {category === 'cold-storage' && 'Cold Chain Compliance - Temperature Excursion Analysis'}
                                 {category === 'alerts' && 'Critical Alerts - Chain of Custody Gaps'}
+                                {category === 'custody-improvements' && 'Custody Chain Improvements - Quality Achievement Breakdown'}
                             </h2>
                         </div>
                         <button
@@ -36,6 +37,7 @@ export function TransfusionTier3({ category, onClose }: TransfusionTier3Props) {
                     {category === 'departments' && <DepartmentsContent />}
                     {category === 'cold-storage' && <ColdStorageContent />}
                     {category === 'alerts' && <AlertsContent />}
+                    {category === 'custody-improvements' && <CustodyImprovementsContent />}
                 </div>
             </div>
         </div>
@@ -716,6 +718,280 @@ function AlertsContent() {
                             </div>
                         </div>
                     ))}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+// Custody Improvements Content
+function CustodyImprovementsContent() {
+    const departmentImprovements = [
+        { dept: 'Emergency Department', baseline: 88.4, current: 97.2, improvement: 8.8, criticalBreaks: 0, processChanges: ['RFID reader installation at all entry/exit points', 'Mandatory scanning protocol enforced via workflow'] },
+        { dept: 'Operating Room', baseline: 91.2, current: 98.5, improvement: 7.3, criticalBreaks: 0, processChanges: ['Real-time RTLS integration with OR management system', 'Automated handoff verification'] },
+        { dept: 'Intensive Care Unit', baseline: 93.1, current: 96.8, improvement: 3.7, criticalBreaks: 0, processChanges: ['Barcode scanning at bedside mandatory', 'Chain of custody training for all ICU nurses'] },
+        { dept: 'Blood Bank', baseline: 95.8, current: 99.2, improvement: 3.4, criticalBreaks: 0, processChanges: ['Upgraded EHR integration eliminating 30-min polling delay', 'Automated gap detection alerts'] },
+        { dept: 'Oncology', baseline: 89.7, current: 95.8, improvement: 6.1, criticalBreaks: 0, processChanges: ['RFID readers in all corridors', 'Staff training program (98% completion)'] },
+        { dept: 'Pediatrics', baseline: 90.5, current: 96.1, improvement: 5.6, criticalBreaks: 0, processChanges: ['Enhanced scanning workflow at all handoff points', 'Pediatric-specific custody protocols'] },
+        { dept: 'Labor & Delivery', baseline: 92.3, current: 97.5, improvement: 5.2, criticalBreaks: 0, processChanges: ['RTLS coverage expansion to all L&D rooms', 'Automated alerts for delayed scans'] },
+        { dept: 'Cardiology', baseline: 94.1, current: 98.3, improvement: 4.2, criticalBreaks: 0, processChanges: ['Integration with cath lab systems', 'Real-time tracking for emergency procedures'] },
+    ]
+
+    const improvementTrend = [
+        { month: 'Jan', overall: 91.2, critical: 8, training: 45 },
+        { month: 'Feb', overall: 92.5, critical: 6, training: 62 },
+        { month: 'Mar', overall: 93.8, critical: 4, training: 78 },
+        { month: 'Apr', overall: 95.1, critical: 3, training: 89 },
+        { month: 'May', overall: 96.2, critical: 0, training: 98 },
+    ]
+
+    const processImprovements = [
+        { 
+            initiative: 'RFID Reader Expansion', 
+            sites: 'Macomb, Wayne County, Dearborn Medical', 
+            investment: '$145K',
+            impact: 'Reduced tracking gaps by 82% (from 9.5% to 1.7%)',
+            roi: '$182K annual savings',
+            status: 'Complete'
+        },
+        { 
+            initiative: 'Mandatory Scanning Protocol', 
+            sites: 'All 18 facilities', 
+            investment: '$0 (policy change)',
+            impact: 'Improved compliance from 88.4% to 96.2%',
+            roi: '$220K annual savings',
+            status: 'Complete'
+        },
+        { 
+            initiative: 'EHR Integration Upgrade', 
+            sites: 'All sites with Epic/Cerner', 
+            investment: '$68K',
+            impact: 'Eliminated 30-min sync delay, real-time custody tracking',
+            roi: '$70.5K annual prevention',
+            status: 'Complete'
+        },
+        { 
+            initiative: 'Staff Training Program', 
+            sites: 'All nursing staff (2,140 employees)', 
+            investment: '$32K',
+            impact: '98% completion, 68% reduction in human error',
+            roi: '$95K annual savings',
+            status: 'Complete'
+        },
+        { 
+            initiative: 'Automated Gap Detection', 
+            sites: 'All 18 facilities', 
+            investment: '$22K',
+            impact: 'Average detection time reduced from 4 hours to 5 minutes',
+            roi: '$48K annual savings',
+            status: 'Complete'
+        },
+    ]
+
+    const costAvoidance = [
+        { category: 'Wasted Units', baseline: '$420K/yr', current: '$68K/yr', savings: '$352K' },
+        { category: 'Regulatory Fines', baseline: '$185K/yr', current: '$12K/yr', savings: '$173K' },
+        { category: 'Untracked Inventory', baseline: '$96K/yr', current: '$8K/yr', savings: '$88K' },
+        { category: 'Emergency Orders', baseline: '$142K/yr', current: '$24K/yr', savings: '$118K' },
+    ]
+
+    return (
+        <div className="space-y-8">
+            {/* Overview Cards */}
+            <div className="grid grid-cols-4 gap-4">
+                <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-6 border border-emerald-200">
+                    <CheckCircle2 className="w-8 h-8 text-emerald-600 mb-3" />
+                    <div className="text-3xl font-bold text-emerald-900">96.2%</div>
+                    <div className="text-sm text-emerald-700 font-medium mt-1">Current Traceability</div>
+                    <div className="text-xs text-emerald-600 mt-2">+5.0% from baseline</div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+                    <AlertCircle className="w-8 h-8 text-blue-600 mb-3" />
+                    <div className="text-3xl font-bold text-blue-900">0</div>
+                    <div className="text-sm text-blue-700 font-medium mt-1">Critical Breaks (30 days)</div>
+                    <div className="text-xs text-blue-600 mt-2">Down from 12/month</div>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 border border-purple-200">
+                    <TrendingUp className="w-8 h-8 text-purple-600 mb-3" />
+                    <div className="text-3xl font-bold text-purple-900">$731K</div>
+                    <div className="text-sm text-purple-700 font-medium mt-1">Annual Cost Avoidance</div>
+                    <div className="text-xs text-purple-600 mt-2">From process improvements</div>
+                </div>
+
+                <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 border border-orange-200">
+                    <Package className="w-8 h-8 text-orange-600 mb-3" />
+                    <div className="text-3xl font-bold text-orange-900">5</div>
+                    <div className="text-sm text-orange-700 font-medium mt-1">Completed Initiatives</div>
+                    <div className="text-xs text-orange-600 mt-2">$267K total investment</div>
+                </div>
+            </div>
+
+            {/* Improvement Trend Chart */}
+            <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">5-Month Improvement Trajectory</h3>
+                <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                    <ResponsiveContainer width="100%" height={280}>
+                        <LineChart data={improvementTrend}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                            <XAxis dataKey="month" stroke="#666" style={{ fontSize: '12px' }} />
+                            <YAxis yAxisId="left" stroke="#666" style={{ fontSize: '12px' }} label={{ value: 'Traceability %', angle: -90, position: 'insideLeft', style: { fontSize: '12px' } }} />
+                            <YAxis yAxisId="right" orientation="right" stroke="#666" style={{ fontSize: '12px' }} label={{ value: 'Critical Breaks', angle: 90, position: 'insideRight', style: { fontSize: '12px' } }} />
+                            <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #e5e7eb' }} />
+                            <Legend wrapperStyle={{ fontSize: '12px' }} />
+                            <Line yAxisId="left" type="monotone" dataKey="overall" stroke="#10b981" strokeWidth={3} name="Overall Traceability %" dot={{ fill: '#10b981', r: 5 }} />
+                            <Line yAxisId="right" type="monotone" dataKey="critical" stroke="#ef4444" strokeWidth={2} name="Critical Breaks" dot={{ fill: '#ef4444', r: 5 }} />
+                            <Line yAxisId="left" type="monotone" dataKey="training" stroke="#8b5cf6" strokeWidth={2} strokeDasharray="5 5" name="Training Completion %" dot={{ fill: '#8b5cf6', r: 4 }} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                    <p className="text-xs text-gray-600 mt-4 text-center">
+                        Custody chain improvements correlate with training completion and infrastructure deployment. Zero critical breaks achieved in May.
+                    </p>
+                </div>
+            </div>
+
+            {/* Department-Level Improvements */}
+            <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Department-Level Performance Gains</h3>
+                <div className="space-y-3">
+                    {departmentImprovements.map((dept, idx) => (
+                        <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                    <Building2 className="w-5 h-5 text-gray-600" />
+                                    <span className="font-semibold text-gray-900">{dept.dept}</span>
+                                    {dept.criticalBreaks === 0 && (
+                                        <span className="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-full">
+                                            0 Critical Breaks
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="text-right">
+                                    <div className="text-2xl font-bold text-emerald-600">+{dept.improvement}%</div>
+                                    <div className="text-xs text-gray-600">{dept.baseline}% → {dept.current}%</div>
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
+                                    <span>Baseline</span>
+                                    <span>Current Performance</span>
+                                </div>
+                                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full transition-all duration-1000"
+                                        style={{ width: `${dept.current}%` }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="bg-gray-50 rounded-xl p-3">
+                                <div className="text-xs font-semibold text-gray-700 mb-2">Process Changes Implemented:</div>
+                                <ul className="space-y-1">
+                                    {dept.processChanges.map((change, cIdx) => (
+                                        <li key={cIdx} className="text-xs text-gray-600 flex items-start gap-2">
+                                            <CheckCircle2 className="w-3 h-3 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                            <span>{change}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Process Improvement Initiatives */}
+            <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Completed Process Improvement Initiatives</h3>
+                <div className="space-y-3">
+                    {processImprovements.map((initiative, idx) => (
+                        <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-5">
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <h4 className="font-semibold text-gray-900">{initiative.initiative}</h4>
+                                        <span className="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-full">
+                                            {initiative.status}
+                                        </span>
+                                    </div>
+                                    <div className="text-sm text-gray-600 mb-2">
+                                        <span className="font-medium">Sites:</span> {initiative.sites}
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <div className="text-lg font-bold text-emerald-600">{initiative.roi}</div>
+                                    <div className="text-xs text-gray-600">Annual ROI</div>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 bg-gray-50 rounded-xl p-4">
+                                <div>
+                                    <div className="text-xs font-semibold text-gray-700 mb-1">Investment</div>
+                                    <div className="text-sm text-gray-900">{initiative.investment}</div>
+                                </div>
+                                <div>
+                                    <div className="text-xs font-semibold text-gray-700 mb-1">Impact</div>
+                                    <div className="text-sm text-gray-900">{initiative.impact}</div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Cost Avoidance Breakdown */}
+            <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Annual Cost Avoidance by Category</h3>
+                <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                    <div className="space-y-4">
+                        {costAvoidance.map((item, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                <div className="flex-1">
+                                    <div className="font-semibold text-gray-900 mb-1">{item.category}</div>
+                                    <div className="text-sm text-gray-600">
+                                        Baseline: <span className="font-medium text-red-600">{item.baseline}</span> → Current: <span className="font-medium text-emerald-600">{item.current}</span>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <div className="text-2xl font-bold text-emerald-600">{item.savings}</div>
+                                    <div className="text-xs text-gray-600">Saved</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-6 pt-6 border-t border-gray-200 flex items-center justify-between">
+                        <div className="text-lg font-semibold text-gray-900">Total Annual Cost Avoidance</div>
+                        <div className="text-3xl font-bold text-emerald-600">$731K</div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Key Insights */}
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+                <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    Key Quality Achievement Insights
+                </h3>
+                <div className="space-y-3">
+                    <div className="bg-white rounded-xl p-4">
+                        <p className="text-sm text-gray-900 mb-2">
+                            <span className="font-semibold">Zero Critical Breaks:</span> Achieved for the first time in 30 days through comprehensive RFID deployment and mandatory scanning protocols across all 18 facilities.
+                        </p>
+                    </div>
+                    <div className="bg-white rounded-xl p-4">
+                        <p className="text-sm text-gray-900 mb-2">
+                            <span className="font-semibold">Highest Impact Department:</span> Emergency Department showed +8.8% improvement (88.4% → 97.2%) due to targeted RFID installation at all entry/exit points and workflow enforcement.
+                        </p>
+                    </div>
+                    <div className="bg-white rounded-xl p-4">
+                        <p className="text-sm text-gray-900 mb-2">
+                            <span className="font-semibold">ROI Leader:</span> Mandatory Scanning Protocol delivered $220K annual savings with zero investment, demonstrating high-value policy improvements.
+                        </p>
+                    </div>
+                    <div className="bg-white rounded-xl p-4">
+                        <p className="text-sm text-gray-900 mb-2">
+                            <span className="font-semibold">Training Correlation:</span> 98% staff training completion directly correlated with 68% reduction in human error and elimination of critical custody breaks.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
