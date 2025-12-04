@@ -216,7 +216,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                         <div className="grid grid-cols-2 gap-6 mb-6">
                             {/* Status of Assets Expected Today */}
                             <button
-                                onClick={() => handleKPIClick('Asset Tracking Status', '9090 assets tracked')}
+                                onClick={() => handleKPIClick('Asset Tracking Status', '5005 assets tracked')}
                                 className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group text-left relative overflow-hidden"
                             >
                                 <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -227,12 +227,12 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                                 <h3 className="text-base font-semibold text-gray-900 mb-6">Status of Assets Expected Today</h3>
                                 <div className="space-y-4">
                                     {[
-                                        { label: 'Collected', count: 1240, color: 'bg-blue-500' },
-                                        { label: 'Ready for Pick-up', count: 980, color: 'bg-blue-400' },
-                                        { label: 'Picked-up', count: 1180, color: 'bg-blue-500' },
-                                        { label: 'In Transit', count: 840, color: 'bg-blue-500' },
-                                        { label: 'Reached Destination', count: 5005, color: 'bg-blue-500' },
-                                        { label: 'Unknown', count: 185, color: 'bg-gray-400' },
+                                        { label: 'Collected', count: 124, color: 'bg-blue-500' },
+                                        { label: 'Ready for Pick-up', count: 98, color: 'bg-blue-400' },
+                                        { label: 'Picked-up', count: 118, color: 'bg-blue-500' },
+                                        { label: 'In Transit', count: 84, color: 'bg-blue-500' },
+                                        { label: 'Reached Destination', count: 385, color: 'bg-blue-500' },
+                                        { label: 'Unknown', count: 18, color: 'bg-gray-400' },
                                     ].map((status) => (
                                         <div key={status.label} className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">

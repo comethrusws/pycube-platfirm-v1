@@ -312,7 +312,7 @@ export function AISidePanel({ isOpen, onClose, title, metricValue, context }: AI
             case 'asset-tracking':
                 return {
                     domain,
-                    why: "9,090 assets are currently tracked across all facilities with 98.5% real-time visibility.",
+                    why: "5,005 assets are currently tracked across all facilities with 98.5% real-time visibility.",
                     items: [
                         { id: 'ZONE-ICU', name: 'ICU Coverage', loc: 'Main Hospital', status: '99.8% visible' },
                         { id: 'ZONE-ED', name: 'ED Coverage', loc: 'Main Hospital', status: '98.2% visible' },

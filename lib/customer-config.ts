@@ -112,12 +112,12 @@ export const customerConfigs: Record<string, CustomerConfig> = {
       lostAssets: 42,
       maintenanceOverdue: 128,
       statusBreakdown: {
-        [AssetStatus.CLEAN]: 4200,
-        [AssetStatus.IN_USE]: 6800,
-        [AssetStatus.SOILED]: 1800,
-        [AssetStatus.NEEDS_REPAIR]: 450,
-        [AssetStatus.REPAIRED]: 320,
-        [AssetStatus.SANITIZED]: 630,
+        [AssetStatus.CLEAN]: 420,
+        [AssetStatus.IN_USE]: 3400,
+        [AssetStatus.SOILED]: 900,
+        [AssetStatus.NEEDS_REPAIR]: 45,
+        [AssetStatus.REPAIRED]: 160,
+        [AssetStatus.SANITIZED]: 80,
       },
       narrative: {
         bottleneck: 'Soiled Utility -> Decontamination backlog is 4.5 hours.',
