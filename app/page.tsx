@@ -14,12 +14,15 @@ import { LabMedicineDetail } from '@/components/lab-medicine-detail'
 import { InfraHealthDetail } from '@/components/infra-health-detail'
 import { SupplyChainDetail } from '@/components/supply-chain-detail'
 import { InventoryExpiryBanner } from '@/components/inventory-expiry-banner'
+import { DemoControlPanel } from '@/components/demo-control-panel'
 import { DEFAULT_CUSTOMER } from '@/lib/customer-config'
+import { type Persona } from '@/lib/demo-mode'
 
 export default function Dashboard() {
   // Global State
   const [viewMode, setViewMode] = useState<'executive' | 'operational'>('executive')
   const [selectedCustomer, setSelectedCustomer] = useState<string>(DEFAULT_CUSTOMER)
+  const [selectedPersona, setSelectedPersona] = useState<Persona | null>(null)
 
   // Navigation State
   const [expandedWorkflow, setExpandedWorkflow] = useState<string | null>(null)
@@ -193,26 +196,15 @@ export default function Dashboard() {
         </div>
 
 
-        {/* Tier 3: Financial Impact - Only show in Executive Mode */}
-        {viewMode === 'executive' && (
-          <section className="px-8 py-12">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-2xl font-semibold text-foreground mb-8 tracking-tight">Financial Impact</h2>
-              <FinancialImpactTiles />
-            </div>
-          </section>
-        )}
-
-
-        {/* Tier 5: Facility Digital Twin */}
-        <section className="px-8 py-12">
-          <div className="max-w-7xl mx-auto">
-            <FacilityMap />
-          </div>
-        </section>
       </main>
 
       <Footer />
+
+      {/* Demo Control Panel (R6.5) */}
+      <DemoControlPanel
+        onPersonaChange={setSelectedPersona}
+        onCustomerChange={setSelectedCustomer}
+      />
     </div>
   )
 }
