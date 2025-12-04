@@ -342,6 +342,111 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                             </div>
                         </div>
 
+                        {/* PM KPIs Section (R2.11) */}
+                        <div className="mb-8">
+
+                            {/* PM Summary Cards */}
+                            <div className="grid grid-cols-4 gap-4 mb-6">
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Avg Time to Locate</div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">3.5 <span className="text-lg text-gray-500">min</span></div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="flex items-center gap-1 text-emerald-600">
+                                            <TrendingUp className="w-3 h-3" />
+                                            <span className="font-medium">58% improvement</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-2">Target: &lt;5 min</div>
+                                </div>
+
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">PM Completion Rate</div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">89<span className="text-lg text-gray-500">%</span></div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="text-orange-600 font-medium">6% below target</div>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-2">Target: 95%</div>
+                                </div>
+
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Asset Uptime</div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">96.2<span className="text-lg text-gray-500">%</span></div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="flex items-center gap-1 text-emerald-600">
+                                            <TrendingUp className="w-3 h-3" />
+                                            <span className="font-medium">+2.1%</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-2">PM impact correlation</div>
+                                </div>
+
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Utilization Impact</div>
+                                    <div className="text-3xl font-semibold text-gray-900 mb-1">+{biomedConfig.utilizationRate - 66}<span className="text-lg text-gray-500">%</span></div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="flex items-center gap-1 text-emerald-600">
+                                            <TrendingUp className="w-3 h-3" />
+                                            <span className="font-medium">From PM program</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-2">Correlation with PM</div>
+                                </div>
+                            </div>
+
+                            {/* PM Trends Charts */}
+                            <div className="grid grid-cols-2 gap-6">
+                                {/* Time to Locate Trend */}
+                                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Time to Locate Assets for PM (6 Months)</h3>
+                                    <ResponsiveContainer width="100%" height={220}>
+                                        <LineChart data={[
+                                            { month: 'Jul', avgMinutes: 8.5, target: 5 },
+                                            { month: 'Aug', avgMinutes: 7.2, target: 5 },
+                                            { month: 'Sep', avgMinutes: 6.8, target: 5 },
+                                            { month: 'Oct', avgMinutes: 5.9, target: 5 },
+                                            { month: 'Nov', avgMinutes: 4.2, target: 5 },
+                                            { month: 'Dec', avgMinutes: 3.5, target: 5 },
+                                        ]}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                                            <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                                            <YAxis tick={{ fontSize: 11 }} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', style: { fontSize: 11 } }} />
+                                            <Tooltip />
+                                            <Line type="monotone" dataKey="avgMinutes" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 5, fill: '#8b5cf6' }} name="Avg Time" />
+                                            <Line type="monotone" dataKey="target" stroke="#e5e7eb" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Target" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                    <div className="text-xs text-gray-500 mt-2 text-center">
+                                        📍 RTLS implementation reduced locate time by 58% in 6 months
+                                    </div>
+                                </div>
+
+                                {/* PM Completion Rate Trend */}
+                                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-4">PM Completion Rate (6 Months)</h3>
+                                    <ResponsiveContainer width="100%" height={220}>
+                                        <LineChart data={[
+                                            { month: 'Jul', completionRate: 85, target: 95 },
+                                            { month: 'Aug', completionRate: 87, target: 95 },
+                                            { month: 'Sep', completionRate: 89, target: 95 },
+                                            { month: 'Oct', completionRate: 88, target: 95 },
+                                            { month: 'Nov', completionRate: 90, target: 95 },
+                                            { month: 'Dec', completionRate: 89, target: 95 },
+                                        ]}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                                            <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                                            <YAxis tick={{ fontSize: 11 }} label={{ value: 'Completion %', angle: -90, position: 'insideLeft', style: { fontSize: 11 } }} domain={[80, 100]} />
+                                            <Tooltip />
+                                            <Line type="monotone" dataKey="completionRate" stroke="#10b981" strokeWidth={3} dot={{ r: 5, fill: '#10b981' }} name="Completion Rate" />
+                                            <Line type="monotone" dataKey="target" stroke="#e5e7eb" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Target" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                    <div className="text-xs text-gray-500 mt-2 text-center">
+                                        ⚠️ December spike in overdue PMs due to holiday staffing
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Idle Assets by Location Table */}
                         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
                             <h3 className="text-sm font-semibold text-gray-900 mb-4">Idle Assets by Location</h3>

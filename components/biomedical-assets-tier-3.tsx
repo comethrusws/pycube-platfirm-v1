@@ -148,6 +148,47 @@ function AssetUtilizationContent() {
                 </div>
             </div>
 
+            {/* R2.4: Utilization by Department */}
+            <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Utilization Rate by Department</h3>
+                <div className="grid grid-cols-3 gap-4">
+                    {[
+                        { dept: 'Emergency Department', util: 85, assets: 1245, color: 'bg-emerald-500' },
+                        { dept: 'ICU', util: 82, assets: 892, color: 'bg-emerald-500' },
+                        { dept: 'Surgical Services', util: 78, assets: 1567, color: 'bg-emerald-500' },
+                        { dept: 'Medical-Surgical Units', util: 72, assets: 2134, color: 'bg-blue-500' },
+                        { dept: 'Outpatient Clinics', util: 68, assets: 1028, color: 'bg-yellow-500' },
+                        { dept: 'Radiology', util: 65, assets: 445, color: 'bg-yellow-500' },
+                        { dept: 'Cardiology', util: 58, assets: 623, color: 'bg-orange-500' },
+                        { dept: 'Rehabilitation', util: 52, assets: 387, color: 'bg-orange-500' },
+                        { dept: 'Long-term Care', util: 48, assets: 512, color: 'bg-red-500' },
+                        { dept: 'Administrative Areas', util: 35, assets: 245, color: 'bg-red-500' },
+                        { dept: 'Storage/Overflow', util: 22, assets: 892, color: 'bg-red-600' },
+                        { dept: 'Decommissioned Units', util: 8, assets: 156, color: 'bg-red-700' },
+                    ].map((dept, idx) => (
+                        <div key={idx} className="bg-white rounded-2xl p-5 border border-gray-200">
+                            <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-sm font-semibold text-gray-900">{dept.dept}</h4>
+                                <span className={`text-2xl font-bold ${
+                                    dept.util >= 70 ? 'text-emerald-600' :
+                                    dept.util >= 50 ? 'text-orange-600' :
+                                    'text-red-600'
+                                }`}>
+                                    {dept.util}%
+                                </span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-3 mb-2">
+                                <div
+                                    className={`h-3 rounded-full transition-all ${dept.color}`}
+                                    style={{ width: `${dept.util}%` }}
+                                />
+                            </div>
+                            <div className="text-xs text-gray-500">{dept.assets} assets in department</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
             {/* Detailed Breakdown */}
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Underutilized Assets by Category</h3>

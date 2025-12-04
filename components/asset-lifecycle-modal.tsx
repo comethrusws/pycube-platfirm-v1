@@ -102,9 +102,125 @@ export function AssetLifecycleModal({ assetData, onClose }: AssetLifecycleModalP
                         </div>
                     </div>
 
+                    {/* R2.6: Utilization Metrics */}
+                    {assetData.utilizationRate !== undefined && (
+                        <div className="mt-8 p-6 bg-blue-50 rounded-2xl border border-blue-200">
+                            <h4 className="text-sm font-semibold text-gray-900 mb-4">Utilization Analysis (Last 30 Days)</h4>
+                            <div className="grid grid-cols-4 gap-4 mb-4">
+                                <div>
+                                    <div className="text-sm text-gray-500">Current Rate</div>
+                                    <div className={`text-3xl font-semibold ${assetData.utilizationRate < 30 ? 'text-red-600' : assetData.utilizationRate < 50 ? 'text-orange-600' : 'text-emerald-600'}`}>
+                                        {assetData.utilizationRate}%
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-sm text-gray-500">Department</div>
+                                    <div className="text-lg font-semibold text-gray-900">{assetData.department}</div>
+                                </div>
+                                <div>
+                                    <div className="text-sm text-gray-500">Asset Value</div>
+                                    <div className="text-lg font-semibold text-gray-900">{assetData.acquisitionValue}</div>
+                                </div>
+                                <div>
+                                    <div className="text-sm text-gray-500">Target Rate</div>
+                                    <div className="text-lg font-semibold text-gray-500">70%</div>
+                                </div>
+                            </div>
+                            {assetData.utilizationTrend && assetData.utilizationTrend.length > 0 && (
+                                <div className="mt-3">
+                                    <div className="text-xs font-medium text-gray-600 mb-2">Weekly Trend</div>
+                                    <div className="flex items-end justify-between gap-2 h-16">
+                                        {assetData.utilizationTrend.map((trend, idx) => (
+                                            <div key={idx} className="flex-1 flex flex-col items-center">
+                                                <div 
+                                                    className={`w-full rounded-t ${trend.rate < 30 ? 'bg-red-400' : trend.rate < 50 ? 'bg-orange-400' : 'bg-emerald-400'}`}
+                                                    style={{ height: `${trend.rate}%` }}
+                                                />
+                                                <div className="text-xs text-gray-600 mt-1">{trend.period.replace('Week ', 'W')}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* R2.6: PM History */}
+                    {assetData.pmHistory && assetData.pmHistory.length > 0 && (
+                        <div className="mt-8 p-6 bg-purple-50 rounded-2xl border border-purple-200">
+                            <h4 className="text-sm font-semibold text-gray-900 mb-4">Preventive Maintenance History</h4>
+                            <div className="space-y-3">
+                                {assetData.pmHistory.map((pm, idx) => (
+                                    <div key={idx} className="bg-white rounded-xl p-4 border border-gray-200">
+                                        <div className="flex items-start justify-between mb-2">
+                                            <div>
+                                                <div className="font-semibold text-gray-900">{pm.taskType}</div>
+                                                <div className="text-xs text-gray-500">{pm.date} • {pm.technician}</div>
+                                            </div>
+                                            <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                                                pm.outcome === 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                                                pm.outcome === 'failed' ? 'bg-red-100 text-red-700' :
+                                                'bg-yellow-100 text-yellow-700'
+                                            }`}>
+                                                {pm.outcome.toUpperCase()}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-4 text-xs text-gray-600 mb-2">
+                                            <div>
+                                                <Clock className="w-3 h-3 inline mr-1" />
+                                                Duration: {pm.duration}min
+                                            </div>
+                                            <div className={pm.timeToLocate > 10 ? 'text-orange-600 font-semibold' : ''}>
+                                                <MapPin className="w-3 h-3 inline mr-1" />
+                                                Time to Locate: {pm.timeToLocate}min
+                                                {pm.timeToLocate > 10 && ' ⚠️'}
+                                            </div>
+                                        </div>
+                                        {pm.notes && (
+                                            <div className="text-xs text-gray-600 italic bg-gray-50 p-2 rounded">"{pm.notes}"</div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* R2.6: Location History */}
+                    {assetData.locationHistory && assetData.locationHistory.length > 0 && (
+                        <div className="mt-8 p-6 bg-emerald-50 rounded-2xl border border-emerald-200">
+                            <h4 className="text-sm font-semibold text-gray-900 mb-4">Complete Location History</h4>
+                            <div className="space-y-2">
+                                {assetData.locationHistory.map((loc, idx) => (
+                                    <div key={idx} className="bg-white rounded-lg p-3 border border-gray-200 flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <MapPin className={`w-4 h-4 ${loc.status === 'idle' ? 'text-orange-600' : loc.status === 'in-use' ? 'text-blue-600' : 'text-gray-600'}`} />
+                                            <div>
+                                                <div className="font-semibold text-gray-900 text-sm">{loc.location}</div>
+                                                <div className="text-xs text-gray-500">
+                                                    {loc.arrivedAt} {loc.departedAt && `→ ${loc.departedAt}`}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="text-sm font-semibold text-gray-900">{loc.duration}</div>
+                                            <div className={`text-xs font-medium ${
+                                                loc.status === 'idle' ? 'text-orange-600' :
+                                                loc.status === 'in-use' ? 'text-blue-600' :
+                                                loc.status === 'repair' ? 'text-red-600' :
+                                                'text-emerald-600'
+                                            }`}>
+                                                {loc.status.toUpperCase()}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Summary */}
                     <div className="mt-8 p-6 bg-gray-50 rounded-2xl border border-gray-200">
-                        <h4 className="text-sm font-semibold text-gray-900 mb-4">Summary</h4>
+                        <h4 className="text-sm font-semibold text-gray-900 mb-4">Lifecycle Summary</h4>
                         <div className="grid grid-cols-3 gap-4">
                             <div>
                                 <div className="text-sm text-gray-500">Total Events</div>
