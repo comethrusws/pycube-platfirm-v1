@@ -5,6 +5,8 @@
  * (~3,000+ beds, 6M+ annual patients)
  */
 
+import { AssetStatus as AssetStatusEnum, RoomType, AssetCategory, PMTaskStatus, PMPriority } from './taxonomies';
+
 // ============================================================================
 // TYPE DEFINITIONS
 // ============================================================================
@@ -144,6 +146,63 @@ export interface AssetStatus {
   label: string;
   current: number;
   total: number;
+}
+
+// Asset Lifecycle Event Types
+export interface AssetLifecycleEvent {
+  id: string;
+  assetId: string;
+  status: AssetStatusEnum;
+  timestamp: string;
+  location: RoomType;
+  roomNumber?: string;
+  duration?: number; // minutes spent in this status
+  performedBy?: string;
+  notes?: string;
+}
+
+export interface Asset {
+  id: string;
+  name: string;
+  category: AssetCategory;
+  value: number;
+  currentStatus: AssetStatusEnum;
+  currentLocation: RoomType;
+  roomNumber?: string;
+  lastMoved: string;
+  utilizationRate: number; // percentage
+  idleDays: number;
+  lifecycleEvents: AssetLifecycleEvent[];
+  pmHistory: PMTask[];
+}
+
+export interface PMTask {
+  id: string;
+  assetId: string;
+  assetName: string;
+  taskType: string;
+  priority: PMPriority;
+  status: PMTaskStatus;
+  scheduledDate: string;
+  completedDate?: string;
+  timeToLocate?: number; // minutes
+  technician?: string;
+  notes?: string;
+  dueDate: string;
+  overdueDays?: number;
+}
+
+export interface UtilizationInsight {
+  assetId: string;
+  assetName: string;
+  category: AssetCategory;
+  value: number;
+  utilizationRate: number;
+  reason: string;
+  recommendation: string;
+  potentialSavings: number;
+  lastLocation: string;
+  idleDays: number;
 }
 
 // ============================================================================
@@ -712,3 +771,198 @@ export const biomedicalAssetsData = {
     { category: 'Wheelchairs & Mobility', count: 1359, digitized: 1012, percentage: 74 },
   ],
 };
+
+// ============================================================================
+// ASSET LIFECYCLE & PM DATA (NEW - R2.1-R2.11)
+// ============================================================================
+
+// Sample detailed assets with lifecycle tracking
+export const sampleAssets: Asset[] = [
+  {
+    id: 'AST-IV-001',
+    name: 'Infusion Pump Model X2000',
+    category: AssetCategory.INFUSION_PUMPS,
+    value: 8500,
+    currentStatus: AssetStatusEnum.IN_USE,
+    currentLocation: RoomType.ICU,
+    roomNumber: 'ICU-324',
+    lastMoved: '2025-12-03T14:30:00Z',
+    utilizationRate: 82,
+    idleDays: 0,
+    lifecycleEvents: [
+      { id: 'EVT-001', assetId: 'AST-IV-001', status: AssetStatusEnum.SANITIZED, timestamp: '2025-12-03T08:00:00Z', location: RoomType.CENTRAL_STERILE, duration: 120 },
+      { id: 'EVT-002', assetId: 'AST-IV-001', status: AssetStatusEnum.CLEAN, timestamp: '2025-12-03T10:00:00Z', location: RoomType.CLEAN_UTILITY, duration: 90 },
+      { id: 'EVT-003', assetId: 'AST-IV-001', status: AssetStatusEnum.IN_USE, timestamp: '2025-12-03T14:30:00Z', location: RoomType.ICU, roomNumber: 'ICU-324' },
+    ],
+    pmHistory: [
+      { id: 'PM-001', assetId: 'AST-IV-001', assetName: 'Infusion Pump Model X2000', taskType: 'Quarterly Inspection', priority: PMPriority.ROUTINE, status: PMTaskStatus.COMPLETED, scheduledDate: '2025-11-15', completedDate: '2025-11-15', timeToLocate: 3, technician: 'J. Martinez', dueDate: '2025-11-15' },
+    ],
+  },
+  {
+    id: 'AST-BED-042',
+    name: 'Hospital Bed - Electric',
+    category: AssetCategory.BEDS_STRETCHERS,
+    value: 12000,
+    currentStatus: AssetStatusEnum.SOILED,
+    currentLocation: RoomType.SOILED_UTILITY,
+    roomNumber: 'SU-2B',
+    lastMoved: '2025-12-04T06:15:00Z',
+    utilizationRate: 24,
+    idleDays: 0,
+    lifecycleEvents: [
+      { id: 'EVT-004', assetId: 'AST-BED-042', status: AssetStatusEnum.IN_USE, timestamp: '2025-12-01T08:00:00Z', location: RoomType.PATIENT_ROOM, roomNumber: '428', duration: 4320 },
+      { id: 'EVT-005', assetId: 'AST-BED-042', status: AssetStatusEnum.SOILED, timestamp: '2025-12-04T06:15:00Z', location: RoomType.SOILED_UTILITY, roomNumber: 'SU-2B', duration: 180 },
+    ],
+    pmHistory: [
+      { id: 'PM-002', assetId: 'AST-BED-042', assetName: 'Hospital Bed - Electric', taskType: 'Monthly Safety Check', priority: PMPriority.ROUTINE, status: PMTaskStatus.OVERDUE, scheduledDate: '2025-12-01', dueDate: '2025-12-01', overdueDays: 3 },
+    ],
+  },
+  {
+    id: 'AST-WHL-128',
+    name: 'Transport Wheelchair',
+    category: AssetCategory.WHEELCHAIRS,
+    value: 450,
+    currentStatus: AssetStatusEnum.CLEAN,
+    currentLocation: RoomType.STORAGE_BASEMENT,
+    roomNumber: 'STORE-B12',
+    lastMoved: '2025-10-15T10:30:00Z',
+    utilizationRate: 8,
+    idleDays: 48,
+    lifecycleEvents: [
+      { id: 'EVT-006', assetId: 'AST-WHL-128', status: AssetStatusEnum.IN_USE, timestamp: '2025-10-12T14:00:00Z', location: RoomType.EMERGENCY_DEPT, duration: 45 },
+      { id: 'EVT-007', assetId: 'AST-WHL-128', status: AssetStatusEnum.CLEAN, timestamp: '2025-10-15T10:30:00Z', location: RoomType.STORAGE_BASEMENT, roomNumber: 'STORE-B12', duration: 69120 },
+    ],
+    pmHistory: [],
+  },
+  {
+    id: 'AST-SRG-089',
+    name: 'Surgical Light System',
+    category: AssetCategory.SURGICAL_EQUIPMENT,
+    value: 45000,
+    currentStatus: AssetStatusEnum.IN_REPAIR,
+    currentLocation: RoomType.BIOMED_SHOP,
+    lastMoved: '2025-11-28T09:00:00Z',
+    utilizationRate: 0,
+    idleDays: 6,
+    lifecycleEvents: [
+      { id: 'EVT-008', assetId: 'AST-SRG-089', status: AssetStatusEnum.IN_USE, timestamp: '2025-11-20T07:00:00Z', location: RoomType.OPERATING_ROOM, roomNumber: 'OR-4', duration: 10800 },
+      { id: 'EVT-009', assetId: 'AST-SRG-089', status: AssetStatusEnum.NEEDS_REPAIR, timestamp: '2025-11-27T16:00:00Z', location: RoomType.OPERATING_ROOM, roomNumber: 'OR-4', duration: 900 },
+      { id: 'EVT-010', assetId: 'AST-SRG-089', status: AssetStatusEnum.IN_REPAIR, timestamp: '2025-11-28T09:00:00Z', location: RoomType.BIOMED_SHOP, duration: 8640 },
+    ],
+    pmHistory: [
+      { id: 'PM-003', assetId: 'AST-SRG-089', assetName: 'Surgical Light System', taskType: 'Annual Certification', priority: PMPriority.CRITICAL, status: PMTaskStatus.PENDING_PARTS, scheduledDate: '2025-12-10', dueDate: '2025-12-10', notes: 'Waiting for replacement bulbs' },
+    ],
+  },
+];
+
+// PM Worklist - All pending tasks
+export const pmWorklist: PMTask[] = [
+  { id: 'PM-101', assetId: 'AST-MON-234', assetName: 'Patient Monitor - Philips', taskType: 'Quarterly Calibration', priority: PMPriority.ROUTINE, status: PMTaskStatus.SCHEDULED, scheduledDate: '2025-12-05', dueDate: '2025-12-05' },
+  { id: 'PM-102', assetId: 'AST-VNT-045', assetName: 'Ventilator - Puritan Bennett', taskType: 'Monthly Safety Check', priority: PMPriority.URGENT, status: PMTaskStatus.SCHEDULED, scheduledDate: '2025-12-04', dueDate: '2025-12-04' },
+  { id: 'PM-002', assetId: 'AST-BED-042', assetName: 'Hospital Bed - Electric', taskType: 'Monthly Safety Check', priority: PMPriority.ROUTINE, status: PMTaskStatus.OVERDUE, scheduledDate: '2025-12-01', dueDate: '2025-12-01', overdueDays: 3 },
+  { id: 'PM-103', assetId: 'AST-IMG-067', assetName: 'Portable X-Ray Unit', taskType: 'Annual Inspection', priority: PMPriority.CRITICAL, status: PMTaskStatus.OVERDUE, scheduledDate: '2025-11-28', dueDate: '2025-11-28', overdueDays: 6 },
+  { id: 'PM-104', assetId: 'AST-INF-156', assetName: 'Infusion Pump - Baxter', taskType: 'Quarterly Inspection', priority: PMPriority.ROUTINE, status: PMTaskStatus.IN_PROGRESS, scheduledDate: '2025-12-04', dueDate: '2025-12-04', timeToLocate: 2, technician: 'R. Chen' },
+  { id: 'PM-105', assetId: 'AST-SRG-122', assetName: 'Electrosurgical Unit', taskType: 'Bi-Annual Certification', priority: PMPriority.URGENT, status: PMTaskStatus.SCHEDULED, scheduledDate: '2025-12-06', dueDate: '2025-12-06' },
+  { id: 'PM-003', assetId: 'AST-SRG-089', assetName: 'Surgical Light System', taskType: 'Annual Certification', priority: PMPriority.CRITICAL, status: PMTaskStatus.PENDING_PARTS, scheduledDate: '2025-12-10', dueDate: '2025-12-10', notes: 'Waiting for replacement bulbs' },
+  { id: 'PM-106', assetId: 'AST-RSP-078', assetName: 'CPAP Machine', taskType: 'Monthly Filter Replacement', priority: PMPriority.ROUTINE, status: PMTaskStatus.SCHEDULED, scheduledDate: '2025-12-05', dueDate: '2025-12-05' },
+];
+
+// Underutilized assets insights
+export const underutilizedAssets: UtilizationInsight[] = [
+  {
+    assetId: 'AST-WHL-128',
+    assetName: 'Transport Wheelchair',
+    category: AssetCategory.WHEELCHAIRS,
+    value: 450,
+    utilizationRate: 8,
+    reason: 'Stuck in basement storage for 48 days',
+    recommendation: 'Redeploy to ED main entrance',
+    potentialSavings: 120,
+    lastLocation: 'Storage Basement B12',
+    idleDays: 48,
+  },
+  {
+    assetId: 'AST-BED-073',
+    assetName: 'Hospital Bed - Electric',
+    category: AssetCategory.BEDS_STRETCHERS,
+    value: 12000,
+    utilizationRate: 15,
+    reason: 'Rarely used in Radiology holding area',
+    recommendation: 'Move to ICU overflow area',
+    potentialSavings: 8500,
+    lastLocation: 'Radiology Holding',
+    idleDays: 22,
+  },
+  {
+    assetId: 'AST-INF-234',
+    assetName: 'Infusion Pump Model X1000',
+    category: AssetCategory.INFUSION_PUMPS,
+    value: 7200,
+    utilizationRate: 12,
+    reason: 'Needs repair for 18 days - not prioritized',
+    recommendation: 'Fast-track repair or replace',
+    potentialSavings: 15000,
+    lastLocation: 'Biomed Shop',
+    idleDays: 18,
+  },
+  {
+    assetId: 'AST-MON-445',
+    assetName: 'Patient Monitor - Portable',
+    category: AssetCategory.PATIENT_MONITORS,
+    value: 5500,
+    utilizationRate: 18,
+    reason: 'Lost in transit - not returned to pool',
+    recommendation: 'Locate via RTLS and return to Central',
+    potentialSavings: 3200,
+    lastLocation: 'Unknown - Last seen Floor 3',
+    idleDays: 12,
+  },
+  {
+    assetId: 'AST-SRG-156',
+    assetName: 'Arthroscopy Tower',
+    category: AssetCategory.SURGICAL_EQUIPMENT,
+    value: 85000,
+    utilizationRate: 22,
+    reason: 'Dedicated to OR-8 which has low utilization',
+    recommendation: 'Share across OR suite',
+    potentialSavings: 125000,
+    lastLocation: 'OR-8',
+    idleDays: 5,
+  },
+  {
+    assetId: 'AST-WHL-089',
+    assetName: 'Bariatric Wheelchair',
+    category: AssetCategory.WHEELCHAIRS,
+    value: 1200,
+    utilizationRate: 6,
+    reason: 'Over-purchased - 8 units for 2-unit demand',
+    recommendation: 'Consolidate and consider sale/donation',
+    potentialSavings: 450,
+    lastLocation: 'Storage - Main',
+    idleDays: 67,
+  },
+  {
+    assetId: 'AST-IMG-234',
+    assetName: 'Ultrasound - Portable',
+    category: AssetCategory.IMAGING_DEVICES,
+    value: 35000,
+    utilizationRate: 28,
+    reason: 'Department hoarding - not shared',
+    recommendation: 'Implement check-out system across departments',
+    potentialSavings: 35000,
+    lastLocation: 'Cardiology Dept Office',
+    idleDays: 3,
+  },
+  {
+    assetId: 'AST-VNT-023',
+    assetName: 'Transport Ventilator',
+    category: AssetCategory.RESPIRATORY_EQUIPMENT,
+    value: 18000,
+    utilizationRate: 19,
+    reason: 'Misplaced after patient transfer',
+    recommendation: 'Locate and return to respiratory pool',
+    potentialSavings: 9000,
+    lastLocation: 'Unknown - Last ping Floor 7',
+    idleDays: 8,
+  },
+];
