@@ -16,6 +16,7 @@ import { SupplyChainDetail } from '@/components/supply-chain-detail'
 import { InventoryExpiryBanner } from '@/components/inventory-expiry-banner'
 import { DemoControlPanel } from '@/components/demo-control-panel'
 import { QuickCaptureButton } from '@/components/feedback-capture'
+import { AIAssistantWidget } from '@/components/ai-assistant-widget'
 import { DEFAULT_CUSTOMER } from '@/lib/customer-config'
 import { type Persona } from '@/lib/demo-mode'
 
@@ -209,6 +210,9 @@ export default function Dashboard() {
 
       {/* Quick Capture Button (R6.6) */}
       <QuickCaptureButton />
+
+      {/* AI Assistant Widget */}
+      <AIAssistantWidget />
     </div>
   )
 }
