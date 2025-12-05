@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Sparkles, X, Send, ChevronDown, ChevronUp } from 'lucide-react'
 
 interface SuggestedQuestion {
@@ -240,20 +240,117 @@ Deploy RFID tags on high-value surgical kits ($500+). Pilot shows 42% reduction 
   }
 ]
 
+// Helper function to parse and format the answer text
+function formatAnswerText(text: string) {
+  const lines = text.split('\n')
+  const formatted: React.ReactElement[] = []
+  let key = 0
+
+  lines.forEach((line, index) => {
+    // Bold headers (lines starting with **)
+    if (line.startsWith('**') && line.endsWith('**')) {
+      const content = line.replace(/\*\*/g, '')
+      formatted.push(
+        <h3 key={key++} className="text-base font-bold text-gray-900 mt-4 mb-2">
+          {content}
+        </h3>
+      )
+    }
+    // Bold inline text (contains ** but not at start/end)
+    else if (line.includes('**')) {
+      const parts = line.split('**')
+      formatted.push(
+        <p key={key++} className="text-sm text-gray-700 mb-2">
+          {parts.map((part, i) => 
+            i % 2 === 1 ? <strong key={i} className="font-semibold text-gray-900">{part}</strong> : part
+          )}
+        </p>
+      )
+    }
+    // Bullet points
+    else if (line.startsWith('• ') || line.startsWith('  - ')) {
+      const content = line.replace(/^[•\s-]+/, '')
+      const isSubBullet = line.startsWith('  ')
+      formatted.push(
+        <li key={key++} className={`text-sm text-gray-700 mb-1 ${isSubBullet ? 'ml-6' : 'ml-0'}`}>
+          {content}
+        </li>
+      )
+    }
+    // Numbered lists
+    else if (/^\d+\./.test(line)) {
+      const content = line.replace(/^\d+\.\s*/, '')
+      formatted.push(
+        <li key={key++} className="text-sm text-gray-700 mb-1 ml-4">
+          {content}
+        </li>
+      )
+    }
+    // Status indicators
+    else if (line.includes('✓') || line.includes('⚠️') || line.includes('⏳')) {
+      formatted.push(
+        <p key={key++} className="text-sm text-gray-700 mb-2 flex items-start gap-2">
+          <span>{line}</span>
+        </p>
+      )
+    }
+    // Empty lines
+    else if (line.trim() === '') {
+      formatted.push(<div key={key++} className="h-2" />)
+    }
+    // Regular text
+    else if (line.trim()) {
+      formatted.push(
+        <p key={key++} className="text-sm text-gray-700 mb-2">
+          {line}
+        </p>
+      )
+    }
+  })
+
+  return formatted
+}
+
 export function AIAssistantWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [selectedQuestion, setSelectedQuestion] = useState<SuggestedQuestion | null>(null)
   const [inputValue, setInputValue] = useState('')
+  const [displayedText, setDisplayedText] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
 
   const handleQuestionClick = (question: SuggestedQuestion) => {
     setSelectedQuestion(question)
     setIsExpanded(true)
+    setDisplayedText('')
+    setIsTyping(true)
   }
+
+  // Typing animation effect
+  useEffect(() => {
+    if (selectedQuestion && isTyping) {
+      const fullText = selectedQuestion.answer
+      let currentIndex = 0
+      
+      const typingInterval = setInterval(() => {
+        if (currentIndex <= fullText.length) {
+          setDisplayedText(fullText.slice(0, currentIndex))
+          currentIndex += 3 // Speed of typing (characters per interval)
+        } else {
+          setIsTyping(false)
+          clearInterval(typingInterval)
+        }
+      }, 10) // Interval speed in ms
+
+      return () => clearInterval(typingInterval)
+    }
+  }, [selectedQuestion, isTyping])
 
   const handleBack = () => {
     setSelectedQuestion(null)
     setIsExpanded(false)
+    setDisplayedText('')
+    setIsTyping(false)
   }
 
   if (!isOpen) {
@@ -363,19 +460,22 @@ export function AIAssistantWidget() {
           </div>
 
           {/* Answer */}
-          <div className="prose prose-sm max-w-none">
-            <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-              {selectedQuestion.answer}
-            </div>
+          <div className="space-y-1 px-8">
+            {formatAnswerText(displayedText)}
+            {isTyping && (
+              <span className="inline-block w-1 h-4 bg-sky-600 animate-pulse ml-1" />
+            )}
           </div>
 
           {/* Ask Another Question */}
-          <button
-            onClick={handleBack}
-            className="mt-6 w-full px-4 py-3 bg-gradient-to-r from-sky-600 to-sky-600 text-white font-medium rounded-xl hover:shadow-lg transition-all"
-          >
-            Ask Another Question
-          </button>
+          {!isTyping && (
+            <button
+              onClick={handleBack}
+              className="mt-6 w-full px-4 py-3 bg-sky-600 text-white font-medium rounded-xl hover:shadow-lg transition-all"
+            >
+              Ask Another Question
+            </button>
+          )}
         </div>
       )}
     </div>
