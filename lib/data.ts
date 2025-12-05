@@ -172,7 +172,7 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'TestTube',
     description: 'Specimen tracking & traceability',
     href: '/lab-medicine',
-    denominator: '34670/37000',
+    denominator: '34,670/37,000',
     statusLabel: 'Tracked samples',
   },
   {
@@ -182,7 +182,7 @@ export const digitizationTiles: DigitizationTile[] = [
     icon: 'Droplet',
     description: 'Blood product lifecycle management',
     href: '/transfusion',
-    denominator: '4250',
+    denominator: '4,250',
     statusLabel: 'Visibility',
   },
   {
