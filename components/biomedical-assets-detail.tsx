@@ -10,6 +10,7 @@ import { BiomedicalAssetsTier3 } from './biomedical-assets-tier-3'
 import { DataDriver } from './data-driver'
 import { AISidePanel, AIContextType } from './ai-side-panel'
 import { EducationOverlay } from './education-overlay'
+import { TrialLockModal } from './trial-lock-modal'
 
 interface BiomedicalAssetsDetailProps {
     isOpen: boolean
@@ -27,6 +28,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
     })
     const [educationOpen, setEducationOpen] = useState(false)
     const [educationTopicId, setEducationTopicId] = useState('')
+    const [trialModalOpen, setTrialModalOpen] = useState(false)
 
     const config = getCustomerConfig(customerId)
     const biomedConfig = config.biomed
@@ -233,6 +235,27 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                             <DataDriver
                                 kpiId="biomed.utilization_rate"
                                 currentValue={biomedConfig.utilizationRate}
+                            />
+                        </div>
+
+                        {/* Data Driver: Chain of Custody */}
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-sm font-semibold text-gray-700">Understanding This Metric</h4>
+                                <button
+                                    onClick={() => {
+                                        setEducationTopicId('chain-of-custody')
+                                        setEducationOpen(true)
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-200 rounded-lg transition-colors"
+                                >
+                                    <HelpCircle className="w-4 h-4" />
+                                    How Chain of Custody Works
+                                </button>
+                            </div>
+                            <DataDriver
+                                kpiId="biomed.chain_of_custody"
+                                currentValue={98.2}
                             />
                         </div>
 
@@ -605,6 +628,12 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                 topicId={educationTopicId}
                 isOpen={educationOpen}
                 onClose={() => setEducationOpen(false)}
+            />
+
+            {/* Trial Lock Modal */}
+            <TrialLockModal
+                isOpen={trialModalOpen}
+                onClose={() => setTrialModalOpen(false)}
             />
         </>
     )

@@ -8,6 +8,7 @@ import { TransfusionTier3 } from './transfusion-tier-3'
 import { DataDriver } from './data-driver'
 import { AISidePanel, AIContextType } from './ai-side-panel'
 import { EducationOverlay } from './education-overlay'
+import { TrialLockModal } from './trial-lock-modal'
 
 interface TransfusionDetailProps {
     isOpen: boolean
@@ -25,6 +26,7 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
     })
     const [educationOpen, setEducationOpen] = useState(false)
     const [educationTopicId, setEducationTopicId] = useState('')
+    const [trialModalOpen, setTrialModalOpen] = useState(false)
 
     const handleKPIClick = (label: string, value: string) => {
         let type: AIContextType = 'blood-wastage'
@@ -645,32 +647,39 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                         </div>
 
                         {/* Data Driver: Chain of Custody */}
-                        <div className="mb-6">
+                        <div className="mb-6 relative">
                             <div className="flex items-center justify-between mb-3">
-                                <h4 className="text-sm font-semibold text-gray-700">Understanding This Metric</h4>
+                                <h4 className="text-sm font-semibold text-gray-400">Understanding This Metric</h4>
                                 <button
-                                    onClick={() => {
-                                        setEducationTopicId('chain-of-custody')
-                                        setEducationOpen(true)
-                                    }}
-                                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                    onClick={() => setTrialModalOpen(true)}
+                                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-400 bg-gray-100 rounded-lg transition-colors cursor-pointer"
                                 >
                                     <HelpCircle className="w-4 h-4" />
                                     How Chain of Custody Works
                                 </button>
                             </div>
-                            <DataDriver
-                                kpiId="transfusion.chain_of_custody"
-                                currentValue={96.2}
-                            />
+                            <div className="relative" onClick={() => setTrialModalOpen(true)}>
+                                <div className="opacity-50 pointer-events-none">
+                                    <DataDriver
+                                        kpiId="transfusion.chain_of_custody"
+                                        currentValue={96.2}
+                                    />
+                                </div>
+                                <div className="absolute inset-0 bg-gray-50/50" />
+                            </div>
                         </div>
 
                         {/* Data Driver: Wastage Rate */}
-                        <DataDriver
-                            kpiId="transfusion.wastage_rate"
-                            currentValue={2.1}
-                            className="mb-6"
-                        />
+                        <div className="relative mb-6" onClick={() => setTrialModalOpen(true)}>
+                            <div className="opacity-50 pointer-events-none">
+                                <DataDriver
+                                    kpiId="transfusion.wastage_rate"
+                                    currentValue={2.1}
+                                    className="mb-0"
+                                />
+                            </div>
+                            <div className="absolute inset-0 bg-gray-50/50" />
+                        </div>
 
                         {/* Analysis Charts */}
                         <div className="grid grid-cols-2 gap-6 mb-6">
@@ -1182,6 +1191,12 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                 topicId={educationTopicId}
                 isOpen={educationOpen}
                 onClose={() => setEducationOpen(false)}
+            />
+
+            {/* Trial Lock Modal */}
+            <TrialLockModal
+                isOpen={trialModalOpen}
+                onClose={() => setTrialModalOpen(false)}
             />
         </>
     )

@@ -265,6 +265,36 @@ export const BIOMED_KPIS: Record<string, KPIDefinition> = {
             criticalThreshold: 100
         },
         dataSource: 'CMMS API'
+    },
+
+    CHAIN_OF_CUSTODY: {
+        id: 'biomed.chain_of_custody',
+        name: 'Asset Chain of Custody Compliance',
+        category: 'biomed',
+        formula: '(Assets with complete location tracking / Total tracked assets) × 100',
+        inputs: [
+            'RTLS location scan events',
+            'Asset movement timestamps',
+            'Department transfer records',
+            'Total active tracked assets'
+        ],
+        refreshFrequency: 'Real-time (5 min intervals)',
+        typicalRange: {
+            min: 85,
+            max: 100,
+            optimal: 98,
+            unit: '%'
+        },
+        context: {
+            stakeholders: ['Biomed Director', 'Operations', 'Compliance'],
+            decisions: [
+                'Asset tracking system optimization',
+                'Staff training on scanning protocols',
+                'Gateway placement adjustments'
+            ],
+            criticalThreshold: 90
+        },
+        dataSource: 'RTLS Platform API'
     }
 }
 
