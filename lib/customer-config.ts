@@ -84,8 +84,8 @@ export interface CustomerConfig {
 export const customerConfigs: Record<string, CustomerConfig> = {
   baptist: {
     id: 'baptist',
-    name: 'Baptist Health',
-    displayName: 'Baptist Health System',
+    name: 'University Health',
+    displayName: 'University Health System',
     transfusion: {
       totalBloodBags: 12840,
       dailyTransfusions: 450,
@@ -156,8 +156,8 @@ export const customerConfigs: Record<string, CustomerConfig> = {
   },
   cleveland: {
     id: 'cleveland',
-    name: 'Cleveland Clinic',
-    displayName: 'Cleveland Clinic Health System',
+    name: 'Turing Clinic',
+    displayName: 'Turing Clinic Health System',
     transfusion: {
       totalBloodBags: 15200,
       dailyTransfusions: 520,
