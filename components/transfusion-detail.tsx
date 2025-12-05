@@ -804,14 +804,13 @@ export function TransfusionDetail({ isOpen, onClose }: TransfusionDetailProps) {
                                 </div>
 
                                 {/* Right: R3.5 Enhanced Map Visualization with Status Indicators */}
-                                <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden border border-gray-200" style={{ minHeight: '450px' }}>
-                                    {/* Map grid background */}
-                                    <div className="absolute inset-0 opacity-10">
-                                        <div className="absolute inset-0" style={{
-                                            backgroundImage: 'linear-gradient(#999 1px, transparent 1px), linear-gradient(90deg, #999 1px, transparent 1px)',
-                                            backgroundSize: '50px 50px'
-                                        }} />
-                                    </div>
+                                <div className="relative rounded-2xl overflow-hidden border border-gray-200" style={{ 
+                                    minHeight: '450px',
+                                    backgroundImage: 'url(/map.png)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat'
+                                }}>
 
                                     {/* R3.5: Hospital location markers with color-coded status */}
                                     <div className="absolute inset-0">
