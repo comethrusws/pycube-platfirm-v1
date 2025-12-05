@@ -41,7 +41,7 @@ export function DemoControlPanel({ onPersonaChange, onCustomerChange }: DemoCont
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 z-50 p-4 bg-indigo-600 text-white rounded-full shadow-2xl hover:shadow-indigo-500/50 hover:scale-110 transition-all group"
+                className="fixed top-1/2 -translate-y-1/2 right-6 z-50 p-4 bg-indigo-600 text-white rounded-full shadow-2xl hover:shadow-indigo-500/50 hover:scale-110 transition-all group"
                 title="Open Demo Controls"
             >
                 <GalleryVerticalIcon className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
@@ -50,7 +50,7 @@ export function DemoControlPanel({ onPersonaChange, onCustomerChange }: DemoCont
     }
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 w-96 bg-white rounded-2xl shadow-2xl border-2 border-indigo-200 overflow-hidden animate-in slide-in-from-bottom duration-300">
+        <div className="fixed top-1/2 -translate-y-1/2 right-6 z-50 w-96 bg-white rounded-2xl shadow-2xl border-2 border-indigo-200 overflow-hidden animate-in slide-in-from-bottom duration-300">
             {/* Header */}
             <div className="bg-indigo-600 px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
