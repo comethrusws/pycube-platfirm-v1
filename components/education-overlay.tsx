@@ -48,7 +48,7 @@ export function EducationOverlay({ topicId, isOpen, onClose }: EducationOverlayP
             {/* Modal */}
             <div className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-8 py-6 text-white">
+                <div className="bg-gradient-to-r from-neutral-600 to-neutral-500 px-8 py-6 text-white">
                     <div className="flex items-start justify-between">
                         <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
@@ -162,7 +162,7 @@ export function EducationOverlay({ topicId, isOpen, onClose }: EducationOverlayP
                     {!isLastSlide ? (
                         <button
                             onClick={handleNext}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-neutral-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
                         >
                             Next
                             <ChevronRight className="w-5 h-5" />

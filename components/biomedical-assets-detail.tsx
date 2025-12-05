@@ -224,7 +224,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                                         setEducationTopicId('asset-utilization')
                                         setEducationOpen(true)
                                     }}
-                                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-200 rounded-lg transition-colors"
                                 >
                                     <HelpCircle className="w-4 h-4" />
                                     How Utilization Works
@@ -516,7 +516,7 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                             {/* Action Card: Underutilized Assets */}
                             <button
                                 onClick={() => setTier3Category('asset-utilization')}
-                                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md transition-shadow cursor-pointer group"
+                                className="bg-white rounded-2xl p-6 shadow-sm border-2 border-gray-200 text-left hover:shadow-lg hover:border-orange-300 transition-all cursor-pointer group"
                             >
                                 <div className="flex items-start justify-between mb-3">
                                     <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
@@ -526,7 +526,11 @@ export function BiomedicalAssetsDetail({ isOpen, onClose, customerId }: Biomedic
                                 </div>
                                 <div className="text-3xl font-semibold text-gray-900 mb-1">1,694</div>
                                 <div className="text-sm font-medium text-gray-700 mb-2">Underutilized Assets</div>
-                                <div className="text-xs text-gray-500">Assets with &lt;50% utilization. Click to view redeployment recommendations.</div>
+                                <div className="text-xs text-gray-500 mb-3">Assets with &lt;50% utilization. View asset lifecycle details →</div>
+                                <div className="flex items-center gap-2 text-xs font-semibold text-orange-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span>View Asset List</span>
+                                    <ArrowRight className="w-4 h-4" />
+                                </div>
                             </button>
 
                             {/* Action Card: Maintenance Backlog */}

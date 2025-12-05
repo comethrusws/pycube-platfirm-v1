@@ -42,15 +42,15 @@ export function DataDriver({ kpiId, currentValue, className = '' }: DataDriverPr
     }
 
     return (
-        <div className={`bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-200 ${className}`}>
+        <div className={`bg-gradient-to-br from-blue-50 to-sky-50 rounded-2xl border border-sky-200 ${className}`}>
             {/* Header - Always Visible */}
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/50 transition-colors rounded-t-2xl"
             >
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-100 rounded-lg">
-                        <Database className="w-5 h-5 text-indigo-600" />
+                    <div className="p-2 bg-sky-100 rounded-lg">
+                        <Database className="w-5 h-5 text-sky-600" />
                     </div>
                     <div className="text-left">
                         <h4 className="text-sm font-semibold text-gray-900">Data Driver</h4>
@@ -61,20 +61,20 @@ export function DataDriver({ kpiId, currentValue, className = '' }: DataDriverPr
                     <span className={`text-xs font-semibold px-3 py-1.5 rounded-full border ${statusColor}`}>
                         {statusText}
                     </span>
-                    <Info className={`w-5 h-5 text-indigo-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                    <Info className={`w-5 h-5 text-sky-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                 </div>
             </button>
 
             {/* Expanded Content */}
             {isExpanded && (
                 <div className="px-6 pb-6 space-y-4 animate-in slide-in-from-top duration-200">
-                    <div className="h-px bg-indigo-200" />
+                    <div className="h-px bg-sky-200" />
 
                     {/* Formula */}
-                    <div className="bg-white rounded-xl p-4 border border-indigo-100">
+                    <div className="bg-white rounded-xl p-4 border border-sky-100">
                         <div className="flex items-center gap-2 mb-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
-                            <span className="text-xs font-semibold text-indigo-700 uppercase tracking-wider">Formula</span>
+                            <div className="w-1.5 h-1.5 rounded-full bg-sky-600" />
+                            <span className="text-xs font-semibold text-sky-700 uppercase tracking-wider">Formula</span>
                         </div>
                         <p className="text-sm text-gray-700 font-mono bg-gray-50 px-3 py-2 rounded-lg">
                             {kpi.formula}
@@ -82,15 +82,15 @@ export function DataDriver({ kpiId, currentValue, className = '' }: DataDriverPr
                     </div>
 
                     {/* Data Inputs */}
-                    <div className="bg-white rounded-xl p-4 border border-indigo-100">
+                    <div className="bg-white rounded-xl p-4 border border-sky-100">
                         <div className="flex items-center gap-2 mb-3">
-                            <div className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
-                            <span className="text-xs font-semibold text-indigo-700 uppercase tracking-wider">Data Inputs</span>
+                            <div className="w-1.5 h-1.5 rounded-full bg-sky-600" />
+                            <span className="text-xs font-semibold text-sky-700 uppercase tracking-wider">Data Inputs</span>
                         </div>
                         <ul className="space-y-2">
                             {kpi.inputs.map((input, idx) => (
                                 <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
-                                    <span className="text-indigo-400 mt-0.5">•</span>
+                                    <span className="text-sky-400 mt-0.5">•</span>
                                     <span>{input}</span>
                                 </li>
                             ))}
@@ -99,28 +99,28 @@ export function DataDriver({ kpiId, currentValue, className = '' }: DataDriverPr
 
                     {/* Data Source & Refresh */}
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-white rounded-xl p-4 border border-indigo-100">
+                        <div className="bg-white rounded-xl p-4 border border-sky-100">
                             <div className="flex items-center gap-2 mb-2">
-                                <RefreshCw className="w-4 h-4 text-indigo-600" />
-                                <span className="text-xs font-semibold text-indigo-700 uppercase tracking-wider">Refresh</span>
+                                <RefreshCw className="w-4 h-4 text-sky-600" />
+                                <span className="text-xs font-semibold text-sky-700 uppercase tracking-wider">Refresh</span>
                             </div>
                             <p className="text-sm text-gray-700">{kpi.refreshFrequency}</p>
                         </div>
 
-                        <div className="bg-white rounded-xl p-4 border border-indigo-100">
+                        <div className="bg-white rounded-xl p-4 border border-sky-100">
                             <div className="flex items-center gap-2 mb-2">
-                                <Database className="w-4 h-4 text-indigo-600" />
-                                <span className="text-xs font-semibold text-indigo-700 uppercase tracking-wider">Source</span>
+                                <Database className="w-4 h-4 text-sky-600" />
+                                <span className="text-xs font-semibold text-sky-700 uppercase tracking-wider">Source</span>
                             </div>
                             <p className="text-sm text-gray-700">{kpi.dataSource}</p>
                         </div>
                     </div>
 
                     {/* Typical Range */}
-                    <div className="bg-white rounded-xl p-4 border border-indigo-100">
+                    <div className="bg-white rounded-xl p-4 border border-sky-100">
                         <div className="flex items-center gap-2 mb-3">
-                            <TrendingUp className="w-4 h-4 text-indigo-600" />
-                            <span className="text-xs font-semibold text-indigo-700 uppercase tracking-wider">Expected Range</span>
+                            <TrendingUp className="w-4 h-4 text-sky-600" />
+                            <span className="text-xs font-semibold text-sky-700 uppercase tracking-wider">Expected Range</span>
                         </div>
                         <div className="flex items-center gap-6">
                             <div>
@@ -139,7 +139,7 @@ export function DataDriver({ kpiId, currentValue, className = '' }: DataDriverPr
                                         }}
                                     />
                                     <div
-                                        className="absolute w-1 h-4 bg-indigo-600 rounded-full -top-1"
+                                        className="absolute w-1 h-4 bg-sky-600 rounded-full -top-1"
                                         style={{
                                             left: `${Math.min(100, Math.max(0, ((currentValue - kpi.typicalRange.min) / (kpi.typicalRange.max - kpi.typicalRange.min)) * 100))}%`
                                         }}
@@ -157,7 +157,7 @@ export function DataDriver({ kpiId, currentValue, className = '' }: DataDriverPr
                             </div>
                         </div>
                         <div className="mt-3 flex items-center gap-2">
-                            <Target className="w-4 h-4 text-indigo-600" />
+                            <Target className="w-4 h-4 text-sky-600" />
                             <span className="text-xs text-gray-600">
                                 Current value: <span className="font-semibold text-gray-900">{currentValue}{kpi.typicalRange.unit}</span>
                             </span>
@@ -165,10 +165,10 @@ export function DataDriver({ kpiId, currentValue, className = '' }: DataDriverPr
                     </div>
 
                     {/* Business Context */}
-                    <div className="bg-white rounded-xl p-4 border border-indigo-100">
+                    <div className="bg-white rounded-xl p-4 border border-sky-100">
                         <div className="flex items-center gap-2 mb-3">
-                            <Users className="w-4 h-4 text-indigo-600" />
-                            <span className="text-xs font-semibold text-indigo-700 uppercase tracking-wider">Business Context</span>
+                            <Users className="w-4 h-4 text-sky-600" />
+                            <span className="text-xs font-semibold text-sky-700 uppercase tracking-wider">Business Context</span>
                         </div>
                         
                         <div className="space-y-3">
@@ -178,7 +178,7 @@ export function DataDriver({ kpiId, currentValue, className = '' }: DataDriverPr
                                     {kpi.context.stakeholders.map((stakeholder, idx) => (
                                         <span
                                             key={idx}
-                                            className="text-xs px-2 py-1 bg-indigo-50 text-indigo-700 rounded-md border border-indigo-200"
+                                            className="text-xs px-2 py-1 bg-sky-50 text-sky-700 rounded-md border border-sky-200"
                                         >
                                             {stakeholder}
                                         </span>
@@ -191,7 +191,7 @@ export function DataDriver({ kpiId, currentValue, className = '' }: DataDriverPr
                                 <ul className="mt-1 space-y-1">
                                     {kpi.context.decisions.map((decision, idx) => (
                                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
-                                            <span className="text-indigo-400 mt-0.5">→</span>
+                                            <span className="text-sky-400 mt-0.5">→</span>
                                             <span>{decision}</span>
                                         </li>
                                     ))}

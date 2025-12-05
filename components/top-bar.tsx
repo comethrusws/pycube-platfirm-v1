@@ -39,27 +39,6 @@ export function TopBar({
         {/* Controls */}
         <div className="flex items-center gap-4">
           {/* View Mode Toggle */}
-          <div className="bg-gray-100 p-1 rounded-lg flex items-center">
-            <button
-              onClick={() => onViewModeChange('executive')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'executive'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
-                }`}
-            >
-              Executive View
-            </button>
-            <button
-              onClick={() => onViewModeChange('operational')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'operational'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
-                }`}
-            >
-              Specialist View
-            </button>
-          </div>
-
           {/* Customer Switcher (Demo Only) */}
           <div className="relative group">
             <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors border border-transparent hover:border-gray-200">
