@@ -105,13 +105,13 @@ export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
 
   return (
     <div className="grid grid-cols-3 gap-8">
-      {/* Red Column */}
+      {/* Green Column */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4 px-2">
-          <div className="w-2 h-2 rounded-full bg-red-500" />
-          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">{categories.red.length}</span>
+          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">{categories.green.length}</span>
         </div>
-        {categories.red.map(renderTile)}
+        {categories.green.map(renderTile)}
       </div>
 
       {/* Orange Column */}
@@ -123,13 +123,13 @@ export function DigitizationTiles({ onCardClick }: DigitizationTilesProps) {
         {categories.orange.map(renderTile)}
       </div>
 
-      {/* Green Column */}
+      {/* Red Column */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4 px-2">
-          <div className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">{categories.green.length}</span>
+          <div className="w-2 h-2 rounded-full bg-red-500" />
+          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">{categories.red.length}</span>
         </div>
-        {categories.green.map(renderTile)}
+        {categories.red.map(renderTile)}
       </div>
     </div>
   )

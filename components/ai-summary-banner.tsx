@@ -126,9 +126,9 @@ export function AISummaryBanner({ onCardClick }: AISummaryBannerProps) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Critical (Red) */}
+          {/* Left Column: Success (Green) */}
           <div className="flex flex-col gap-4">
-            {criticalAlerts.map((alert) => (
+            {successAlerts.map((alert) => (
               <AlertCard key={alert.id} alert={alert} onClick={onCardClick} />
             ))}
           </div>
@@ -140,9 +140,9 @@ export function AISummaryBanner({ onCardClick }: AISummaryBannerProps) {
             ))}
           </div>
 
-          {/* Right Column: Success (Green) */}
+          {/* Right Column: Critical (Red) */}
           <div className="flex flex-col gap-4">
-            {successAlerts.map((alert) => (
+            {criticalAlerts.map((alert) => (
               <AlertCard key={alert.id} alert={alert} onClick={onCardClick} />
             ))}
           </div>

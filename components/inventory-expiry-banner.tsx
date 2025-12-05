@@ -46,7 +46,7 @@ export function InventoryExpiryBanner({ onCategoryClick }: InventoryExpiryBanner
                   <span className="text-xs font-semibold text-gray-500 uppercase">Value at Risk</span>
                 </div>
                 <div className="text-2xl font-bold text-red-600">
-                  ${(platformExpiryAlert.totalValueAtRisk / 1000).toFixed(0)}K
+                  ${(platformExpiryAlert.totalValueAtRisk / 1000000).toFixed(1)}M
                 </div>
                 <div className="text-xs text-gray-600 mt-1">if not addressed in time</div>
               </div>
